@@ -329,63 +329,62 @@
             </div>
             <div class="card-body px-0 pb-2">
               <div class="table-responsive">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Strategic Goal</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Strategic Direction</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Major  Activites</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Detail  Activites</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Task</th>
-   
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Completion</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                         
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">1.See Graduates Become Enterpreuner, Self Sufficenet</h6>
-                            <h6>Highest Demand Goal</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="avatar-group mt-2">
-                          <h6 class="mb-0 text-sm">1.1 Create Link with The governemnt</h6>
-                          <h6>Target Group :JBS Department</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold">1.1.1create new  market oriented department </span>
-                        <h6>Target Group :JBS Department;Registrar;Some Other Department</h6>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold">1.1.1.1 demand assessement creation </span>
-                        <h6>Target Group :JBS Department or Assigned Team</h6>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold">1.1.1.1.1 design proposal </span>
-                        <h6>Target Group :JBS Department Assigned Team or Individual</h6>
-                      </td>
-                      <td class="align-middle">
-                        <div class="progress-wrapper w-75 mx-auto">
-                          <div class="progress-info">
-                            <div class="progress-percentage">
-                              <span class="text-xs font-weight-bold">60%</span>
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+              
                 
-                  </tbody>
-                </table>
+
+                        
+                              <div class="">
+                                <div class="">
+                                  <div class="col-md-12">
+                                    <% if(plan.length>0){ %>
+                                      <% plan.forEach(function(row){ %>
+                                         <% planid = row.planid %>
+                                    <% goal.forEach(function (row){%>
+                                      <% sgoalid = row.sgoalid %>
+                                         <%if(row.planid ===planid){%>
+                                    <div id="MainMenu">
+                                      <div class="list-group panel">
+                                        <a href="#demo3" class="list-group-item " data-toggle="collapse" data-parent="#MainMenu"><%= row.sgoaltitle %></a>
+                                        <div class="collapse" id="demo3">
+                                          <% sdir.forEach(function (row){%> 
+                                            <% sdirid = row.sdirid %>
+                                            <%if(row.sgoalid ===sgoalid){%>
+                                              
+                                              <a href="#SubMenu1" class="list-group-item" data-toggle="collapse" data-parent="#SubMenu1"><tr><%= row.sdirtitle %> <i class="fa fa-caret-down"></i></a>
+                                              <div class="collapse list-group-submenu" id="SubMenu1">
+                                                <% mact.forEach(function (row){%> 
+                                                  <% mactid = row.mactivityid %>
+                                                  <%if(row.sdirid ===sdirid){%>
+
+                                                <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse" data-parent="#SubSubMenu1"><%= row.mactivitytitle %><i class="fa fa-caret-down"></i></a>
+                                                <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
+                                                  <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 1</a>
+                                                  <a href="#" class="list-group-item" data-parent="#SubSubMenu1">Sub sub item 2</a>
+                                                </div>
+                                                <% } %>
+                                                <%})%>
+                                            
+                                              </div>
+                                              <% } %>
+                                            <%})%>
+                                    
+                                      
+                                        </div>
+                                     
+                                      </div>
+                                    </div>
+                                        
+                            <% } %>
+                            <%})%>
+                                
+                     <% })}else{}%>
+                                  </div>  
+                                </div>  
+                              </div>
+                        
+                    
+                
+                
               </div>
             </div>
           </div>
