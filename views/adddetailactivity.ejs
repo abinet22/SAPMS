@@ -63,28 +63,10 @@
                 </li>
               
                 
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
-                    <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                        <g transform="translate(-2319.000000, -291.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                          <g transform="translate(1716.000000, 291.000000)">
-                            <g transform="translate(603.000000, 0.000000)">
-                              <path class="color-background" d="M22.7597136,19.3090182 L38.8987031,11.2395234 C39.3926816,10.9925342 39.592906,10.3918611 39.3459167,9.89788265 C39.249157,9.70436312 39.0922432,9.5474453 38.8987261,9.45068056 L20.2741875,0.1378125 L20.2741875,0.1378125 C19.905375,-0.04725 19.469625,-0.04725 19.0995,0.1378125 L3.1011696,8.13815822 C2.60720568,8.38517662 2.40701679,8.98586148 2.6540352,9.4798254 C2.75080129,9.67332903 2.90771305,9.83023153 3.10122239,9.9269862 L21.8652864,19.3090182 C22.1468139,19.4497819 22.4781861,19.4497819 22.7597136,19.3090182 Z">
-                              </path>
-                              <path class="color-background" d="M23.625,22.429159 L23.625,39.8805372 C23.625,40.4328219 24.0727153,40.8805372 24.625,40.8805372 C24.7802551,40.8805372 24.9333778,40.8443874 25.0722402,40.7749511 L41.2741875,32.673375 L41.2741875,32.673375 C41.719125,32.4515625 42,31.9974375 42,31.5 L42,14.241659 C42,13.6893742 41.5522847,13.241659 41,13.241659 C40.8447549,13.241659 40.6916418,13.2778041 40.5527864,13.3472318 L24.1777864,21.5347318 C23.8390024,21.7041238 23.625,22.0503869 23.625,22.429159 Z" opacity="0.7"></path>
-                              <path class="color-background" d="M20.4472136,21.5347318 L1.4472136,12.0347318 C0.953235098,11.7877425 0.352562058,11.9879669 0.105572809,12.4819454 C0.0361450918,12.6208008 6.47121774e-16,12.7739139 0,12.929159 L0,30.1875 L0,30.1875 C0,30.6849375 0.280875,31.1390625 0.7258125,31.3621875 L19.5528096,40.7750766 C20.0467945,41.0220531 20.6474623,40.8218132 20.8944388,40.3278283 C20.963859,40.1889789 21,40.0358742 21,39.8806379 L21,22.429159 C21,22.0503869 20.7859976,21.7041238 20.4472136,21.5347318 Z" opacity="0.7"></path>
-                            </g>
-                          </g>
-                        </g>
-                      </g>
-                    </svg>
-                    <span class="ms-1">Risks Register</span>
-                  </a>
-                </li>
+                
              
                 <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
+                  <a class="nav-link mb-0 px-0 py-1 active "  data-bs-toggle="tab" data-toggle="modal" data-target="#makpi" role="tab" aria-selected="true">
                     <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                       <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <g transform="translate(-2319.000000, -291.000000)" fill="#FFFFFF" fill-rule="nonzero">
@@ -99,7 +81,7 @@
                         </g>
                       </g>
                     </svg>
-                    <span class="ms-1">Add KPI</span>
+                    <span class="ms-1">Add KPI For This Major Activity</span>
                   </a>
                 </li>
               </ul>
@@ -167,9 +149,18 @@
                       <p class="mb-4 text-sm">
                      To   <%= row.enddate %>
                         </p>
-                    <div class="d-flex align-items-center justify-content-between">
-                      <button type="button" class="btn btn-outline-primary btn-sm mb-0">Edit Detail Activity</button>
-                    
+                    <div class="row">
+                      <div class="col-md-6">
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">Edit Detail Activity</button>
+                      
+                      </div>
+                      <div class="col-md-6">
+                        <!-- <button type="button" id="modalOpenerButton" class="btn btn-outline-primary btn-sm mb-0"  data-bs-toggle="tab" data-toggle="modal" data-target="#myModal" data-data1="<%= row.dactivitytitle %>" data-data2="<%= row.dactivitycode %>" data-data3="<%= row.dactivitydescription %>" data-data4="<%= row.dactivityid %>">Set Activity KPI</button>
+                        -->
+                        <button  class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" data-target="#myModal" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.mactivityid %>"  data-toggler3="<%= row.dactivitycode %>" data-toggler2="<%= row.dactivitytitle %>" data-toggler4="<%= row.dactivitydescription %>" >
+                          Set Activity KPI
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -238,7 +229,7 @@
            
          
          <select class="form-control" name="dactivityid">
-          <option value="0">Please select major activity here</option>
+          <option value="0">Please select detail activity here</option>
           <% if(dact.length>0){ %>
            <% dact.forEach(function(row){ %>
               <option value="<%= row.dactivityid %>"><%= row.dactivitytitle %></option>
@@ -283,7 +274,249 @@
      <%- include ('./partials/footer') %>
     </div>
   </div>
+  <div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add KPI(Perfromance Indicator)</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      
+
+        <form action="/stvcpms/addkpifordetailactivity" method="post">
+          <div class="modal-body">
+        
+              <div class="d-flex flex-column ">
+                <p class="mb-1 pt-2 text-bold"><small>Detail Activity Infos</small></p>
+              <small>Detail Activity Title:<span class="title"></span></small>
+                <small>Detail Activity Code:<span class="acode"></span></small>
+                <p class="mb-2"><small>Detail Activity Description:<span class="adescription"></span></small></p>
+         
+              </div>
+          
+            <input type="hidden" class="js-toggler__input" value="" name="dactivityid" >
+            <input type="hidden" class="majorid" value="" name="mactivityid" >
+           
+             <label>Target Group</label>
+             <select class="form-control" name="targetgroup" id="targetgroup">
+              <option value="0">Please select target group here</option>
+              <% if(targetgrouplist.length>0){ %>
+               <% targetgrouplist.forEach(function(row){ %>
+                  <option value="<%= row.targetgid %>"><%= row.targetgroupname %></option>
+               <% })%>
+             <% }else {%>
+              <label>No major activities where found</label>
+              <%} %>
+             </select>
+             <div class="row">
+              <div class="col-md-4">
+                <label>Target Indicator</label>
+                <select class="form-control" name="targetindicator" id="targetindicator">
+                 <option value="0">Please select indicator here</option>
+                 <option value="level1">Level 1</option>
+                 <option value="level2">Level 2</option>
+                 <option value="level3">Level 3</option>
+                 <option value="level4">Level 4</option>
+                 <option value="shortterm">Short Term</option>
+                
+                
+                </select>
+              </div>
+             
+              <div class="col-md-4">
+                <label>Input Type</label>
+                <select class="form-control" id="dactinputtype">
+                 <option value="0">Please input type indicator here</option>
+                 <option value="Number">Number</option>
+                 <option value="Ratio">Ratio</option>
+                 <option value="APN">APN</option>
+                 <option value="Text">Text</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>KPI</label>
+                <input type="text" class="form-control mb-2" id="dactkpi" placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
+         
+              </div>
+             </div>
+             <textarea type="text" class="form-control  mb-2 mt-2" id="registeredrisk" placeholder="Associated Risk" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+               <input type="hidden" id="criteria" name="criteria">
+             <div class="col-md-6 offset-md-3 form-check form-check-primary">
+               <ul class="" id="list">
+                </ul>
+             </div>
+             <button type="button" id="add" class="btn btn-secondary btn-block" >Add</button>
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="makpi" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add KPI(Perfromance Indicator)</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    
+        <form action="/stvcpms/addkpiformajoractivity" method="post">
+          <div class="modal-body">
+            <% if(mact){%>
+              <div class="d-flex flex-column h-100">
+                <p class="mb-1 pt-2 text-bold"><small>Major Activity Infos</small></p>
+              <small>Major Activity Title:<%= mact.mactivitytitle %></small>
+                <small>Major Activity Code:<%= mact.mactivitycode %></small>
+                <p class="mb-2"><small>Major Activity Description:<%= mact.mactivitydescription %></small></p>
+         
+              </div>
+            <%} %>
+          
+             <label>Select Detail Activity </label>
+             <select class="form-control" name="targetgroup" id="targetgroup">
+              <option value="0">Please select detail activity here</option>
+              <% if(dact.length>0){ %>
+               <% dact.forEach(function(row){ %>
+                  <option value="<%= row.dactivityid %>"><%= row.dactivitytitle %></option>
+               <% })%>
+             <% }else {%>
+              <label>No detail activities where found</label>
+              <%} %>
+             </select>
+             <div class="row">
+              <div class="col-md-4">
+                <label>Target Indicator</label>
+                <select class="form-control" name="targetindicator" id="targetindicator">
+                 <option value="0">Please select indicator here</option>
+                 <option value="level1">Level 1</option>
+                 <option value="level2">Level 2</option>
+                 <option value="level3">Level 3</option>
+                 <option value="level4">Level 4</option>
+                 <option value="shortterm">Short Term</option>
+                
+                
+                </select>
+              </div>
+             
+              <div class="col-md-4">
+                <label>Input Type</label>
+                <select class="form-control" id="dactinputtype">
+                 <option value="0">Please input type indicator here</option>
+                 <option value="Number">Number</option>
+                 <option value="Ratio">Ratio</option>
+                 <option value="APN">APN</option>
+                 <option value="Text">Text</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>KPI</label>
+                <input type="text" class="form-control mb-2" id="dactkpi" placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
+         
+              </div>
+             </div>
+             <textarea type="text" class="form-control  mb-2 mt-2" id="registeredrisk" placeholder="Associated Risk" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+               <input type="hidden" id="criteria" name="criteria">
+             <div class="col-md-6 offset-md-3 form-check form-check-primary">
+               <ul class="" id="list">
+                </ul>
+             </div>
+             <button type="button" id="add" class="btn btn-secondary btn-block" >Add</button>
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+  <script>
+           
+  var criarry = [] ;
+
+    var criid =0 ;
+    var percentt =0;
+    $("#add").on("click", function(e){
+      var data = document.getElementById("targetgroup").value;
+   if(data == "0")
+   {
+  
+   }
+   else
+   {
+    criid ++ ;
+   var dacttgroup = document.getElementById("targetgroup").value;
+   var dacttindicator = document.getElementById("targetindicator").value;
+   var dacttinputtype = document.getElementById("dactinputtype").value;
+   var dactkpi = document.getElementById("dactkpi").value;
+   var dactregisteredrisk = document.getElementById("registeredrisk").value;
+   var  percent = 0;
+      
+        if(percentt <= 100){
+          
+          var checkboxvalue =  dacttgroup +"_"+
+          dacttindicator+"_"+
+          dacttinputtype+"_"+
+          dactkpi+"_"+
+          dactregisteredrisk;
+
+          dacttgroup.trim();
+          dacttindicator.trim();
+          dacttinputtype.trim();
+          dactkpi.trim();
+          dactregisteredrisk.trim();
+  // criarry.push(checkboxvalue);
+  var criteria = {};
+  criteria['dacttgroup'] = dacttgroup;
+   criteria['dacttindicator'] = dacttindicator;
+     criteria['dacttinputtype'] = dacttinputtype;
+     criteria['dactkpi'] = dactkpi;
+     criteria['dactregisteredrisk'] = dactregisteredrisk;
+  // criteria[criname] = parseInt(percent) ;
+  criarry.push(criteria);
+   // $('#criteria').val([criteria]);
+   $('#criteria').val( JSON.stringify(criarry) );
+  console.log(criarry);            
+  $("#list").append("<li><input type='checkbox' id="+ checkboxvalue +"  class='form-check-input' checked >" + $("#targetgroup option:selected").text() + " " + $("#targetindicator").val() + $("#dactkpi").val()+"</li>");
+  
+  return false;
+        }
+  
+   }
+  
+  });
+  
+  </script>
+ 
+ <script>
+  $('[data-toggle="modal"]').on('click', function () {
+    const toggler = $(this);
+    const toggler_identifier = toggler.attr('data-toggler');
+    const toggler_identifier2 = toggler.attr('data-toggler2');
+    const toggler_identifier3 = toggler.attr('data-toggler3');
+    const toggler_identifier4 = toggler.attr('data-toggler4');
+    const toggler_identifier5 = toggler.attr('data-toggler5');
+    console.log(toggler_identifier3);
+    let modal_id = toggler.attr('data-target');
+    $(modal_id).find('.js-toggler__input').val(toggler_identifier);
+    $(modal_id).find('.title').html(toggler_identifier2);
+    $(modal_id).find('.acode').text(toggler_identifier3);
+  $(modal_id).find('.adescription').text(toggler_identifier4);
+  $(modal_id).find('.majorid').val(toggler_identifier5);
+  
+});
+</script>
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>

@@ -4,6 +4,7 @@ const router = express.Router();
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 const passport = require('passport');
 const db = require("../models");
+const bcrypt = require('bcryptjs');
 const path = require("path");
 const Op = db.Sequelize.Op;
 const { v4: uuidv4 } = require('uuid');
@@ -41,8 +42,64 @@ res.render('addnewannualplan',{allplans:existingplans});
 router.get('/createtargetgroup', ensureAuthenticated, async function(req, res) {
   const existingplans = await db.Plan.findAll({});
   const detailview = await db.StrategicGoal.findAll({});
- res.render('createtargetgroup',{allplans:existingplans,sgoal:detailview});
+  const targetgrouplist = await db.TargetGroup.findAll();
+ res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
   });
+router.post('/addnewtargetgroup', ensureAuthenticated, async function(req, res) {
+  const {targetgroupname,grouptype,username,userroll,password,retypepassword} =req.body;
+const existingplans = await db.Plan.findAll({});
+const detailview = await db.StrategicGoal.findAll({});
+const newtargetgroup ={
+ targetgid:uuidv4(),
+ targetgroupname:targetgroupname,
+  grouptype:grouptype,
+  username:username,password:password
+  ,retypepassword:retypepassword,user_roll:userroll,is_active:'Yes'
+}
+const targetgrouplist = await db.TargetGroup.findAll();
+let errors=[];
+if(!targetgroupname ||!grouptype || grouptype ==="0" || username==="0" ||!username ||!userroll ||!password ||!retypepassword){
+  res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview,error_msg:'Please ensert all reqiured fields'});
+  
+}
+
+if(password != retypepassword){
+
+  res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview,error_msg:'Password and retype password must be the same'});
+
+}else{
+  db.TargetGroup.findOne({where:{targetgroupname:targetgroupname,user_roll:userroll}}).then(tg =>{
+    if(tg){
+      res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview,error_msg:'Target group already created'});
+  
+    }else{
+      bcrypt.hash(password, 10, (err, hash) => {
+        newtargetgroup.password = hash;
+
+
+        db.TargetGroup.create(newtargetgroup)
+            .then(data => {
+              db.TargetGroup.findAll().then(newtarg=>{
+                res.render('createtargetgroup',{targetgrouplist:newtarg,allplans:existingplans,sgoal:detailview,success_msg:'New target group created successfully'});
+            
+               }).catch(err =>{
+                res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview,error_msg:'New target group created successfully'});
+            
+               })
+            }).catch(err => {
+              res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview,error_msg:'New target group created successfully'});
+  
+            }) // end of then catch for create method
+        }); //
+
+    }
+  }).catch(err =>{
+    res.render('createtargetgroup',{targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview,error_msg:'Cant create now try later'});
+  })
+  
+}
+
+});
 router.post('/selectplantoviewdetail', ensureAuthenticated, async function(req, res) {
 const{planid,configcat} =req.body;
 const existingplans = await db.Plan.findAll({});
@@ -219,18 +276,28 @@ router.post('/addplanstrategicdirection', ensureAuthenticated, async function(re
    })
   }
 });
+router.get('/adddkpiformactivity',ensureAuthenticated,async function(req,res){
+  const currentdirection = await db.StrategicDirection.findOne({where:{sdirid:sdirid}});
+  const sgoal = await db.StrategicGoal.findAll({where:{sgoalid:currentdirection.sgoalid}});
+  const existingplans = await db.Plan.findAll({})
+  const mact = await db.MajorActivity.findAll({where:{sdirid:sdirid}});
+  const targetgrouplist = await db.TargetGroup.findAll();
+  res.render('addkpiformactivity',{success_msg:'You can add edit or delete major activities KPI here',targetgrouplist:targetgrouplist,allplans:existingplans,mact:mact});
+   
+})
 router.post('/addplanmajoractivity', ensureAuthenticated, async function(req, res) {
   const{sdirid} =req.body;
   const currentdirection = await db.StrategicDirection.findOne({where:{sdirid:sdirid}});
   const sgoal = await db.StrategicGoal.findAll({where:{sgoalid:currentdirection.sgoalid}});
   const existingplans = await db.Plan.findAll({})
   const mact = await db.MajorActivity.findAll({where:{sdirid:sdirid}});
+  const targetgrouplist = await db.TargetGroup.findAll();
   if(sdirid ==="0"){
     res.render('addstrategicdirection',{error_msg:'Please select strategic direction first',allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:currentdirection.sgoalid});
   }else{
    db.StrategicDirection.findOne({where:{sdirid:sdirid}}).then(sdir =>{
     if(sgoal){
-     res.render('addmajoractivity',{success_msg:'You can add edit or delete major activities here',allplans:existingplans,mact:mact,sdir:sdir,sdirid:sdirid});
+     res.render('addmajoractivity',{success_msg:'You can add edit or delete major activities here',targetgrouplist:targetgrouplist,allplans:existingplans,mact:mact,sdir:sdir,sdirid:sdirid});
     }else{
       res.render('addstrategicdirection',{error_msg:'Cant find strategic direction with this id. please try again',allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:currentdirection.sgoalid});
     }
@@ -243,19 +310,72 @@ router.post('/addplandetailactivity', ensureAuthenticated, async function(req, r
   const{mactivityid} =req.body;
   const curactivity = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
   const mact = await db.MajorActivity.findAll({where:{sdirid:curactivity.sdirid}});
+  const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
   const existingplans = await db.Plan.findAll({})
+  const targetgrouplist  = await db.TargetGroup.findAll()
   if(mactivityid ==="0"){
-    res.render('addmajoractivity',{error_msg:'Please select major activity first',allplans:existingplans,mact:mact,sdir:sdir,mactivityid:mactivityid});
+    res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please select major activity first',allplans:existingplans,mact:mact,sdir:sdir,mactivityid:mactivityid});
   }else{
-   db.MajorActivity.findOne({where:{mactivityid:mactivityid}}).then(dact =>{
-    if(dact){
-     res.render('adddetailactivity',{success_msg:'You can add edit or delete detail activities here',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+   db.MajorActivity.findOne({where:{mactivityid:mactivityid}}).then(mact2 =>{
+    if(mact2){
+     res.render('adddetailactivity',{targetgrouplist:targetgrouplist,success_msg:'You can add edit or delete detail activities here',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
     }else{
-      res.render('adddetailactivity',{error_msg:'Cant find  detail activities with this id. please try again',allplans:existingplans,dact:'',mact:curactivity,mactivityid:mactivityid});
+      res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Cant find  detail activities with this id. please try again',allplans:existingplans,dact:'',mact:curactivity,mactivityid:mactivityid});
     }
    }).catch(err =>{
-    res.render('adddetailactivity',{error_msg:'Error while finding  detail activities with id try again',allplans:existingplans,dact:'',mact:curactivity,mactivityid:mactivityid});
+    res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding  detail activities with id try again',allplans:existingplans,dact:'',mact:curactivity,mactivityid:mactivityid});
    })
+  }
+});
+
+router.post('/addkpifordetailactivity', ensureAuthenticated, async function(req, res) {
+  const{mactivityid,criteria,dactivityid} =req.body;
+  const curactivity = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
+  const mact = await db.MajorActivity.findAll({where:{sdirid:curactivity.sdirid}});
+  const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
+  const existingplans = await db.Plan.findAll({})
+  const targetgrouplist  = await db.TargetGroup.findAll()
+  if(!mactivityid || !criteria || !dactivityid){
+    res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please add all required fields',allplans:existingplans,mact:mact,sdir:sdir,mactivityid:mactivityid});
+  }else{
+    try {
+      // Parse the JSON string into an array of objects
+      const criteriaData = JSON.parse(criteria);
+  
+      // Loop through each object in the criteriaData array
+      for (const item of criteriaData) {
+        // Create a new record in the DetailActivityKPI table for each object
+        await db.DetailActivityKPI.create({
+          mactivityid: mactivityid,
+          dactivityid:dactivityid,
+          dacttgroup: item.dacttgroup,
+          dacttindicator: item.dacttindicator,
+          dacttinputtype: item.dacttinputtype,
+          dactkpi: item.dactkpi,
+          dactregisteredrisk: item.dactregisteredrisk,
+         
+          // Add other fields as needed based on your model definition
+        });
+      }
+  
+      // Respond with a success message or any other appropriate response.
+     // res.status(200).json({ message: 'Criteria added successfully!' });
+      res.render('adddetailactivity',{targetgrouplist:targetgrouplist, success_msg: 'KPIs added successfully!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+
+    } catch (err) {
+      console.error('Error inserting criteria data:', err);
+      res.status(500).json({ error: 'An error occurred while adding criteria.' });
+    }
+  //  db.MajorActivity.findOne({where:{mactivityid:mactivityid}}).then(mact2 =>{
+  //   if(mact2){
+  //     console.log(criteria)
+  //    res.render('adddetailactivity',{targetgrouplist:targetgrouplist,success_msg:'You can add edit or delete detail activities here',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+  //   }else{
+  //     res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Cant find  detail activities with this id. please try again',allplans:existingplans,dact:'',mact:curactivity,mactivityid:mactivityid});
+  //   }
+  //  }).catch(err =>{
+  //   res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding  detail activities with id try again',allplans:existingplans,dact:'',mact:curactivity,mactivityid:mactivityid});
+  //  })
   }
 });
 router.post('/addnewplan', ensureAuthenticated, async function(req, res) {
@@ -409,11 +529,12 @@ router.post('/addnewmajoractivity', ensureAuthenticated, async function(req, res
   const existingplans = await db.Plan.findAll({});
   const sdirone = await db.StrategicDirection.findOne({where:{sdirid:sdirid}});
   const mact = await db.MajorActivity.findAll({where:{sdirid:sdirid}});
+  const targetgrouplist  = await db.TargetGroup.findAll()
   if(!sdirid || !mactcode || !mactduration || !macttitle || !startdate || !enddate || !mactdescription){
   errors.push({mssg:'Please add all required fields'})
   }
   if(errors.length >0){
-  res.render('addmajoractivity',{errors,sdir:sdirone,mact:mact,allplans:existingplans,});
+  res.render('addmajoractivity',{targetgrouplist:targetgrouplist,errors,sdir:sdirone,mact:mact,allplans:existingplans,});
   }else{
   
   const uuid = uuidv4();
@@ -430,24 +551,24 @@ router.post('/addnewmajoractivity', ensureAuthenticated, async function(req, res
   }
   db.MajorActivity.findOne({where:{mactivitycode:mactcode}}).then(sd=>{
     if(sd){
-      res.render('addmajoractivity',{error_msg:'Please enter new major activity.code already exist.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
+      res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please enter new major activity.code already exist.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
     }else{
     db.MajorActivity.create(newstrategicdirection).then(sds =>{
     if(sds){
       db.MajorActivity.findAll({where:{sdirid:sdirid}}).then(allmact =>{
-      res.render('addmajoractivity',{success_msg:'You are successfully create new major activity please add all the necessary attributes',allplans:existingplans,sdir:sdirone,mact:allmact,mact,sdirid:sdirid});
+      res.render('addmajoractivity',{targetgrouplist:targetgrouplist,success_msg:'You are successfully create new major activity please add all the necessary attributes',allplans:existingplans,sdir:sdirone,mact:allmact,mact,sdirid:sdirid});
       }).catch(err =>{
-      res.render('addmajoractivity',{error_msg:'Error while finding exsting updated major activity.' ,allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
+      res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding exsting updated major activity.' ,allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
       })
     }else{
-      res.render('addmajoractivity',{error_msg:'Please enter new major activity code. major activity code already exist.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
+      res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please enter new major activity code. major activity code already exist.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
     }
     }).catch(err =>{
-    res.render('addmajoractivity',{error_msg:'Error while creating new major activity.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
+    res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Error while creating new major activity.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
     })
     }
   }).catch(err =>{
-    res.render('addmajoractivity',{error_msg:'Error while finding existing major activity.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
+    res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding existing major activity.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid});
   })
   
   }
@@ -459,11 +580,12 @@ router.post('/addnewmajoractivity', ensureAuthenticated, async function(req, res
     const existingplans = await db.Plan.findAll({});
     const mactone = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
     const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
+    const targetgrouplist = await db.TargetGroup.findAll();
     if(!mactivityid || !dactcode || !dactduration || !dactdescription || !startdate || !enddate || !dacttitle){
     errors.push({mssg:'Please add all required fields'})
     }
     if(errors.length >0){
-    res.render('adddetailactivity',{errors,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+    res.render('adddetailactivity',{targetgrouplist:targetgrouplist,errors,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
     }else{
     
     const uuid = uuidv4();
@@ -486,19 +608,19 @@ router.post('/addnewmajoractivity', ensureAuthenticated, async function(req, res
       db.DetailActivity.create(newdetailactivity).then(dacts =>{
       if(dacts){
         db.DetailActivity.findAll({where:{mactivityid:mactivityid}}).then(alldact =>{
-        res.render('adddetailactivity',{success_msg:'You are successfully create new detail activity please add all the necessary attributes',dact:alldact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{targetgrouplist:targetgrouplist,success_msg:'You are successfully create new detail activity please add all the necessary attributes',dact:alldact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
         }).catch(err =>{
-        res.render('adddetailactivity',{error_msg:'Error while finding exsting updated detail activity.' ,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding exsting updated detail activity.' ,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
         })
       }else{
-        res.render('adddetailactivity',{error_msg:'Please enter new detail activity code. detail activity code already exist.',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Please enter new detail activity code. detail activity code already exist.',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
       }
       }).catch(err =>{
-      res.render('adddetailactivity',{error_msg:'Error while creating new detail activity.',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+      res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Error while creating new detail activity.',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
       })
       }
     }).catch(err =>{
-      res.render('adddetailactivity',{error_msg:'Error while finding existing detail activity.',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+      res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding existing detail activity.',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
     })
     
     }

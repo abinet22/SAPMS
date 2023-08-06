@@ -14,6 +14,7 @@ const db = require("./models")
 // create express server
 const app = express();
 
+
 // Passport authentication Config
 require('./config/passport')(passport);
 
