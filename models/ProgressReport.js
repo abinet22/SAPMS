@@ -1,17 +1,14 @@
 
 module.exports = (sequelize, DataTypes) => {
 
-    const DetailActivityKPI = sequelize.define("DetailActivityKPI", {
+    const ProgressReport = sequelize.define("ProgressReport", {
       
-      mactivityid:  {
-        type: DataTypes.STRING,
      
-      } ,
       dactivityid:{
         type: DataTypes.STRING,
      
       },
-      dacttgroup: {
+      dacttgroupid: {
         type: DataTypes.STRING,
      
       },
@@ -27,34 +24,38 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
      
       },
-      dactregisteredrisk: {
-        type: DataTypes.STRING,
+      progressreport: {
+        type: DataTypes.TEXT("long"),
      
       },
-      seen: {
-        type: DataTypes.STRING,
+      remark: {
+        type: DataTypes.TEXT("long"),
      
       },
-      seendate: {
+      number: {
+        type: DataTypes.DECIMAL,
+     
+      },
+      percent: {
+        type: DataTypes.DECIMAL,
+     
+      },
+      ratio: {
+        type: DataTypes.DECIMAL,
+     
+      },
+      reportdate: {
         type: DataTypes.DATE,
      
       },
-      start: {
-        type: DataTypes.STRING,
-     
-      },
-      startdate: {
-        type: DataTypes.DATE,
-     
-      },
-      isfinalsent:{
+      reporttype: {
         type: DataTypes.STRING,
      
       }
  
   
 })
-    return DetailActivityKPI;
+    return ProgressReport;
 };
 
 

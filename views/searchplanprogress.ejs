@@ -130,9 +130,10 @@
                 <h6><button class="btn bg-gradient-secondary mt-3  waves-effect waves-light" onclick="toggleDiv()"><i class="fa fa-search"></i>Filter Result</button></h6>
             </div>
             <div class="card-body mb-4" style="display: none;" id="myDiv">
+              <form action="/stvcpms/filtersearchforprogressreport" method="post">
                 <div class="col-md-8 offset-md-2">
                   <div class="form-group">
-                      <select  class="form-control" id="planSelect" onchange="updateGoals()">
+                      <select  class="form-control" id="planSelect" name="planid" onchange="updateGoals()">
                           <option value="0" >please select plan</option>
                        <% if(allplans.length >0 ){%>
                           <% allplans.forEach(function(row){ %>
@@ -143,34 +144,38 @@
                         </select>
                   </div>
                   <div class="form-group">
-                      <select id="goalSelect" onchange="updateDirection()"class="form-control">
+                      <select id="goalSelect" onchange="updateDirection()"class="form-control" name="sgoalid">
                           <option value="0" >please select strategic goal</option>
                           <!-- Options will be dynamically populated here -->
                         </select>
                   </div>
                   <div class="form-group">
         
-                      <select id="directionSelect" class="form-control" onchange="updateMajor()">
+                      <select id="directionSelect" class="form-control" onchange="updateMajor()" name="sdirid">
                           <option value="0" >please select strategic direction</option>
                           <!-- Options will be dynamically populated here -->
                         </select>
                   </div>
                   <div class="form-group">
         
-                      <select id="majorActivitySelect" class="form-control" onchange="updateDetail()">
+                      <select id="majorActivitySelect" class="form-control" onchange="updateDetail()" name="mactivityid">
                           <option value="0" >please select major activity</option>
                           <!-- Options will be dynamically populated here -->
                         </select>
                   </div>
                   <div class="form-group">
         
-                      <select id="detailActivitySelect" class="form-control">
+                      <select id="detailActivitySelect" class="form-control" name="dactivityid">
                           <option value="0" >please select detail activity</option>
                           <!-- Options will be dynamically populated here -->
                         </select>
                         
                   </div>
-                 
+                  <div class="col-md-6 offset-md-2">
+        
+                   <button class="btn btn-sm btn-primary btn-block">Search</button>
+                      
+                </div>
                   <script>
                       function updateGoals() {
                         var planSelect = document.getElementById("planSelect");
@@ -276,7 +281,11 @@
                     </script>
                     
                     
-                </div>
+                </div> 
+              </form>
+               
+
+
                 </div>
         </div>
         <script>

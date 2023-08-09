@@ -42,7 +42,7 @@
             <div class="nav-wrapper position-relative end-0">
               <ul class="nav nav-pills nav-fill p-1 bg-transparent" role="tablist">
                
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" data-toggle="modal" data-target="#task" role="tab" aria-selected="true">
                     <svg class="text-dark" width="16px" height="16px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                       <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -62,7 +62,7 @@
                   </a>
                 </li>
               
-                
+                 -->
                 
              
                 <li class="nav-item">
@@ -328,11 +328,13 @@
               <div class="col-md-4">
                 <label>Input Type</label>
                 <select class="form-control" id="dactinputtype">
-                 <option value="0">Please input type indicator here</option>
+                 <option value="0">Please select input type indicator here</option>
                  <option value="Number">Number</option>
                  <option value="Ratio">Ratio</option>
                  <option value="APN">APN</option>
                  <option value="Text">Text</option>
+                 <option value="Percent">Percent</option>
+              
                 </select>
               </div>
               <div class="col-md-4">
@@ -376,12 +378,12 @@
               <small>Major Activity Title:<%= mact.mactivitytitle %></small>
                 <small>Major Activity Code:<%= mact.mactivitycode %></small>
                 <p class="mb-2"><small>Major Activity Description:<%= mact.mactivitydescription %></small></p>
-         
+                 <input type="hidden" value="<%= mact.mactivityid %>"  id="mactivityid" name="mactivityid">
               </div>
             <%} %>
           
              <label>Select Detail Activity </label>
-             <select class="form-control" name="targetgroup" id="targetgroup">
+             <select class="form-control" name="dactivityid" id="dactivityid">
               <option value="0">Please select detail activity here</option>
               <% if(dact.length>0){ %>
                <% dact.forEach(function(row){ %>
@@ -394,7 +396,7 @@
              <div class="row">
               <div class="col-md-4">
                 <label>Target Indicator</label>
-                <select class="form-control" name="targetindicator" id="targetindicator">
+                <select class="form-control" name="mtargetindicator" id="mtargetindicator">
                  <option value="0">Please select indicator here</option>
                  <option value="level1">Level 1</option>
                  <option value="level2">Level 2</option>
@@ -408,27 +410,28 @@
              
               <div class="col-md-4">
                 <label>Input Type</label>
-                <select class="form-control" id="dactinputtype">
-                 <option value="0">Please input type indicator here</option>
+                <select class="form-control" id="mactinputtype">
+                 <option value="0">Please select input type indicator here</option>
                  <option value="Number">Number</option>
                  <option value="Ratio">Ratio</option>
                  <option value="APN">APN</option>
                  <option value="Text">Text</option>
+                 <option value="Percent">Percent</option>
                 </select>
               </div>
               <div class="col-md-4">
                 <label>KPI</label>
-                <input type="text" class="form-control mb-2" id="dactkpi" placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
+                <input type="text" class="form-control mb-2" id="mactkpi" placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
          
               </div>
              </div>
-             <textarea type="text" class="form-control  mb-2 mt-2" id="registeredrisk" placeholder="Associated Risk" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
-               <input type="hidden" id="criteria" name="criteria">
+             <textarea type="text" class="form-control  mb-2 mt-2" id="mregisteredrisk" placeholder="Associated Risk" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+               <input type="hidden" id="mcriteria" name="mcriteria">
              <div class="col-md-6 offset-md-3 form-check form-check-primary">
-               <ul class="" id="list">
+               <ul class="" id="mlist">
                 </ul>
              </div>
-             <button type="button" id="add" class="btn btn-secondary btn-block" >Add</button>
+             <button type="button" id="addmactkpi" class="btn btn-secondary btn-block" >Add</button>
           
           </div>
           <div class="modal-footer">
@@ -498,7 +501,67 @@
   });
   
   </script>
- 
+  <script>
+           
+    var criarry2 = [] ;
+  
+      var criid =0 ;
+     
+      $("#addmactkpi").on("click", function(e){
+        var data = document.getElementById("dactivityid").value;
+     if(data == "0")
+     {
+    
+     }
+     else
+     {
+      criid ++ ;
+      var mactid = document.getElementById("mactivityid").value;
+     var dactid = document.getElementById("dactivityid").value;
+     var macttindicator = document.getElementById("mtargetindicator").value;
+     var macttinputtype = document.getElementById("mactinputtype").value;
+     var mactkpi = document.getElementById("mactkpi").value;
+     var mactregisteredrisk = document.getElementById("mregisteredrisk").value;
+     var  percent = 0;
+        
+          if(percentt <= 100){
+            
+            var mcheckboxvalue =  mactid +"_"+
+            dactid+"_"+
+            macttinputtype+"_"+
+            mactkpi+"_"+
+            mactregisteredrisk;
+            
+            mactid.trim();
+            dactid.trim();
+            macttindicator.trim();
+            macttinputtype.trim();
+            mactkpi.trim();
+            mactregisteredrisk.trim();
+    // criarry.push(checkboxvalue);
+    var criteria2 = {};
+    criteria2['mactid'] = mactid;
+    criteria2['dactid'] = dactid;
+     criteria2['macttindicator'] = macttindicator;
+       criteria2['macttinputtype'] = macttinputtype;
+       criteria2['mactkpi'] = mactkpi;
+       criteria2['mactregisteredrisk'] = mactregisteredrisk;
+    // criteria[criname] = parseInt(percent) ;
+    criarry2.push(criteria2);
+     // $('#criteria').val([criteria]);
+     $('#mcriteria').val( JSON.stringify(criarry2) );
+    console.log(criarry);            
+    $("#mlist").append("<li><input type='checkbox' id="+ mcheckboxvalue +"  class='form-check-input' checked >" + $("#dactivityid option:selected").text() + " " + $("#mtargetindicator").val() + $("#mactkpi").val()+"</li>");
+    
+    return false;
+          }
+    
+     }
+    
+    });
+    
+    </script>
+   
  <script>
   $('[data-toggle="modal"]').on('click', function () {
     const toggler = $(this);

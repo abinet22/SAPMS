@@ -67,6 +67,7 @@ app.use(express.static(path.join(__dirname,'./public')));
 
 
 app.use('/stvcpms', require('./routes/index'));
+app.use('/stvcpms/targetgroup', require('./routes/targetgroup'));
 
 // initialize our app
 // {force: true}

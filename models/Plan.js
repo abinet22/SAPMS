@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.STRING,
  
   },
+  iscurrent: {
+    type: DataTypes.STRING,
+ 
+  },
   
 })
     return Plan;
