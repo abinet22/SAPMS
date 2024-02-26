@@ -23,7 +23,14 @@ module.exports = (sequelize, DataTypes) => {
   },
   is_active: {
     type: DataTypes.STRING
-  }
+  },
+  department_id: {
+    type: DataTypes.STRING
+  },
+  occupation_id: {
+    type: DataTypes.STRING
+  },
+ 
   
 })
     return TargetGroup;

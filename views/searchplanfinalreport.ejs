@@ -73,19 +73,25 @@
       <%- include('./partials/messages') %>
       <div class="col-12 mt-4">
         <div class="card-body mb-4">
-          <% if(plan){%>
+          <% if(plan){ %>
             <div class="d-flex flex-column h-100">
-              <p class="mb-1 pt-2 text-bold">Plan Infos</p>
-              <h5 class="font-weight-bolder">Plan Title:<%= plan.plantitle %></h5>
-              <h5 class="font-weight-bolder">Plan Code:<%= plan.plancode %></h5>
-              <p class="mb-2"><%= plan.plandescription %></p>
-              <p class="mb-2">Duration &nbsp;<%= plan.planduration %> Days</p>
-              <p class="text-body text-sm font-weight-bold mb-0">
-                From: <p class=""><%= new Date(plan.startdate).toLocaleDateString() %> to <%= new Date(plan.enddate).toLocaleDateString() %></p>
-       
+              <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                <i class="fas fa-info-circle"></i> Plan Infos
+              </p>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Plan Title: <%= plan.plantitle %></h5>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Plan Code: <%= plan.plancode %></h5>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= plan.plandescription %></p>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= plan.planduration %> Days</p>
+              <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                <i class="fas fa-calendar"></i> From:
+                <span class="ml-1">
+                  <%= new Date(plan.startdate).toLocaleDateString() %> 
+                  <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                  <%= new Date(plan.enddate).toLocaleDateString() %>
+                </span>
               </p>
             </div>
-          <%} %>
+          <% } %>
           </div>
           </div>
     </div>
@@ -106,6 +112,7 @@
                       <h6 class="mb-1">Final Report</h6>
                     </div>
                     <div class="col-lg-6 col-5 my-auto text-end">
+                      
                       <div class="dropdown float-lg-end pe-4">
                         <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
                           <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
@@ -130,32 +137,33 @@
                                 <table class="table align-items-center mb-0">  
                                     <thead>
                                         <th>#</th>
-                                        <th> Major Activity Info  </th>
-                                    <th>Detail Activity Info  </th>
+                                        <th> Output Info  </th>
+                                    <th> Activity Info  </th>
                                     <th> Target Indicator/ Input/ KPI  </th>
                                     <th> Registered Risk  </th>
                                   
                                     <th> View Final Report </th>
                                     </thead>
                                     <tbody>
-                                        <% if(mact.length >0){ %>
-                                    <% mact.forEach(function (row){%>
-                                 <% if(row.mactivityid){%>
-                                     
+                                      <% if(detailkpi.length >0){ %>
+                                        <% var i=0; %>
+                                        <% detailkpi.forEach(function (row){%>
+                                     <% if(row.dactivityid){%>
+                                          <% i++ %>
                                       
                                             <tr>
-                                              <td></td>
+                                              <td><%= i %></td>
                                                 <td class="align-middle text-center">
                                                     <small>  Title:-    <%= row.mactivitytitle %>  <br>
                                                         Code:-   <%= row.mactivitycode %>  <br>
                                                         Description:-   <%= row.mactivitydescription %> <br>
-                                                        KPI:- <%=row.mactivitykpi %> </small>
+                                                        KPI:- <%=row.mactkpi %> </small>
                                                     </td>
                                                 <td class="align-middle text-center">
                                                 <small> Title:-   <%= row.dactivitytitle %>  <br>
                                                     Code:- <%= row.dactivitycode %>  <br>
                                                    Description:- <%= row.dactivitydescription %> <br>
-                                                    From <%= new Date(row.startdate).toLocaleDateString() %> to  <%= new Date(row.enddate).toLocaleDateString() %>
+                                                    From <%= new Date(row.startdate).toLocaleDateString() %> To  <%= new Date(row.enddate).toLocaleDateString() %>
                                                 </small>
                                                 </td>
                                                 <td class="align-middle text-center">
@@ -188,7 +196,7 @@
                                    
                                  <%}%>
                                  <%})}else{%>
-                                    <tr>No KPI IS FOUND</tr>
+                                    <tr>No Report Is Found!</tr>
                                     <%}%>
                                 </tbody>
                                 </table>

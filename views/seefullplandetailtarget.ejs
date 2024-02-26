@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" href="../../../../assets/img/favicon.png">
   <title>
   </title>
+  
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
@@ -19,33 +20,67 @@
   <link href="../../../../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../../../../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
-  <!-- Nepcha Analytics (nepcha.com) -->
-  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-  <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
   <style>
-    .ol {
+    /* Add some basic styling for clarity */
+    ul {
       list-style-type: none;
-      counter-reset: item;
-      margin: 0;
-      padding: 0;
+      padding-left: 20px;
     }
-    .li {
-      display: table;
-      counter-increment: item;
-      margin-bottom: 0.6em;
+
+    li {
+      margin-bottom: 5px;
+      cursor: pointer;
     }
-    .li:before {
-      content: counters(item, ".") ". ";
-      display: table-cell;
-      padding-right: 0.6em;
-    }
-    .li li {
-      margin: 0;
-    }
-    .li li:before {
-      content: counters(item, ".") " ";
-    }
+
+    /* Style for different layers */
+/* Goal styling */
+.goal2 {
+  color: #3498db;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif; /* You can change the font family */
+  text-decoration: underline;
+  text-transform: capitalize;
+}
+
+/* Outcome styling */
+.outcome2 {
+  color: #2ecc71;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  text-decoration: underline;
+}
+
+/* Output styling */
+.output2 {
+  color: #e74c3c;
+  font-size: 14px;
+  font-weight: normal;
+  font-family: 'Arial', sans-serif;
+  text-decoration: underline;
+}
+
+/* Activity styling */
+.activity2 {
+  color: #f39c12;
+  font-size: 14px;
+  font-weight: normal;
+  font-family: 'Arial', sans-serif;
+  text-decoration: underline;
+}
+
+/* KPI styling */
+.kpi2 {
+  color: #9b59b6;
+  font-size: 14px;
+  font-weight: normal;
+  font-family: 'Arial', sans-serif;
+  text-decoration: underline;
+}
+
   </style>
+ 
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -72,19 +107,25 @@
       <%- include('./partials/messages') %>
       <div class="col-12 mt-4">
         <div class="card-body mb-4">
-          <% if(plan){%>
+          <% if(plan){ %>
             <div class="d-flex flex-column h-100">
-                <p class="mb-1 pt-2 text-bold">Plan Infos</p>
-                <h5 class="font-weight-bolder">Plan Title:<%= plan.plantitle %></h5>
-                <h5 class="font-weight-bolder">Plan Code:<%= plan.plancode %></h5>
-                <p class="mb-2">Annual plan</p>
-                <p class="mb-2">Duration &nbsp;<%= plan.planduration %> Days</p>
-                <p class="text-body text-sm font-weight-bold mb-0">
-               From: <p class=""><%= new Date(plan.startdate).toLocaleDateString() %> to <%= new Date(plan.enddate).toLocaleDateString() %></p>
-       
-                <p></p>
-              </div>
-        <% }%>
+              <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                <i class="fas fa-info-circle"></i> Plan Infos
+              </p>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Plan Title: <%= plan.plantitle %></h5>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Plan Code: <%= plan.plancode %></h5>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= plan.plandescription %></p>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= plan.planduration %> Days</p>
+              <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                <i class="fas fa-calendar"></i> From:
+                <span class="ml-1">
+                  <%= new Date(plan.startdate).toLocaleDateString() %> 
+                  <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                  <%= new Date(plan.enddate).toLocaleDateString() %>
+                </span>
+              </p>
+            </div>
+          <% } %>
           </div>
           </div>
     </div>
@@ -92,231 +133,391 @@
     
       <div class="col-12 mt-4">
         <div class="card mb-4">
-          <div class="card-header pb-0 p-3">
-         
-          </div>
-          <div class="card-body p-3">
-            <div class="row">
-          
-             <div class="card">
-                <div class="card-header pb-0">
-                  <div class="row">
-                    <div class="col-lg-6 col-7">
-                      <h6 class="mb-1">Plan Detail</h6>
-                    </div>
-                    <div class="col-lg-6 col-5 my-auto text-end">
-                      <div class="dropdown float-lg-end pe-4">
-                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
-                        </a>
-                        <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body px-0 pb-2">
-                    <ol class="ol">
-                    <div class="col-md-12">
-                        <% if(plan){ %>
-                           <% var g = 0 ;%>
-                           <% var d = 0 ;%>
-                           <% var ma = 0 ;%>
-                           <% var da = 0 ;%>
-                             <% planid = plan.planid %>
-                        <% goal.forEach(function (row){%>
-                          <% sgoalid = row.sgoalid %>
-                             <%if(row.planid ===planid){%>
-                                <% g++ %>
-                            
-                                    <li class="li">
-                                        <div id="MainMenu">
-                                            <div class="list-group panel">
-                                              <a href="#demo3" class="list-group-item " data-toggle="collapse" data-parent="#demo3">Strategic Goal: <%= row.sgoaltitle %></a>
-                                              <div class="collapse list-group-submenu" id="demo3">
-                                                <% sdir.forEach(function (row){%> 
-                                                  <% sdirid = row.sdirid %>
-                                                  <%if(row.sgoalid ===sgoalid){%>
-                                                      <% d++ %>
-                                                      <ol class="ol">
-                                                        <li class="li">
-                                                    <a href="#SubMenu1" class="list-group-item" data-toggle="collapse" data-parent="#SubMenu1"><tr>Strategic Direction:  <%= row.sdirtitle %> <i class="fa fa-caret-down"></i></a>
-                                                 
-                                                        <div class="collapse list-group-submenu" id="SubMenu1">
-                                                            <% mact.forEach(function (row){%> 
-                                                              <% mactid = row.mactivityid %>
-                                                              <%if(row.sdirid ===sdirid){%>
-                                                              <% ma++ %>
-                                                              <ol class="ol">
-                                                                <li class="li">
-                                                            <a href="#SubSubMenu1" class="list-group-item" data-toggle="collapse" data-parent="#SubSubMenu1">Major Activity: <%= row.mactivitytitle %><i class="fa fa-caret-down"></i></a>
-                                                             Major Activity KPI list:  <% if(majorkpi.length >0){ %>
-                                                               <% majorkpi.forEach(function (row){%>
-                                                                  <% if(row.mactivityid ===mactid){%>
-                                                                  <br>  <input type="checkbox" checked>  <small style="color: green;"> For activity code &nbsp; <%= row.dactivitycode %>:- <%= row.macttindicator %> &nbsp;
-                                                                    <%= row.mactkpi %> </small> <br>
-                                                                  <%}%>
-                                                               
-                                                                <%})}else{%>
-                                                                  <label>No KPI IS FOUND</label>
-                                                                  <%}%>
-                                                            <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu1">
-                                                                <% dact.forEach(function (row){%> 
-                                                                    <% dact = row.dactivityid %>
+          <!-- Sub-table content here -->
+       
+        
 
-                                                                    <%if(row.mactivityid ===mactid){%>
-                                                                    <% da++ %>
-                                                                    <ol class="ol">
-                                                                      <li class="li">
-                                                                        <a href="#SubSubMenu2" class="list-group-item" data-toggle="collapse" data-parent="#SubSubMenu2">Detail Activity:  <%= row.dactivitytitle %>/<%= row.dactivitycode %><i class="fa fa-caret-down"></i></a>
-                                                                        Detail Activity KPI list: <br> <% if(detailkpi.length >0){ %>
-                                                                          <% detailkpi.forEach(function (row){%>
-                                                                             <% if(row.dactivityid ===dact){%>
-                                                                             <input type="checkbox" checked> <small style="color: red;">For  target group <%= row.targetgroupname %>:- &nbsp; <%= row.dacttindicator %> &nbsp;
-                                                                               <%= row.dactkpi %> </small><br>
-                                                                             <%}%>
-                                                                          
-                                                                           <%})}else{%>
-                                                                             <label>No KPI IS FOUND</label>
-                                                                             <%}%>
-                                                                        <div class="collapse list-group-submenu list-group-submenu-1" id="SubSubMenu2">
-                                                                         
-                                                                        </div>
-                                                                      </li>
-                                                                    </ol>
-                                                                 
-                                                               
-                                                                  <% } %>
-                                                                  <%})%>
-                                                                </div>
-                                                                </li>
-                                                            </ol>
-                                                           
-                                                            <% } %>
-                                                            <%})%>
-                                                        
-                                                        </div>
-                                                     </li>
-                                                   </ol>
-                                                      
-                                                    <% } %>
-                                                  <%})%>
-             
-                                            
-                                              </div>
-                                           
-                                            </div>
-                                          </div>
-                                    </li>
-                               
-                                            
-                                        
-                                                
-                                    <% } %>
-                                    <%})%>
-                                        
-                            <% }else{}%>
-                      </div> 
-                    </ol> 
-                </div>
-              </div>
-           
-            
-            </div>
-          </div>
+<div id="dynamic-list"></div>
+<script>
+  function cleanJSON(json) {
+  // Convert JSON to JavaScript object
+  const data = JSON.parse(json);
+
+  // Function to replace single quotes with an empty string
+  const replaceSingleQuotes = (str) => str.replace(/'/g, '');
+
+  // Recursive function to clean values in the object
+  const cleanObject = (obj) => {
+    for (const key in obj) {
+      if (obj[key] !== null && typeof obj[key] === 'object') {
+        // If the value is an object, recursively clean its properties
+        cleanObject(obj[key]);
+      } else if (typeof obj[key] === 'string') {
+        // If the value is a string, replace single quotes
+        obj[key] = replaceSingleQuotes(obj[key]);
+      }
+    }
+  };
+
+  // Clean the data object
+  cleanObject(data);
+
+  // Convert the cleaned object back to JSON
+  const cleanedJSON = JSON.stringify(data);
+
+  return cleanedJSON;
+}
+</script>
+<script>
+  // Assuming you have separate data sources
+  var goals = '<%- JSON.stringify(goal2) %>';        // array of goal objects
+var sdir2 = '<%- JSON.stringify(sdir2) %>';        // array of outcome objects
+var mact2 = '<%- JSON.stringify(mact2) %>';        // array of output objects
+var dact2 = '<%- JSON.stringify(dact2) %>';        // array of activity objects
+var detailkpi = '<%- JSON.stringify(detailkpi) %>';    // array of kpi objects
+console.log(goals)
+ if (Array.isArray(goals)) { 
+ 
+  console.log(goals)
+
+ } else {
+  const cleangoal = goals.replace(/\n/g, '').replace(/\s+/g, ' ');
+
+  goals = JSON.parse(cleanJSON(cleangoal))
+
+} 
+if (Array.isArray(sdir2)) { 
+  sdir2 = JSON.parse(sdir2)
+ } else {
+  const cleansdr = sdir2.replace(/\n/g, '').replace(/\s+/g, ' ');
+
+  sdir2 = JSON.parse(cleansdr)
+  
+} 
+if (Array.isArray(mact2)) { 
+  mact2 = JSON.parse(mact2)
+
+ } else {
+  const cleanmact = mact2.replace(/\n/g, '').replace(/\s+/g, ' ');
+
+  mact2 = JSON.parse(cleanmact)
+ 
+} 
+if (Array.isArray(dact2)) { 
+  dact2 = JSON.parse(dact2)
+ } else {
+  const cleandact = dact2.replace(/\n/g, '').replace(/\s+/g, ' ');
+
+  dact2 = JSON.parse(cleandact)
+ 
+} 
+if (Array.isArray(detailkpi)) { 
+  detailkpi = JSON.parse(detailkpi)
+ } else {
+  const cleankpi = detailkpi.replace(/\n/g, '').replace(/\s+/g, ' ');
+
+  detailkpi = JSON.parse(cleankpi)
+} 
+// Function to merge the data into a unified structure
+
+  // Function to merge the data into a unified structure
+  function mergeData() {
+    var mergedData = [];
+
+    for (var goalIndex = 0; goalIndex < goals.length; goalIndex++) {
+      var goal = goals[goalIndex];
+      var outcomeData = [];
+
+      for (var outcomeIndex = 0; outcomeIndex < sdir2.length; outcomeIndex++) {
+        var outcome = sdir2[outcomeIndex];
+
+        if (outcome.sgoalid === goal.sgoalid) {
+          var outputData = [];
+
+          for (var outputIndex = 0; outputIndex < mact2.length; outputIndex++) {
+            var output = mact2[outputIndex];
+
+            if (output.sdirid === outcome.sdirid) {
+              var activityData = [];
+
+              for (var activityIndex = 0; activityIndex < dact2.length; activityIndex++) {
+                var activity = dact2[activityIndex];
+
+                if (activity.mactivityid === output.mactivityid) {
+                  var kpiData = [];
+
+                  for (var kpiIndex = 0; kpiIndex < detailkpi.length; kpiIndex++) {
+                    var kpi = detailkpi[kpiIndex];
+
+                    if (kpi.dactivityid === activity.dactivityid) {
+                      // Map your kpi data here
+                      kpiData.push({
+                        title: `KPI ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1}.${activityIndex + 1}.${kpiIndex + 1} :${kpi.targetgroupname}`,
+                        type: 'kpi2',
+                        icon: 'fas fa-list',
+                        kpiDetails: kpi,
+                        // Add other kpi properties
+                      });
+                    }
+                  }
+
+                  // Map your activity data here
+                  activityData.push({
+                    title: `Activity ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1}.${activityIndex + 1} : ${activity.dactivitytitle}`,
+                    type: 'activity2',
+                    icon: 'fas fa-cog',
+                    children: kpiData,
+                    // Add other activity properties
+                  });
+                }
+              }
+
+              // Map your output data here
+              outputData.push({
+                title: `Output ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1} : ${output.mactivitytitle}`,
+                type: 'output2',
+                icon: 'fas fa-cogs fa-1x',
+                children: activityData,
+                // Add other output properties
+              });
+            }
+          }
+
+          // Map your outcome data here
+          outcomeData.push({
+            title: `Outcome ${goalIndex + 1}.${outcomeIndex + 1} : ${outcome.sdirtitle}`,
+            type: 'outcome2',
+            icon: 'fas fa-compass fa-2x',
+            children: outputData,
+            // Add other outcome properties
+          });
+        }
+      }
+
+      // Map your goal data here
+      mergedData.push({
+        title: `Goal ${goalIndex + 1} : ${goal.sgoaltitle}`,
+        type: 'goal2',
+        icon: 'fas fa-bullseye fa-2x',
+        children: outcomeData,
+        // Add other goal properties
+      });
+    }
+
+    return mergedData;
+  }
+
+  // Merge the data 
+  const unifiedData = mergeData();
+  function createActivityTable(numbering) {
+   
+  return `
+    <div style="display:none;" id="table-${numbering}" >
+    <table id="kpi-table-${numbering}" class="sub-table table table-responsive align-items-center mb-0 col-md-12" border="1">
+      <thead>
+        <tr>
+          <th>KPI ID</th>
+          <th>Target Group</th>
+          <th>Indicator</th>
+          <th>Input</th>
+          <th>Total KPI</th>
+          <th>JAN | FEB | MAR</th>
+          <th>APR | MAY | JUN</th>
+          <th>JUL | AUG | SEP</th>
+          <th>OCT | NOV | DEC</th>
+        </tr>
+      </thead>
+      <tbody>
+    
+  `;
+}
+
+
+
+function renderKPIRows(kpiData, numbering) {
+  let rows = '';
+  for (let kpiIndex = 0; kpiIndex < kpiData.length; kpiIndex++) {
+    const kpi = kpiData[kpiIndex];
+    rows += renderKPIRow(kpi, numbering, kpiIndex + 1);
+  }
+  return rows;
+}
+
+function renderKPIRow(kpi, numbering,kpiIndex) {
+  if (!kpi || !kpi.kpiDetails) {
+    return ''; // Return an empty string or handle the case appropriately
+  }
+  return `
+    <tr>
+      <td>${numbering}.${kpiIndex}</td>
+      <td>${kpi.kpiDetails.targetgroupname}</td>
+      <td>${kpi.kpiDetails.dacttindicator}</td>
+      <td>${kpi.kpiDetails.dacttinputtype}</td>
+      <td>${kpi.kpiDetails.dactkpi}</td>
+      <td>${kpi.kpiDetails.january !== null ? kpi.kpiDetails.january : 0} | ${kpi.kpiDetails.february !== null ? kpi.kpiDetails.february : 0} | ${kpi.kpiDetails.march !== null ? kpi.kpiDetails.march : 0}</td>
+<td>${kpi.kpiDetails.april !== null ? kpi.kpiDetails.april : 0} | ${kpi.kpiDetails.may !== null ? kpi.kpiDetails.may : 0} | ${kpi.kpiDetails.june !== null ? kpi.kpiDetails.june : 0}</td>
+<td>${kpi.kpiDetails.july !== null ? kpi.kpiDetails.july : 0} | ${kpi.kpiDetails.august !== null ? kpi.kpiDetails.august : 0} | ${kpi.kpiDetails.september !== null ? kpi.kpiDetails.september : 0}</td>
+<td>${kpi.kpiDetails.october !== null ? kpi.kpiDetails.october : 0} | ${kpi.kpiDetails.november !== null ? kpi.kpiDetails.november : 0} | ${kpi.kpiDetails.december !== null ? kpi.kpiDetails.december : 0}</td>
+
+    </tr>
+    
+    
+  `;
+}
+
+  // Function to render the list
+function renderList(data, parentNumbering = '') {
+  let html = '<ul>';
+
+  for (let index = 0; index < data.length; index++) {
+    const item = data[index];
+    const numbering = parentNumbering ? `${parentNumbering}.${index + 1}` : `${index + 1}`;
+    html += `<li class="${item.type}" data-numbering="${numbering}">`;
+    html += `<i class="${item.icon} me-2"></i>${item.title}`;
+
+  //  if (item.children) {
+  //     if (item.type === 'activity2') {
+  //       // Create a table for the activity
+  //       html += createActivityTable(numbering);
+  //       // Render detail KPIs as rows within the table
+  //       html += renderKPIRows(item.children, numbering);
+  //       console.log("item",item)
+  //       html += '</tbody>';
+  //       html += '</table>';
+  //     }  else {
+  //       html += renderList(item.children, numbering);
+  //     }
+  //   }
+  if (item.children) {
+      if (item.type === 'activity2') {
+        // Create a table for the activity
+        html += createActivityTable(numbering);
+        // Render detail KPIs as rows within the table
+        html += renderKPIRows(item.children, numbering);
+        html += '</tbody>';
+        html += '</table>';
+        html += '</div>';
+      } else {
+        html += renderList(item.children, numbering);
+      }
+    }
+    html += '</li>';
+  }
+
+  html += '</ul>';
+  return html;
+}
+
+
+  // Render the list
+  console.log(unifiedData)
+  const renderedList = renderList(unifiedData);
+  document.getElementById('dynamic-list').innerHTML = renderedList;
+  const dynamicList = document.getElementById('dynamic-list');
+
+  const activityItems = dynamicList.querySelectorAll('[data-numbering]');
+
+activityItems.forEach((activityItem) => {
+  const numbering = activityItem.getAttribute('data-numbering');
+  const tableDiv = document.getElementById(`table-${numbering}`);
+
+  if (tableDiv) {
+    const itemType = activityItem.classList.contains('activity2') ? 'activity2' : '';
+
+    // Toggle display style only when the item type is 'activity2'
+    if (itemType === 'activity2') {
+      activityItem.addEventListener('click', () => {
+        tableDiv.style.display = tableDiv.style.display === 'none' ? 'block' : 'none';
+      });
+    }
+  }
+});
+  
+document.getElementById('dynamic-list').addEventListener('click', (event) => {
+  const target = event.target.closest('li');
+  if (target) {
+    const isGoal = target.classList.contains('goal2');
+    const isOutcome = target.classList.contains('outcome2');
+    const isOutput = target.classList.contains('output2');
+    const isActivity = target.classList.contains('activity2');
+
+    if (isGoal || isOutcome || isOutput || isActivity) {
+      // Close all previously expanded items
+      const expandedItems = document.querySelectorAll('.expanded');
+      expandedItems.forEach((item) => {
+        item.classList.remove('expanded');
+        const childrenList = item.querySelector('ul');
+        if (childrenList) {
+          childrenList.classList.add('hidden');
+        }
+      });
+
+      // Toggle visibility of children
+      target.classList.toggle('expanded');
+
+      const childrenList = target.querySelector('ul');
+      if (childrenList) {
+        childrenList.classList.toggle('hidden');
+      }
+
+      // If it's an activity, open the table
+      if (isActivity) {
+        const table = target.querySelector('.sub-table');
+        if (table) {
+          table.classList.toggle('hidden');
+        }
+      }
+    }
+  }
+});
+
+  // Add event listener to show/hide children on click
+  // document.getElementById('dynamic-list').addEventListener('click', (event) => {
+  //   const target = event.target.closest('li');
+  //   if (target) {
+  //     const isGoal = target.classList.contains('goal2');
+  //     const isOutcome = target.classList.contains('outcome2');
+  //     const isOutput = target.classList.contains('output2');
+  //     const isActivity = target.classList.contains('activity2');
+
+  //     if (isGoal || isOutcome || isOutput || isActivity) {
+  //       target.classList.toggle('expanded');
+
+  //       // Toggle visibility of children
+  //       const childrenList = target.querySelector('ul');
+  //       if (childrenList) {
+  //         childrenList.classList.toggle('hidden');
+  //       }
+  //     }
+  //   }
+  // });
+</script>
+
+
+
+<script>
+  $(document).ready(function() {
+    // Hide all nested lists initially for elements with specific classes
+    $('.output2, .goal2, .outcome2, .activity2, .kpi2').find('ul').hide();
+
+    // Toggle visibility of nested lists on click for elements with specific classes
+    $('.output2, .goal2, .outcome2, .activity2, .kpi2').click(function(e) {
+      e.stopPropagation(); // Prevent parent li click event from firing
+      $(this).children('ul').toggle();
+    });
+  });
+</script>
         </div>
+      </div>
+    
+      </div>
+      </div>
+    
+      </div>
       </div>
       <!-- Button trigger modal -->
 
 
-<!-- Modal -->
-<div class="modal fade" id="ma" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Major Activity</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form action="/stvcpms/addnewmajoractivity" method="post">
-        <div class="modal-body">
-      
-          <input type="text" class="form-control mb-2" name="macttitle" placeholder="Major Activity Title" aria-label="Name" aria-describedby="email-addon">
-          <textarea type="text" class="form-control  mb-2" name="mactdescription" placeholder="Description" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
-          <input type="text" class="form-control  mb-2" name= "mactcode" placeholder="Code" aria-label="Name" aria-describedby="email-addon">
-          <input type="number" class="form-control  mb-2" name="mactduration" placeholder="Duration In Days" aria-label="Name" aria-describedby="email-addon">
-          <input type="text" class="form-control  mb-2" name="startdate" id="startDateInput" placeholder="Start Date" >
-          <input type="text" class="form-control" name="enddate" id="endDateInput" placeholder="End Date">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="da" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Detail Activity</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form action="/stvcpms/addplandetailactivity" method="post">
-      
-        <div class="modal-body">
-           
-         
-         <select class="form-control" name="mactivityid">
-          <option value="0">Please select major activity here</option>
-          <% if(goal.length>0){ %>
-           <% goal.forEach(function(row){ %>
-              <option value="<%= row.mactivityid %>"><%= row.mactivitytitle %></option>
-           <% })%>
-         <% }else {%>
-          <label>No major activities where found</label>
-          <%} %>
-         </select>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<script>
-  const startDateInput = document.getElementById('startDateInput');
-  const endDateInput = document.getElementById('endDateInput');
-  
-  startDateInput.addEventListener('focus', function() {
-    startDateInput.type = 'date';
-  });
-  
-  startDateInput.addEventListener('blur', function() {
-    if (startDateInput.value === '') {
-      startDateInput.type = 'text';
-    }
-  });
- 
-  endDateInput.addEventListener('focus', function() {
-    endDateInput.type = 'date';
-  });
-  
-  endDateInput.addEventListener('blur', function() {
-    if (endDateInput.value === '') {
-      endDateInput.type = 'text';
-    }
-  });
-</script>
      <%- include ('./partials/footer') %>
     </div>
   </div>
@@ -339,6 +540,7 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../../../../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+ 
 </body>
 
 </html>

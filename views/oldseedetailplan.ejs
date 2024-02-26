@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../../../../assets/img/favicon.png">
+  <title>
+  </title>
+  
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../../../../assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="../../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../../../../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <style>
+    /* Add some basic styling for clarity */
+    ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    /* Style for different layers */
+    .goal { color: #3498db; }
+    .outcome { color: #2ecc71; }
+    .output { color: #e74c3c; }
+    .activity { color: #f39c12; }
+    .kpi { color: #9b59b6; }
+  </style>
+  <style>
+    /* Basic styling */
+    ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+  
+    li {
+      margin-bottom: 10px;
+    }
+  
+    /* Goal styling */
+    .goal i {
+      color: #007bff;
+    }
+  
+    /* Outcome styling */
+    .outcome i {
+      color: #28a745;
+    }
+  
+    /* Output styling */
+    .output i {
+      color: #ffc107;
+    }
+  
+    /* Activity styling */
+    .activity i {
+      color: #17a2b8;
+    }
+  
+    /* KPI styling */
+    .kpi i {
+      color: #6c757d;
+    }
+  
+    /* Hide the nested lists initially */
+    .outcome,
+    .output,
+    .activity-list,
+    .kpi {
+      display: none;
+    }
+  </style>
+  
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+  <%- include ('./partials/sideadmin') %>
+  <div class="main-content position-relative bg-gray-100 max-height-vh-100 h-100">
+    <!-- Navbar -->
+    <%- include ('./partials/topadmin') %>
+    <!-- End Navbar -->
+    <div class="container-fluid">
+      <div class="page-header min-height-100 border-radius-xl mt-4" style="background-image: url('../../../../assets/img/curved-images/sds.jpg'); background-position-y: 50%;">
+        <span class="mask  opacity-6"></span>
+        <div >
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Plan Detail</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    
+    </div>
+    <div class="container-fluid py-4">
+      <%- include('./partials/messages') %>
+      <div class="col-12 mt-4">
+        <div class="card-body mb-4">
+          <% if(plan){ %>
+            <div class="d-flex flex-column h-100">
+              <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                <i class="fas fa-info-circle"></i> Plan Infos
+              </p>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Plan Title: <%= plan.plantitle %></h5>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Plan Code: <%= plan.plancode %></h5>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= plan.plandescription %></p>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= plan.planduration %> Days</p>
+              <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                <i class="fas fa-calendar"></i> From:
+                <span class="ml-1">
+                  <%= new Date(plan.startdate).toLocaleDateString() %> 
+                  <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                  <%= new Date(plan.enddate).toLocaleDateString() %>
+                </span>
+              </p>
+            </div>
+          <% } %>
+          </div>
+          </div>
+    </div>
+    <div class="container-fluid">
+    
+      <div class="col-12 mt-4">
+        <div class="card mb-4">
+          <!-- Sub-table content here -->
+
+<!-- Include jQuery library -->
+<ul class="goal">
+  <% for (const goal of goal2) { %>
+    <% var goalid = goal.sgoalid %>
+    <li>
+      <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+        <i class="fas fa-bullseye  me-3"></i>Goal &nbsp;
+        <% var ti = goal.sgoaltitle %>
+        <% if (ti.length > 30) { %>
+          <!-- If greater than 30 characters, start from a new line -->
+          <%- ti.replace(/(.{30})/g, '$1<br>') %>
+        <% } else { %>
+          <!-- Otherwise, display normally -->
+          <%= ti %>
+        <% } %>
+      </p>
+
+      <% sdir2.forEach(function (outcome) { %>
+        <% var sdirid = outcome.sdirid %>
+        <% if (goalid === outcome.sgoalid) { %>
+          <ul class="outcome">
+            <li> <i class="fas fa-compass me-2"></i>Outcome &nbsp;
+              <% var title = outcome.sdirtitle %>
+              <% if (title.length > 30) { %>
+                <!-- If greater than 30 characters, start from a new line -->
+                <%- title.replace(/(.{30})/g, '$1<br>') %>
+              <% } else { %>
+                <!-- Otherwise, display normally -->
+                <%= title %>
+              <% } %>
+
+              <% mact2.forEach(function (output) { %>
+                <% var mactid = output.mactivityid %>
+                <% if (sdirid === output.sdirid) { %>
+                  <ul class="output">
+                    <li> <i class="fas fa-cog me-2"></i>Outcome &nbsp;
+                      <% var title = output.mactivitytitle %>
+                      <% if (title.length > 30) { %>
+                        <!-- If greater than 30 characters, start from a new line -->
+                        <%- title.replace(/(.{30})/g, '$1<br>') %>
+                      <% } else { %>
+                        <!-- Otherwise, display normally -->
+                        <%= title %>
+                      <% } %>
+
+                      <% dact2.forEach(function (activity) { %>
+                        <% var dactid = activity.dactivityid %>
+                        <% if (mactid === activity.mactivityid) { %>
+                          <ul class="activity" style="display: none;">
+                            <li><i class="fas fa-list me-2"></i>Outcome &nbsp;
+                              <% var title = activity.dactivitytitle %>
+                              <% if (title.length > 30) { %>
+                                <!-- If greater than 30 characters, start from a new line -->
+                                <%- title.replace(/(.{30})/g, '$1<br>') %>
+                              <% } else { %>
+                                <!-- Otherwise, display normally -->
+                                <%= title %>
+                              <% } %>
+                              <ul class="kpi" style="display: none;">
+                              <!-- KPI Table -->
+                              <table class="sub-table table table-responsive align-items-center mb-0 col-md-12" border="1">
+                                <thead>
+                                  <tr>
+                                    <th>Target Group</th>
+                                    <th>Indicator</th>
+                                    <th>Input</th>
+                                    <th>Total KPI</th>
+                                    <th>JAN | FEB | MAR</th>
+                                    <th>APR | MAY | JUN</th>
+                                    <th>JUL | AUG | SEP</th>
+                                    <th>OCT | NOV | DEC</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <% detailkpi.forEach(function (row) { %>
+                                    <% var dkpiid = row.dactivityid %>
+                                    <% if (dactid === dkpiid) { %>
+                                      <tr>
+                                        <td>
+                                          <% var description = row.targetgroupname %>
+                                          <% if (description.length > 10) { %>
+                                            <!-- If greater than 30 characters, start from a new line -->
+                                            <%- description.replace(/(.{10})/g, '$1<br>') %>
+                                          <% } else { %>
+                                            <!-- Otherwise, display normally -->
+                                            <%= description %>
+                                          <% } %>
+                                        </td>
+                                        <td><%= row.dacttindicator %></td>
+                                        <td><%= row.dacttinputtype %></td>
+                                        <td><%= row.dactkpi %></td>
+                                        <td><%= row.january || 0 %> | <%= row.february || 0 %> | <%= row.march || 0 %></td>
+                                        <td><%= row.april || 0 %> | <%= row.may || 0 %> | <%= row.june || 0 %></td>
+                                        <td><%= row.july || 0 %> | <%= row.august || 0 %> | <%= row.september || 0 %></td>
+                                        <td><%= row.october || 0 %> | <%= row.november || 0 %> | <%= row.december || 0 %></td>
+                                      </tr>
+                                    <% } %>
+                                  <% }) %>
+                                </tbody>
+                              </table>
+                              </ul>
+                            </li>
+                          </ul>
+                        <% } %>
+                      <% }) %>
+                    </li>
+                  </ul>
+                <% } %>
+              <% }) %>
+
+            </li>
+          </ul>
+        <% } %>
+      <% }) %>
+
+    </li>
+  <% } %>
+</ul>
+
+
+
+
+<div id="dynamic-list"></div>
+<script>
+  // Assuming you have separate data sources
+  var goals = '<%- JSON.stringify(goal2) %>';        // array of goal objects
+var sdir2 = '<%- JSON.stringify(sdir2) %>';        // array of outcome objects
+var mact2 = '<%- JSON.stringify(mact2) %>';        // array of output objects
+var dact2 = '<%- JSON.stringify(dact2) %>';        // array of activity objects
+var detailkpi = '<%- JSON.stringify(detailkpi) %>';    // array of kpi objects
+console.log(goals)
+ if (Array.isArray(goals)) { 
+  console.log("Yes")
+ } else {
+  goals = JSON.parse(goals)
+} 
+if (Array.isArray(sdir2)) { 
+  console.log("Yes")
+ } else {
+  sdir2 = JSON.parse(sdir2)
+} 
+if (Array.isArray(mact2)) { 
+  console.log("Yes")
+ } else {
+  mact2 = JSON.parse(mact2)
+} 
+if (Array.isArray(dact2)) { 
+  console.log("Yes")
+ } else {
+  dact2 = JSON.parse(dact2)
+} 
+if (Array.isArray(detailkpi)) { 
+  console.log("Yes")
+ } else {
+  detailkpi = JSON.parse(detailkpi)
+} 
+// Function to merge the data into a unified structure
+
+</script>
+<!-- Add this script to your HTML file -->
+<script>
+  function mergeData() {
+    return goals.map((goal, goalIndex) => {
+      const outcomeData = sdir2.filter(outcome => outcome.sgoalid === goal.sgoalid).map((outcome, outcomeIndex) => {
+        const outputData = mact2.filter(output => output.sdirid === outcome.sdirid).map((output, outputIndex) => {
+          const activityData = dact2.filter(activity => activity.mactivityid === output.mactivityid).map((activity, activityIndex) => {
+            const kpiData = detailkpi.filter(kpi => kpi.dactivityid === activity.dactivityid).map((kpi, kpiIndex) => {
+              // Map your kpi data here
+              return {
+                title: `KPI ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1}.${activityIndex + 1}.${kpiIndex + 1} :${kpi.targetgroupname}`,
+                type: 'kpi2',
+                icon: 'fas fa-list',
+                kpiDetails: kpi,
+                // Add other kpi properties
+              };
+            });
+
+            // Map your activity data here
+            return {
+              title: `Activity ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1}.${activityIndex + 1} : ${activity.dactivitytitle}`,
+              type: 'activity2',
+              icon: 'fas fa-cog',
+              children: kpiData,
+              // Add other activity properties
+            };
+          });
+
+          // Map your output data here
+          return {
+            title: `Output ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1} : ${output.mactivitytitle}`,
+            type: 'output2',
+            icon: 'fas fa-cogs',
+            children: activityData,
+            // Add other output properties
+          };
+        });
+
+        // Map your outcome data here
+        return {
+          title: `Outcome ${goalIndex + 1}.${outcomeIndex + 1} : ${outcome.sdirtitle}`,
+          type: 'outcome2',
+          icon: 'fas fa-compass',
+          children: outputData,
+          // Add other outcome properties
+        };
+      });
+
+      // Map your goal data here
+      return {
+        title: `Goal ${goalIndex + 1} : ${goal.sgoaltitle}`,
+        type: 'goal2',
+        icon: 'fas fa-bullseye',
+        children: outcomeData,
+        // Add other goal properties
+      };
+    });
+  }
+
+  
+  // Merge the data
+  const unifiedData = mergeData();
+  function renderKPI(kpi, numbering) {
+    return `
+      <table id="kpi-table-${numbering}" class="sub-table table table-responsive align-items-center mb-0 col-md-12" border="1">
+        <thead>
+          <tr>
+            <th>Target Group</th>
+            <th>Indicator</th>
+            <th>Input</th>
+            <th>Total KPI</th>
+            <th>JAN | FEB | MAR</th>
+            <th>APR | MAY | JUN</th>
+            <th>JUL | AUG | SEP</th>
+            <th>OCT | NOV | DEC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${kpi.kpiDetails.targetgroupname}</td>
+            <td>${kpi.kpiDetails.dacttindicator}</td>
+            <td>${kpi.kpiDetails.dacttinputtype}</td>
+            <td>${kpi.kpiDetails.dactkpi}</td>
+            <td>${kpi.kpiDetails.january || 0} | ${kpi.kpiDetails.february || 0} | ${kpi.kpiDetails.march || 0}</td>
+            <td>${kpi.kpiDetails.april || 0} | ${kpi.may || 0} | ${kpi.kpiDetails.june || 0}</td>
+            <td>${kpi.kpiDetails.july || 0} | ${kpi.kpiDetails.august || 0} | ${kpi.kpiDetails.september || 0}</td>
+            <td>${kpi.kpiDetails.october || 0} | ${kpi.kpiDetails.november || 0} | ${kpi.kpiDetails.december || 0}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
+  // Function to render the list
+  function renderList(data, parentNumbering = '') {
+    let html = '<ul>';
+    data.forEach((item, index) => {
+      const numbering = parentNumbering ? `${parentNumbering}.${index + 1}` : `${index + 1}`;
+      html += `<li class="${item.type}" data-numbering="${numbering}">`;
+      html += `<i class="${item.icon} me-2"></i>${item.title}`;
+
+      if (item.children) {
+        html += renderList(item.children, numbering);
+      }
+      if (item.type === 'kpi2') {
+        html += renderKPI(item, numbering);
+        console.log(item)
+      }
+      html += '</li>';
+    });
+    html += '</ul>';
+    return html;
+  }
+
+  // Render the list
+  const renderedList = renderList(unifiedData);
+  document.getElementById('dynamic-list').innerHTML = renderedList;
+
+  // Add event listener to show/hide children on click
+  document.getElementById('dynamic-list').addEventListener('click', (event) => {
+    const target = event.target.closest('li');
+    if (target) {
+      const isGoal = target.classList.contains('goal2');
+      const isOutcome = target.classList.contains('outcome2');
+      const isOutput = target.classList.contains('output2');
+      const isActivity = target.classList.contains('activity2');
+
+      if (isGoal || isOutcome || isOutput || isActivity) {
+        target.classList.toggle('expanded');
+
+        // Toggle visibility of children
+        const childrenList = target.querySelector('ul');
+        if (childrenList) {
+          childrenList.classList.toggle('hidden');
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Event handler for activity click
+    $('.activity').on('click', function () {
+      // Toggle visibility of the KPI table
+      $(this).find('.kpi').toggle();
+    });
+
+    // Event handler for output click
+    $('.output').on('click', function () {
+      // Toggle visibility of the nested activity list
+      $(this).find('.activity').toggle();
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Hide all nested lists initially
+    $('ul').find('ul').hide();
+
+    // Toggle visibility of nested lists on click
+    $('li').click(function(e) {
+      e.stopPropagation(); // Prevent parent li click event from firing
+      $(this).children('ul').toggle();
+    });
+  });
+</script>
+
+        </div>
+      </div>
+    
+      </div>
+      </div>
+    
+      </div>
+      </div>
+      <!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="ma" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Major Activity</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="/stvcpms/addnewmajoractivity" method="post">
+        <div class="modal-body">
+      
+          <input type="text" class="form-control mb-2" name="macttitle" placeholder="Major Activity Title" aria-label="Name" aria-describedby="email-addon">
+          <textarea type="text" class="form-control  mb-2" name="mactdescription" placeholder="Description" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+          <input type="text" class="form-control  mb-2" name= "mactcode" placeholder="Code" aria-label="Name" aria-describedby="email-addon">
+          <input type="number" class="form-control  mb-2" name="mactduration" placeholder="Duration In Days" aria-label="Name" aria-describedby="email-addon">
+          <input type="text" class="form-control  mb-2" name="startdate" id="startDateInput" placeholder="Start Date" >
+          <input type="text" class="form-control" name="enddate" id="endDateInput" placeholder="End Date">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="da" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Detail Activity</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="/stvcpms/addplandetailactivity" method="post">
+      
+        <div class="modal-body">
+           
+         
+         <select class="form-control" name="mactivityid">
+          <option value="0">Please select major activity here</option>
+          <% if(goal2.length>0){ %>
+           <% goal2.forEach(function(row){ %>
+              <option value="<%= row.mactivityid %>"><%= row.mactivitytitle %></option>
+           <% })%>
+         <% }else {%>
+          <label>No major activities where found</label>
+          <%} %>
+         </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  const startDateInput = document.getElementById('startDateInput');
+  const endDateInput = document.getElementById('endDateInput');
+  
+  startDateInput.addEventListener('focus', function() {
+    startDateInput.type = 'date';
+  });
+  
+  startDateInput.addEventListener('blur', function() {
+    if (startDateInput.value === '') {
+      startDateInput.type = 'text';
+    }
+  });
+ 
+  endDateInput.addEventListener('focus', function() {
+    endDateInput.type = 'date';
+  });
+  
+  endDateInput.addEventListener('blur', function() {
+    if (endDateInput.value === '') {
+      endDateInput.type = 'text';
+    }
+  });
+</script>
+     <%- include ('./partials/footer') %>
+    </div>
+  </div>
+  
+  <!--   Core JS Files   -->
+  <script src="../../../../assets/js/core/popper.min.js"></script>
+  <script src="../../../../assets/js/core/bootstrap.min.js"></script>
+  <script src="../../../../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../../../../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../../../../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+ 
+</body>
+
+</html>

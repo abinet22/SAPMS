@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
  
   },
   dactivitydescription: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
  
   },
   dactivitycode: {

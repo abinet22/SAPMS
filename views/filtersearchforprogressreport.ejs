@@ -23,20 +23,8 @@
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-  <style>
-    
-    .ribbon {
-      position: absolute;
-      top: 0;
-      left: -100;
-      background-color: yellow;
-      color: #000;
-      font-weight: bold;
-      padding: 2px 5px;
-      transform: rotate(-45deg);
-      transform-origin: bottom right;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-CjA6pIB+RL8C9DeCofkgGH5GC5FVbASs43Q4K1r60GX6yQ1h4cG+eXMEWOEMDzQDf1/6ZulbptqPafVPPxAPJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -65,19 +53,25 @@
 
         <div class="col-12 ">
           <div class="card-body ">
-            <% if(plan){%>
-                <div class="d-flex flex-column h-100">
-                    <p class="mb-1 pt-2 text-bold">Plan Infos</p>
-                    <h5 class="font-weight-bolder">Plan Title:<%= plan.plantitle %></h5>
-                    <h5 class="font-weight-bolder">Plan Code:<%= plan.plancode %></h5>
-                 
-                    <p class="mb-2">Duration &nbsp;<%= plan.planduration %> Days</p>
-                    <p >
-                   From:<%= new Date(plan.startdate).toLocaleDateString() %> to <%= new Date(plan.enddate).toLocaleDateString() %></p>
-           
-                  </div>
-            <% }%>
-             
+            <% if(plan){ %>
+              <div class="d-flex flex-column h-100">
+                <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                  <i class="fas fa-info-circle"></i> Plan Infos
+                </p>
+                <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Plan Title: <%= plan.plantitle %></h5>
+                <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Plan Code: <%= plan.plancode %></h5>
+                <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= plan.plandescription %></p>
+                <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= plan.planduration %> Days</p>
+                <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                  <i class="fas fa-calendar"></i> From:
+                  <span class="ml-1">
+                    <%= new Date(plan.startdate).toLocaleDateString() %> 
+                    <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                    <%= new Date(plan.enddate).toLocaleDateString() %>
+                  </span>
+                </p>
+              </div>
+            <% } %>
             
             </div>
             </div>
@@ -102,78 +96,92 @@
                         <i class="fa fa-ellipsis-v text-secondary"></i>
                       </a>
                       <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                  
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Print Report</a></li>
+                        <li>
+                          <form action="/stvcpms/downloaddetailplan" method="post">
+                            <input type="hidden" name="planid" value="<%= plan.planid %>" >
+                            <input type="hidden" name="dactivityid" value="<%= dact.dactivityid %>" >
+                            <input type="hidden" name="reporttype" value="<%= reporttype %>">
+                            <input type="hidden" name="target" value="<%= target %>">
+                            <input type="hidden" name="reporttypeinput" value="<%= reporttypeinput %>">
+                            <input type="hidden" name="department" value="<%= department %>"> 
+                            <input type="hidden" name="departmentname" value="<%= departmentname %>"> 
+                            <button type="submit" class="dropdown-item border-radius-md"><i class="fas fa-print"></i></button>
+                          </form>
+                        
+                        </li>
                       </ul>
                     </div>
                   </div>
                   <div class="col-lg-12">
-                    <% if(dact){%>
+                  
+                      <% if(dact){ %>
                         <div class="d-flex flex-column h-100">
-                          <p class="mb-1 pt-2 text-bold">Detail Activity Infos</p>
-                          <p class="">Detail Activity Title:<%= dact.dactivitytitle %></p>
-                          <p class="">Detail Activity Code:<%= dact.dactivitycode %></p>
-                          <p class="mb-2">Description:<%= dact.dactivitydescription %></p>
-                          <p class="mb-2">Registered Risk: &nbsp;<%= dact.dactivityrisks %> </p>
-                          <p class="text-body text-sm font-weight-bold mb-0">
-                            From:<p class=""><%= new Date(dact.startdate).toLocaleDateString() %> to <%= new Date(dact.enddate).toLocaleDateString() %></p>
-                    
+                          <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                            <i class="fas fa-info-circle"></i> Report Infos
+                          </p>
+                          <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Activity Title: <%= dact.dactivitytitle %></h5>
+                          <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Activity Code: <%= dact.dactivitycode %></h5>
+                          <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= dact.dactivitydescription %></p>
+                          <p class="mb-2"><strong>Registered Risk</strong> &nbsp;<%= dact.dactivityrisks %> </p>
+                          <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= dact.dactivityduration %> Days</p>
+                          <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                            <i class="fas fa-calendar"></i> From:
+                            <span class="ml-1">
+                              <%= new Date(plan.startdate).toLocaleDateString() %> 
+                              <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                              <%= new Date(plan.enddate).toLocaleDateString() %>
+                            </span>
                           </p>
                         </div>
-                      <%} %>
+                      <% } %>
                   </div>
                 </div>
               </div>
-            <div class=" p-5">
+            <div class="card-body p-5">
               <div class="timeline timeline-one-side" style="width: 100%;">
                 <% if(progress.length >0){ %>
                     <% var j = 0 ;%>
                  <% progress.forEach(function (row){%>
                       <% j++ %>
-                      <div class="">
-                       
-                    
-                        <div class="card-body pt-4 p-3">
-                         
-                          <ul class="list-group">
-                            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                              <div class="d-flex flex-column">
-                                <h6 class="mb-3 text-sm">Report By: &nbsp; <%= row.targetgroupname %>/<%= row.grouptype %>/<%= row.reporttype %></h6>
-                          
-                                <span class="mb-2 text-xs">Indicator: <span class="text-dark font-weight-bold ms-sm-2"><%= row.dacttindicator %></span></span>
-                                <span class="mb-2 text-xs">Input: <span class="text-dark ms-sm-2 font-weight-bold"><%= row.dacttinputtype %></span></span>
-                                <span class="text-xs">KPI: <span class="text-dark ms-sm-2 font-weight-bold"><%= row.dactkpi %></span></span>
-                               
-
-                                Score Value:<p><%= row.number %></p>
-                                <p><%= row.percent %></p>
-                                <p><%= row.ratio %></p>
-                                <div class="col-md-12" style="width: 100%;">
-                                    <label class="btn-outline-info"> Report:- </label> <p><%= row.progressreport %>
-                                   
-                                     
-                                     </p>
-                                    <label class="btn-outline-info"> Remark:-   </label> <p><%= row.remark %></p>
-                                      
-                                    <hr class="horizontal dark mt-0">
-                                     </div>
-                                    
-                                     <div class="card-footer float-lg-end">
-                     
-                                      Report Date:- <p class="mt-2"><%= new Date(row.reportdate).toLocaleDateString() %></p>
-                                    
-                                     </div>
+                   <div class="">
+                    <div class="timeline-block mb-3">
+                        <span class="timeline-step">
+                          <i class="ni ni-bell-55 text-success text-gradient"></i>
+                        </span>
+                        <div class="timeline-content">
+                            <div class="" style="background-color: yellow;"> <%= row.reporttype %> - <span style="text-transform: uppercase;"><%= row.reportmnthquarter %></span> Report</div>
+                            <div class="progress-card">
+                              <!-- Card Content -->
+                              <div class="card-content" style="text-transform: uppercase;">
+                                  <p><i class="fas fa-info-circle me-2"></i> Info:</p>
+                                  <p><i class="fas fa-user me-2"></i> Report By: <%= row.targetgroupname %></p>
+                                  <p><i class="fas fa-chart-bar me-2"></i> Indicator: <%= row.dacttindicator %></p>
+                                  <p><i class="fas fa-keyboard me-2"></i> Input: <%= row.dacttinputtype %></p>
+                                  <p><i class="fas fa-plus me-2"></i> Added Value: <%= row.number %></p>
+                                  <p><i class="fas fa-percent me-2"></i> Progress: <%= row.percent %></p>
+                                  <p><i class="fas fa-ratio me-2"></i> Ratio: <%= row.ratio %></p>
                               </div>
-                              <!-- <div class="ms-auto text-end">
-                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="far fa-trash-alt me-2" aria-hidden="true"></i>Delete</a>
-                                <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</a>
-                              </div> -->
-                            </li>
                           
-                          </ul>
+                              <!-- Report Section -->
+                              <div class="col-md-12" style="width: 100%;">
+                                  <label class="btn-outline-info"><i class="fas fa-file-alt me-2"></i> Report:</label>
+                                  <p><%= row.progressreport %></p>
+                          
+                                  <label class="btn-outline-info"><i class="fas fa-comment me-2"></i> Remark:</label>
+                                  <p><%= row.remark %></p>
+                          
+                                  <hr class="horizontal dark mt-0">
+                              </div>
+                          
+                              <!-- Card Footer -->
+                              <div class="card-footer float-lg-end">
+                                  <p><i class="fas fa-calendar-alt me-2"></i> Report Date: <%= new Date(row.reportdate).toLocaleDateString() %></p>
+                              </div>
+                          </div>
+                          
                         </div>
                       </div>
-                 
+                   </div>
                  
                     <%})}else{}%>
                 

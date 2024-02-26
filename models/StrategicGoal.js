@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
  
   },
   sgoaldescription: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
  
   },
   sgoalcode: {

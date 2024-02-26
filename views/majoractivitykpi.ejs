@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../../../../assets/img/favicon.png">
+  <title>
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="../../../../assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="../../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../../../../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+  <%- include ('./partials/sideadmin') %>
+  <div class="main-content position-relative bg-gray-100 max-height-vh-100 h-100">
+    <!-- Navbar -->
+    <%- include ('./partials/topadmin') %>
+    <!-- End Navbar -->
+    <div class="container-fluid">
+      <div class="page-header min-height-100 border-radius-xl mt-4" style="background-image: url('../../../../assets/img/curved-images/sds.jpg'); background-position-y: 50%;">
+        <span class="mask  opacity-6"></span>
+        <div >
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page"> Major Activity KPI</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    
+    </div>
+    <div class="container-fluid py-4">
+      <%- include('./partials/messages') %>
+      <div class="col-12 mt-4">
+        <div class="card-body ">
+         
+          <% if(mactone){%>
+            <div class="d-flex flex-column h-100" style="text-transform: uppercase;">
+              <h3 class="mb-1 pt-2 text-bold">Major Activity Infos</h3>
+              <h5 class="font-weight-bolder">Major Activity  Title:<%= mactone.mactivitytitle %></h5>
+              <h5 class="font-weight-bolder">Major Activity  Code:<%= mactone.mactivitycode %></h5>
+              <p class="mb-2">Major Activity Duration &nbsp;<%= mactone.mactivityduration %> Days</p>
+              <p><h3>TOTAL BUDGET:= <span style="text-transform: uppercase; font-weight: 200;"> 
+                <%= budgetsummery == null || budgetsummery=== "" ? 0 : budgetsummery %> ETBIRR
+
+              </span></h3></p>
+              <p class="text-body text-sm font-weight-bold mb-0">
+             From:  <p class=""><%=  new Date(mactone.startdate).toLocaleDateString() %> 
+              To:<%= new Date(mactone.enddate).toLocaleDateString() %></p>
+     
+              </p>
+            </div>
+          <%} %>
+          </div>
+          </div>
+    </div>
+    <div class="container-fluid">
+    
+      <div class="col-12 ">
+      
+        <div class="card mb-4">
+          <div class="card-header pb-0 ">
+           
+          </div>
+          <div class="card-body ">
+            <div class="row">
+          
+             <div class="card">
+                <div class="card-header pb-0">
+                  <div class="row">
+                    <div class="col-lg-6 col-7">
+                      <h6 class="mb-1">Major Activity KPIs</h6>
+                      <p class="text-sm">Existing All KPIs</p>
+                    </div>
+                    <div class="col-lg-6 col-5 my-auto text-end">
+                      <div class="row">
+                       
+                       <div class="col-md-6 offset-md-6">
+                        <button  class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" data-target="#myModal" data-toggler="<%= mactone.dactivityid %>" data-toggler5="<%= mactone.mactivityid %>"  data-toggler3="<%= mactone.dactivitycode %>" data-toggler2="<%= mactone.dactivitytitle %>" data-toggler4="<%= mactone.dactivitydescription %>" >
+                          Set  KPI For Major Activity
+                        </button> 
+                       </div>
+                       </div>
+                      <div class="dropdown float-lg-end pe-4">
+                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
+                        </a>
+                        <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Print</a></li>
+                         
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+                </div>
+                <div class="card-body px-0 ">
+                  <div class="table-responsive">
+                    <table class="table align-items-center mb-0" id="myTable">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Detail Activity</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Indicator</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Input</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KPI</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Registered Risk</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if(mkpi.length >0){%>
+                          <% var i=0 %>
+                          <% mkpi.forEach(function (row){ %>
+                          <%i++ %>
+                        <tr>
+                          <td><%= i %></td>
+                          <td>
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-sm">
+                                <%var dact= row.dactivityid %>
+                                <%= row.dactivitytitle %>
+                              
+                              
+                              </h6>
+                            </div>
+                            
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                           
+                            <span class="text-xs font-weight-bold"><%= row.macttindicator %> </span>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                           
+                            <span class="text-xs font-weight-bold"><%= row.macttinputtype %> </span>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                           
+                            <span class="text-xs font-weight-bold"><%= row.mactkpi %> </span>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                           
+                            <span class="text-xs font-weight-bold"><%= row.mactregisteredrisk %> </span>
+                          </td>
+                          
+                          <td class="align-middle text-center text-sm">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <form action="/stvcpms/deletemajoractivitykpi/<%= row.mactivityid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="mactkpiid" value="<%= row.id %>">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete Major Activity KPI</button>
+                              </form>
+                             
+                            </div>
+                            <div class="col-md-6">
+                              <form action="/stvcpms/viewdetailactivitykpi/<%= row.dactivityid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="mactivityid" value="<%= mactone.mactivityid %>">
+                                <button type="submit" class="btn btn-sm btn-outline-info">View Detail Activity KPI</button>
+                              </form>
+                            </div>
+                          </div>
+                            <% if(mactone.isfinalsent ==="Yes"){%>
+                              <form action="/stvcpms/showdetailactivitykpi/<%= row.dactivityid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="mactivityid" value="<%= mactone.mactivityid %>">
+                                <button type="submit" class="btn btn-sm btn-outline-info">View Final Report</button>
+                              </form>
+                            <%}%>
+                         
+                       
+                          </td>
+                        </tr>
+                        <% })}else{ %>
+                          <label>No KPIs Found</label>
+                         <%} %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+           
+            
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add KPI(Key Perfromance Indicator For Major Activity)</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  
+      <form action="/stvcpms/addkpiformajoractivity" method="post">
+        <div class="modal-body">
+          <% if(mactone){%>
+            <div class="d-flex flex-column h-100">
+              <p class="mb-1 pt-2 text-bold"><small>Major Activity Infos</small></p>
+            <small>Major Activity Title:<%= mactone.mactivitytitle %></small>
+              <small>Major Activity Code:<%= mactone.mactivitycode %></small>
+              <p class="mb-2"><small>Major Activity Description:<%= mactone.mactivitydescription %></small></p>
+               <input type="hidden" value="<%= mactone.mactivityid %>"  id="mactivityid" name="mactivityid">
+            </div>
+          <%} %>
+        
+           <label>Select Detail Activity </label>
+        
+          <select class="form-control" name="dactivityid" id="dactivityid">
+            <option value="0">Please select detail activity here</option>
+            <% if(alldact.length>0){ %>
+             <% alldact.forEach(function(row){ %>
+                <option value="<%= row.dactivityid %>"><%= row.dactivitytitle %></option>
+             <% })%>
+           <% }else {%>
+            <label>No detail activities where found</label>
+            <%} %>
+           </select>
+           <div class="row">
+            <div class="col-md-4">
+              <label>Target Indicator</label>
+              <select class="form-control" name="mtargetindicator" id="mtargetindicator">
+               <option value="0">Please select indicator here</option>
+               <option value="level1">Level 1</option>
+               <option value="level2">Level 2</option>
+               <option value="level3">Level 3</option>
+               <option value="level4">Level 4</option>
+               <option value="shortterm">Short Term</option>
+               <option value="APN">APN</option>
+              
+              </select>
+            </div>
+           
+            <div class="col-md-4">
+              <label>Input Type</label>
+              <select class="form-control" id="mactinputtype">
+               <option value="0">Please select input type indicator here</option>
+               <option value="Number">Number</option>
+               <option value="Ratio">Ratio</option>
+               <option value="APN">APN</option>
+               <option value="Text">Text</option>
+               <option value="Percent">Percent</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label>KPI<code>Use Description If Input Is Not Number</code></label>
+              <input type="text" class="form-control mb-2" id="mactkpi" placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
+       
+            </div>
+           </div>
+           <textarea type="text" class="form-control  mb-2 mt-2" id="mregisteredrisk" placeholder="Associated Risk" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+             <input type="hidden" id="mcriteria" name="mcriteria">
+           <div class="col-md-6 offset-md-3 form-check form-check-primary">
+             <ul class="" id="mlist">
+              </ul>
+           </div>
+           <button type="button" id="addmactkpi" class="btn btn-secondary btn-block" >Add</button>
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  const startDateInput = document.getElementById('startDateInput');
+  const endDateInput = document.getElementById('endDateInput');
+  
+  startDateInput.addEventListener('focus', function() {
+    startDateInput.type = 'date';
+  });
+  
+  startDateInput.addEventListener('blur', function() {
+    if (startDateInput.value === '') {
+      startDateInput.type = 'text';
+    }
+  });
+ 
+  endDateInput.addEventListener('focus', function() {
+    endDateInput.type = 'date';
+  });
+  
+  endDateInput.addEventListener('blur', function() {
+    if (endDateInput.value === '') {
+      endDateInput.type = 'text';
+    }
+  });
+</script>
+     <%- include ('./partials/footer') %>
+    </div>
+  </div>
+  
+  <!--   Core JS Files   -->
+  <script src="../../../../assets/js/core/popper.min.js"></script>
+  <script src="../../../../assets/js/core/bootstrap.min.js"></script>
+  <script src="../../../../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../../../../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+   
+   <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+   <script>
+   $(document).ready( function () {
+       $('#myTable').DataTable();
+   } );
+   </script>
+     <script>
+           
+      var criarry2 = [] ;
+    
+        var criid =0 ;
+       
+        $("#addmactkpi").on("click", function(e){
+          var data = document.getElementById("dactivityid").value;
+       if(data == "0")
+       {
+      
+       }
+       else
+       {
+        criid ++ ;
+        var mactid = document.getElementById("mactivityid").value;
+       var dactid = document.getElementById("dactivityid").value;
+       var macttindicator = document.getElementById("mtargetindicator").value;
+       var macttinputtype = document.getElementById("mactinputtype").value;
+       var mactkpi = document.getElementById("mactkpi").value;
+       var mactregisteredrisk = document.getElementById("mregisteredrisk").value;
+       var  percent = 0;
+          
+            if(percent <= 100){
+              
+              var mcheckboxvalue =  mactid +"_"+
+              dactid+"_"+
+              macttinputtype+"_"+
+              mactkpi+"_"+
+              mactregisteredrisk;
+              
+              mactid.trim();
+              dactid.trim();
+              macttindicator.trim();
+              macttinputtype.trim();
+              mactkpi.trim();
+              mactregisteredrisk.trim();
+      // criarry.push(checkboxvalue);
+      var criteria2 = {};
+      criteria2['mactid'] = mactid;
+      criteria2['dactid'] = dactid;
+       criteria2['macttindicator'] = macttindicator;
+         criteria2['macttinputtype'] = macttinputtype;
+         criteria2['mactkpi'] = mactkpi;
+         criteria2['mactregisteredrisk'] = mactregisteredrisk;
+      // criteria[criname] = parseInt(percent) ;
+      criarry2.push(criteria2);
+       // $('#criteria').val([criteria]);
+       $('#mcriteria').val( JSON.stringify(criarry2) );
+             
+      $("#mlist").append("<li><input type='checkbox' id="+ mcheckboxvalue +"  class='form-check-input' checked >" + $("#dactivityid option:selected").text() + " " + $("#mtargetindicator").val() + $("#mactkpi").val()+"</li>");
+      
+      return false;
+            }
+      
+       }
+      
+      });
+      
+      </script>
+    <script>
+      $('[data-toggle="modal"]').on('click', function () {
+        const toggler = $(this);
+        const toggler_identifier = toggler.attr('data-toggler');
+        const toggler_identifier2 = toggler.attr('data-toggler2');
+        const toggler_identifier3 = toggler.attr('data-toggler3');
+        const toggler_identifier4 = toggler.attr('data-toggler4');
+        const toggler_identifier5 = toggler.attr('data-toggler5');
+        console.log(toggler_identifier3);
+        let modal_id = toggler.attr('data-target');
+        $(modal_id).find('.js-toggler__input').val(toggler_identifier);
+        $(modal_id).find('.title').html(toggler_identifier2);
+        $(modal_id).find('.acode').text(toggler_identifier3);
+      $(modal_id).find('.adescription').text(toggler_identifier4);
+      $(modal_id).find('.majorid').val(toggler_identifier5);
+      
+    });
+    </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../../../../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+  <script>
+    $(document).ready(function() {
+      $('#myTable').DataTable();
+    });
+  </script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+  
+</body>
+
+</html>

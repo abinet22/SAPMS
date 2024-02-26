@@ -8,7 +8,7 @@ const session = require('express-session');
 const ejs = require("ejs");
 const path = require('path');
 const cors = require("cors");
-const PORT = process.env.PORT || 5001
+const PORT = process.env.PORT || 5009
 const db = require("./models")
 
 // create express server

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .ol {
+      list-style-type: none;
+    }
+
+    .li {
+      padding: 10px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+
+    .list-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list-group-item {
+      cursor: pointer;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
+
+    .list-group-submenu {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<ol class="ol">
+  <div class="col-md-12">
+    <% if (plan) { %>
+      <% var g = 0; %>
+      <% var d = 0; %>
+      <% var ma = 0; %>
+      <% var da = 0; %>
+      <% planid = plan.planid %>
+      <% goal.forEach(function (row) { %>
+        <% sgoalid = row.sgoalid %>
+        <% if (row.planid === planid) { %>
+          <% g++ %>
+
+          <li class="li col-md-12">
+            <div class="list-group">
+              <div class="list-group-item" onclick="toggleDropdown('demo<%= g %>')">
+                Strategic Goal: <%= row.sgoaltitle %>
+              </div>
+              <div class="list-group-submenu" id="demo<%= g %>">
+                <% sdir.forEach(function (row) { %>
+                  <% sdirid = row.sdirid %>
+                  <% if (row.sgoalid === sgoalid) { %>
+                    <% d++ %>
+                    <div class="list-group">
+                      <div class="list-group-item" onclick="toggleDropdown('SubMenu<%= d %>')">
+                        Strategic Direction: <%= row.sdirtitle %> <i class="fa fa-caret-down"></i>
+                      </div>
+
+                      <div class="list-group-submenu" id="SubMenu<%= d %>">
+                        <% mact.forEach(function (row) { %>
+                          <% var mactid = row.mactivityid %>
+                          <% if (row.sdirid === sdirid) { %>
+                            <% ma++ %>
+                            <div class="list-group">
+                              <div class="list-group-item" onclick="toggleDropdown('SubSubMenu<%= ma %>')">
+                                Major Activity: <%= row.mactivitytitle %> <i class="fa fa-caret-down"></i>
+                              </div>
+
+                              <div class="list-group-submenu" id="SubSubMenu<%= ma %>">
+                                Major Activity KPI list: <br>
+                                <% if (majorkpi.length > 0) { %>
+                                  <div class="col-md-12">
+                                    <table class="table table-responsive align-items-center mb-0 col-md-12">
+                                        <thead>
+                                          <th>Indicator</th>
+                                          <th>Input</th>
+                                          <th>KPI</th>
+                                          <th>Registered Risk</th>
+                                        </thead>
+                                        <tbody>
+                                          <% majorkpi.forEach(function (row) { %>
+                                            <% if (row.mactivityid === mactid) { %>
+                                              <tr>
+                                                <td><%= row.macttindicator %></td>
+                                                <td><%= row.macttinputtype %></td>
+                                                <td><%= row.mactkpi %></td>
+                                                <td><%= row.mactregisteredrisk %></td>
+                                              </tr>
+                                            <% } %>
+                                          <% }) %>
+                                        </tbody>
+                                      </table>
+                                  </div>
+                                <% } else { %>
+                                  <label>No KPI IS FOUND</label>
+                                <% } %>
+
+                                <div class="list-group-submenu" id="SubSubMenu<%= ma %>">
+                                  <% dact2.forEach(function (row) { %>
+                                    <% dact = row.dactivityid %>
+                                                            <% if (row.mactivityid === mactid) { %>
+                                                              <% da++ %>
+                                                              <ol class="ol">
+                                                                <li class="li col-md-12">
+                                                                  <a href="#SubSubMenu2" class="list-group-item" data-toggle="collapse" data-parent="#SubSubMenu2">
+                                                                    Detail Activity: <%= row.dactivitytitle %>/<%= row.dactivitycode %> <i class="fa fa-caret-down"></i>
+                                                                  </a>
+                  
+                                                                  <div class="collapse list-group-submenu list-group-submenu" id="SubSubMenu2">
+                                                                    Detail Activity KPI list: <br>
+                                                                    <% if (detailkpi.length > 0) { %>
+                                                                      <table class="table table-responsive align-items-center mb-0 col-md-12">
+                                                                        <thead>
+                                                                          <th>Target Group</th>
+                                                                          <th>Indicator</th>
+                                                                          <th>Input</th>
+                                                                          <th>Total KPI</th>
+                                                                          <th>Month-KPI</th>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                          <% detailkpi.forEach(function (row) { %>
+                                                                            <% if (row.dactivityid === dact) { %>
+                                                                              <tr>
+                                                                                <td><%= row.targetgroupname %></td>
+                                                                                <td><%= row.dacttindicator %></td>
+                                                                                <td><%= row.dacttinputtype %></td>
+                                                                                <td><%= row.dactkpi %></td>
+                                                                                <td>
+                                                                                  [January-<%= row.january %> ,
+                                                                                  February-<%= row.february %> ,
+                                                                                  March-<%= row.march %> ,
+                                                                                  April-<%= row.april %> ,
+                                                                                  May-<%= row.may %> ,
+                                                                                  June-<%= row.june %> ,<br>
+                                                                                  July-<%= row.july %> ,
+                                                                                  Augest-<%= row.augest %> ,
+                                                                                  September-<%= row.september %> ,
+                                                                                  October-<%= row.october %> ,
+                                                                                  November-<%= row.november %> ,
+                                                                                  December-<%= row.december %> ]
+                                                                                </td>
+                                                                              </tr>
+                                                                            <% } %>
+                                                                          <% }) %>
+                                                                        </tbody>
+                                                                      </table>
+                                                                    <% } else { %>
+                                                                      <label>No KPI IS FOUND</label>
+                                                                    <% } %>
+                                                                  </div>
+                                                                </li>
+                                                              </ol>
+                                                            <% } %>
+                                  <% }) %>
+                                </div>
+                              </div>
+                            </div>
+                          <% } %>
+                        <% }) %>
+                      </div>
+                    </div>
+                  <% } %>
+                <% }) %>
+              </div>
+            </div>
+          </li>
+        <% } %>
+      <% }) %>
+    <% } else { } %>
+  </div>
+</ol>
+
+<script>
+  function toggleDropdown(id) {
+    var element = document.getElementById(id);
+    if (element) {
+      element.style.display = (element.style.display === 'none') ? 'block' : 'none';
+    }
+  }
+</script>
+
+</body>
+</html>

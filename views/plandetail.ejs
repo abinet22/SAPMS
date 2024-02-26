@@ -38,16 +38,16 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page"> <% if(tag ==="sg"){%>
-                <h6 class="mb-1">Strategic Goal</h6>
+                <h6 class="mb-1">Goal</h6>
              
               <%}else if(tag ==="sd"){%>
-                <h6 class="mb-1">Strategic Direction</h6>
+                <h6 class="mb-1">Outcome</h6>
                
               <%}else if(tag === "ma"){%>
-                <h6 class="mb-1">Major Activity</h6>
+                <h6 class="mb-1">Output</h6>
               
               <%}else if(tag ==="da"){%>
-                <h6 class="mb-1">Detail Activity</h6>
+                <h6 class="mb-1">Activity</h6>
              
               <%}%></li>
             </ol>
@@ -60,20 +60,26 @@
       <%- include('./partials/messages') %>
       <div class="col-12 mt-4">
         <div class="card-body ">
-          <% if(plan){%>
+          <% if(plan){ %>
             <div class="d-flex flex-column h-100">
-              <p class="mb-1 pt-2 text-bold">Plan Infos</p>
-              <h5 class="font-weight-bolder">Plan Title:<%= plan.plantitle %></h5>
-              <h5 class="font-weight-bolder">Plan Code:<%= plan.plancode %></h5>
-              <p class="mb-2"><%= plan.plandescription %></p>
-              <p class="mb-2">Duration &nbsp;<%= plan.planduration %> Days</p>
-              <p class="text-body text-sm font-weight-bold mb-0">
-             From:  <p class=""><%=  new Date(plan.startdate).toLocaleDateString() %></p> 
-             To:  <p class=""><%= new Date(plan.enddate).toLocaleDateString() %></p>
-     
+              <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                <i class="fas fa-info-circle"></i> Plan Infos
+              </p>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Plan Title: <%= plan.plantitle %></h5>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Plan Code: <%= plan.plancode %></h5>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= plan.plandescription %></p>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= plan.planduration %> Days</p>
+              <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                <i class="fas fa-calendar"></i> From:
+                <span class="ml-1">
+                  <%= new Date(plan.startdate).toLocaleDateString() %> 
+                  <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                  <%= new Date(plan.enddate).toLocaleDateString() %>
+                </span>
               </p>
             </div>
-          <%} %>
+          <% } %>
+          
           </div>
           </div>
     </div>
@@ -92,19 +98,28 @@
                   <div class="row">
                     <div class="col-lg-6 col-7">
                    
-            <% if(tag ==="sg"){%>
-              <h6 class="mb-1">Strategic Goal</h6>
-            <p class="text-sm">Existing All Strategic Goal </p>
-            <%}else if(tag ==="sd"){%>
-              <h6 class="mb-1">Strategic Direction</h6>
-              <p class="text-sm">Existing All Strategic Direction </p>
-            <%}else if(tag === "ma"){%>
-              <h6 class="mb-1">Major Activity</h6>
-              <p class="text-sm">Existing All Major Activities </p>
-            <%}else if(tag ==="da"){%>
-              <h6 class="mb-1">Detail Activity</h6>
-            <p class="text-sm">Existing All  Detail Activities </p>
-            <%}%>
+                      <% if (tag === "sg") { %>
+                        <div class="tag-container">
+                          <h6 class="mb-1 text-primary">Goal</h6>
+                          <p class="text-sm">Explore existing  goals.</p>
+                        </div>
+                      <% } else if (tag === "sd") { %>
+                        <div class="tag-container">
+                          <h6 class="mb-1 text-success">Outcome</h6>
+                          <p class="text-sm">Discover existing outcomes.</p>
+                        </div>
+                      <% } else if (tag === "ma") { %>
+                        <div class="tag-container">
+                          <h6 class="mb-1 text-warning">Output</h6>
+                          <p class="text-sm">Review all outputs.</p>
+                        </div>
+                      <% } else if (tag === "da") { %>
+                        <div class="tag-container">
+                          <h6 class="mb-1 text-danger">Activity</h6>
+                          <p class="text-sm">Browse all  activities.</p>
+                        </div>
+                      <% } %>
+                      
            
                     </div>
                     <div class="col-lg-6 col-5 my-auto text-end">
@@ -113,9 +128,8 @@
                           <i class="fa fa-ellipsis-v text-secondary" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
+                          <li><a class="dropdown-item border-radius-md" href="javascript:;">Print</a></li>
+                         
                         </ul>
                       </div>
                     </div>
@@ -130,35 +144,70 @@
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Duration</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Show</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Add</th>
                         </tr>
                       </thead>
                       <tbody>
                         <% if(sgoal.length >0){%>
                           <% sgoal.forEach(function (row){ %>
-                       
+                       <% function addBrTags(inputString, charsPerLine) {
+                        var outputString = '';
+                        for (var i = 0; i < inputString.length; i++) {
+                            outputString += inputString.charAt(i);
+                            if ((i + 1) % charsPerLine === 0) {
+                                outputString += '<br>';
+                            }
+                        }
+                        return outputString;
+                       } %>
                         <tr>
                           <td>
                             <div class="d-flex px-2 py-1">
                               <div>
-                                <% if(tag ==="sg"){%>
-                                  <img src="../assets/img/home-decor-3.jpg" class="avatar avatar-sm me-3" alt="team7">
-                                <%}else if(tag ==="sd"){%>
-                                  <img src="../assets/img/direction.jpg" class="avatar avatar-sm me-3" alt="team7">
-                                <%}else if(tag === "ma"){%>
-                                  <img src="../assets/img/mact.png" class="avatar avatar-sm me-3" alt="team7">
-                                <%}else if(tag ==="da"){%>
-                                  <img src="../assets/img/dact.jpg" class="avatar avatar-sm me-3" alt="team7">
-                                <%}%>
-                               
+                                <% if (tag === "sg") { %>
+                                  <i class="fas fa-bullseye  me-3"></i>
+                                <% } else if (tag === "sd") { %>
+                                  <i class="fas fa-compass  me-3"></i>
+                                <% } else if (tag === "ma") { %>
+                                  <i class="fas fa-cogs  me-3"></i>
+                                <% } else if (tag === "da") { %>
+                                  <i class="fas fa-tasks  me-3"></i>
+                                <% } %>
                               </div>
                               <div class="d-flex flex-column justify-content-center">
-                                <h6 class="mb-0 text-sm"><%= row.sgoaltitle %><%= row.sdirtitle %><%= row.mactivitytitle %><%= row.dactivitytitle %></h6>
+                                <h6 class="mb-0 text-sm">
+                                  <% 
+                                  var originalStringsg = row.sgoaltitle || ''; 
+                                  var originalStringsd = row.sdirtitle || '';
+                                  var originalStringma = row.mactivitytitle || '';
+                                  var originalStringda = row.dactivitytitle || '';
+                                  var stringWithBrTagsg = addBrTags(originalStringsg, 30);
+                                  var stringWithBrTagsd = addBrTags(originalStringsd, 30);
+                                  var stringWithBrTagma = addBrTags(originalStringma, 30);
+                                  var stringWithBrTagda = addBrTags(originalStringda, 30);
+                                  %>
+                                  <%- stringWithBrTagsg %><br><%- stringWithBrTagsd %><br><%- stringWithBrTagma %><br><%- stringWithBrTagda %>
+                                </h6>
                               </div>
                             </div>
+                            
                           </td>
                           <td>
                             <div class="d-flex flex-column justify-content-center">
-                              <h6 class="mb-0 text-sm"><%= row.sgoaldescription %><%= row.sdirdescription %><%= row.mactivitydescription %><%= row.dactivitydescription %></h6>
+                              <h6 class="mb-0 text-sm">
+                                <% var doriginalStringsg =  row.sgoaldescription || ''; 
+                                var doriginalStringsd = row.sdirdescription || ''; 
+                                var doriginalStringma = row.mactivitydescription || ''; 
+                                var doriginalStringda = row.dactivitydescription || ''; 
+                                var dstringWithBrTagsg = addBrTags(doriginalStringsg, 30);
+                                var dstringWithBrTagsd = addBrTags(doriginalStringsd, 30);
+                                var dstringWithBrTagma = addBrTags(doriginalStringma, 30);
+                                var dstringWithBrTagda = addBrTags(doriginalStringda, 30);
+                                
+                                %>
+                                <%- dstringWithBrTagsg %><%- dstringWithBrTagsd %><%- dstringWithBrTagma %><%- dstringWithBrTagda %>
+                              </h6>
                             </div>
                             
                           </td>
@@ -168,19 +217,149 @@
                           </td>
                           <td class="align-middle">
                             <div class="progress-wrapper w-75 mx-auto">
-                              <div class="progress-info">
-                                <div class="progress-percentage">
-                                  <span class="text-xs font-weight-bold">100%</span>
+                            
+                              <% var date = new Date().getTime() %>
+                              <% var dt= new Date(row.enddate).getTime() %>
+                              <% if(tag ==="sg"){%>
+                               <% if( dt > date) {%>
+                                <div class="progress-info">
+                                  <div class="progress-percentage">
+                                    <span class="text-xs font-weight-bold">On Progress</span>
+                           
+                                  </div>
                                 </div>
-                              </div>
-                              <div class="progress">
-                                <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                              </div>
+                                <div class="progress">
+                                  <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <%}else{%>
+                                  
+                                  <div class="progress-info">
+                                    <div class="progress-percentage">
+                                      <span class="text-xs font-weight-bold">Late</span>
+                                    </div>
+                                  </div>
+                                  <div class="progress">
+                                    <div class="progress-bar bg-gradient-danger w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                <%}%>
+                              <%}else if(tag ==="sd"){%>
+                                <% if(dt > date) {%>
+                                  <div class="progress-info">
+                                    <div class="progress-percentage">
+                                      <span class="text-xs font-weight-bold">On Progress</span>
+                                      
+                                    </div>
+                                  </div>
+                                  <div class="progress">
+                                    <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                  <%}else{%>
+                                    <div class="progress-info">
+                                      <div class="progress-percentage">
+                                        <span class="text-xs font-weight-bold">Late</span>
+                                      </div>
+                                    </div>
+                                    <div class="progress">
+                                      <div class="progress-bar bg-gradient-danger w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  <%}%>
+                              <%}else if(tag === "ma"){%>
+                                <% if(dt > date) {%>
+                                  <div class="progress-info">
+                                    <div class="progress-percentage">
+                                      <span class="text-xs font-weight-bold">On Progress</span>
+                                    </div>
+                                  </div>
+                                  <div class="progress">
+                                    <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                  <%}else{%>
+                                    <div class="progress-info">
+                                      <div class="progress-percentage">
+                                        <span class="text-xs font-weight-bold">Late</span>
+                                      </div>
+                                    </div>
+                                    <div class="progress">
+                                      <div class="progress-bar bg-gradient-danger w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  <%}%>
+                              <%}else if(tag ==="da"){%>
+                                <% if( dt > date) {%>
+                                  <div class="progress-info">
+                                    <div class="progress-percentage">
+                                      <span class="text-xs font-weight-bold">On Progress</span>
+                                    </div>
+                                  </div>
+                                  <div class="progress">
+                                    <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                  <%}else{%>
+                                    <div class="progress-info">
+                                      <div class="progress-percentage">
+                                        <span class="text-xs font-weight-bold">Late</span>
+                                      </div>
+                                    </div>
+                                    <div class="progress">
+                                      <div class="progress-bar bg-gradient-danger w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                  <%}%>
+                              <%}%>
                             </div>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <% if(tag ==="sg"){%>
+                              <form action="/stvcpms/deletestrategicgoal/<%= row.sgoalid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                              </form>
+                            <%}else if(tag ==="sd"){%>
+                              <form action="/stvcpms/deletestrategicdirection/<%= row.sdirid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="sgoalid" value="<%= plan.sgoalid %>">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                              </form>
+                            <%}else if(tag === "ma"){%>
+                              <form action="/stvcpms/viewmajoractivitykpi/<%= row.mactivityid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <button type="submit" class="btn btn-sm btn-primary">Show KPI</button>
+                              </form>
+                            <%}else if(tag ==="da"){%>
+                              <form action="/stvcpms/viewdetailactivitykpi/<%= row.dactivityid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="mactivityid" value="<%= row.mactivityid %>">
+                                <button type="submit" class="btn btn-sm btn-primary">Show KPI</button>
+                              </form>
+                            <%}%>
+                       
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            <% if(tag ==="sg"){%>
+                              <form action="/stvcpms/addplanstrategicdirection" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="sgoalid" value="<%= row.sgoalid %>">
+                                <button type="submit" class="btn btn-sm btn-info">+Outcome</button>
+                              </form>
+                            <%}else if(tag ==="sd"){%>
+                              <form action="/stvcpms/addplanmajoractivity" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="sdirid" value="<%= row.sdirid %>">
+                                <input type="hidden" name="sgoalid" value="<%= row.sgoalid %>">
+                                <button type="submit" class="btn btn-sm btn-info">+Output</button>
+                              </form>
+                            <%}else if(tag === "ma"){%>
+                              <form action="/stvcpms/addplandetailactivity" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="mactivityid" value="<%= row.mactivityid %>">
+                                <input type="hidden" name="sdirid" value="<%= row.sdirid %>">
+                                <input type="hidden" name="sgoalid" value="<%= row.sgoalid %>">
+                                <button type="submit" class="btn btn-sm btn-info">+Activity</button>
+                              </form>
+                            <%} %>
+                       
                           </td>
                         </tr>
                         <% })}else{ %>
-                          <label>No Major Activity Found</label>
+                          <label>No Details Found</label>
                          <%} %>
                       </tbody>
                     </table>

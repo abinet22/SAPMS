@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
  
   },
   sdirdescription: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
  
   },
   sdircode: {

@@ -8,45 +8,26 @@ module.exports = function (passport) {
     new LocalStrategy({ usernameField: 'username' }, async (username, password, done) => {
       try {
         let user = await db.User.findOne({
-          where: {
-            [Op.or]: [
-              {
-                email: username,
-              },
-              {
-                username: username,
-              },
-            ],
-          },
+          where: { username: username },
         });
 
         if (!user) {
           let targetGroupUser = await db.TargetGroup.findOne({
-            where: {
-              username: username,
-            },
+            where: { username: username },
           });
 
-          if (!targetGroupUser) {
-            return done(null, false, { message: 'Invalid Credential' });
+          if (!targetGroupUser || !(await bcrypt.compare(password, targetGroupUser.password))) {
+            return done(null, false, { message: 'Invalid Credentials' });
           }
 
-          const isMatch = await bcrypt.compare(password, targetGroupUser.password);
-
-          if (isMatch) {
-            return done(null, targetGroupUser);
-          } else {
-            return done(null, false, { message: 'Password incorrect' });
-          }
+          return done(null, targetGroupUser);
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (isMatch) {
-          return done(null, user);
-        } else {
-          return done(null, false, { message: 'Password incorrect' });
+        if (!(await bcrypt.compare(password, user.password))) {
+          return done(null, false, { message: 'Invalid Credentials' });
         }
+
+        return done(null, user);
       } catch (error) {
         return done(error);
       }
@@ -57,23 +38,23 @@ module.exports = function (passport) {
     done(null, user.id);
   });
 
-  passport.deserializeUser(function (id, done) {
-    db.User.findOne({ where: { id: id } })
-      .then((user) => {
-        if (user) {
-          done(null, user);
-        } else {
-          db.TargetGroup.findOne({ where: { id: id } })
-            .then((targetGroupUser) => {
-              done(null, targetGroupUser);
-            })
-            .catch((error) => {
-              done(error);
-            });
-        }
-      })
-      .catch((error) => {
-        done(error);
-      });
+  passport.deserializeUser(async function (id, done) {
+    try {
+      let user = await db.User.findOne({ where: { id: id } });
+
+      if (user) {
+        return done(null, user);
+      }
+
+      let targetGroupUser = await db.TargetGroup.findOne({ where: { id: id } });
+
+      if (targetGroupUser) {
+        return done(null, targetGroupUser);
+      }
+
+      return done(null, false);
+    } catch (error) {
+      return done(error);
+    }
   });
 };

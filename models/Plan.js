@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
  
   },
   plandescription: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
  
   },
   plancode: {

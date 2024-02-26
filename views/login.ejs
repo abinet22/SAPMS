@@ -1,96 +1,215 @@
+<style>
+  @import url('https://rsms.me/inter/inter-ui.css');
+::selection {
+  background: #2D2F36;
+}
+::-webkit-selection {
+  background: #2D2F36;
+}
+::-moz-selection {
+  background: #2D2F36;
+}
+body {
+  background: white;
+  font-family: 'Inter UI', sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+.page {
+  background: #e2e2e5;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 40px);
+  position: absolute;
+  place-content: center;
+  width: calc(100% - 40px);
+}
+@media (max-width: 767px) {
+  .page {
+    height: auto;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+}
+.container {
+  display: flex;
+  height: 320px;
+  margin: 0 auto;
+  width: 640px;
+}
+@media (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+}
+.left {
+  background: white;
+  height: calc(100% + 100px);
+  top: 20px;
+  position: relative;
+  width: 50%;
+}
+@media (max-width: 767px) {
+  .left {
+    height: 100%;
+    left: 20px;
+    width: calc(100% - 40px);
+    max-height: 270px;
+  }
+}
+.login {
+  font-size: 50px;
+  font-weight: 900;
+  margin: 50px 40px 40px;
+}
+.eula {
+  color: #999;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 40px;
+}
+.right {
+  background: #474A59;
+  box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+  color: #F1F1F2;
+  position: relative;
+  width: 50%;
+}
+@media (max-width: 767px) {
+  .right {
+    flex-shrink: 0;
+    height: 100%;
+    width: 100%;
+    max-height: 400px;
+  }
+}
+svg {
+  position: absolute;
+  width: 320px;
+}
+path {
+  fill: none;
+  stroke: url(#linearGradient);;
+  stroke-width: 4;
+  stroke-dasharray: 240 1386;
+}
+.form {
+  margin: 40px;
+  position: absolute;
+}
+label {
+  color:  #c2c2c5;
+  display: block;
+  font-size: 14px;
+  height: 16px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
 
-<!DOCTYPE html>
-<html lang="en">
+#submit {
+  color: #707075;
+  margin-top: 40px;
+  transition: color 300ms;
+}
+#submit:focus {
+  color: #f2f2f2;
+}
+#submit:active {
+  color: #d0d0d2;
+}
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-  <title>
-   
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
-  <!-- Nepcha Analytics (nepcha.com) -->
-  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-  <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-</head>
-
-<body class="">
-  <!-- Navbar -->
-
-  <!-- End Navbar -->
-  <main class="main-content  mt-0">
-    <section class="min-vh-100 mb-8">
-      <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('../assets/img/curved-images/curved14.jpg');">
-        <span class="mask bg-gradient-dark opacity-6"></span>
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-lg-5 text-center mx-auto">
-              <h1 class="text-white mb-2 mt-5">Welcome <br>To STVC PMS!</h1>
-                     </div>
-          </div>
+</style>
+<div class="page">
+  <div class="container">
+    <div class="left d-none d-md-block">
+      <div class="login"> 
+      </div>
+      <div class="eula">
+        <div class="left-section">
+          <h2>Welcome to SelamPMS</h2>
+          <small>
+            SelamPMS is a comprehensive web-based plan and project management solution designed to streamline your project monitoring and evaluation processes. With user-friendly features and powerful tools, our system empowers you to efficiently manage tasks, collaborate with team members, and track project progress.
+            </small>
+          
         </div>
       </div>
-      <div class="container">
-        <div class="row mt-lg-n10 mt-md-n11 mt-n10">
-          <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
-            <div class="card z-index-0">
-              <div class="card-header text-center pt-4">
-                <h5>Login with</h5>
-              </div>
-              <%- include ('./partials/messages') %>
-              <div class="card-body">
-                <form role="form text-left" action="/stvcpms/login" method="post">
-                  <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="User Name" name="username" aria-label="Name" aria-describedby="email-addon">
-                  </div>
-            
-                  <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Password" name="password" aria-label="Password" aria-describedby="password-addon">
-                  </div>
-                 
-                  <div class="text-center">
-                    <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign In</button>
-                  </div>
-                  </form>
-              </div>
+    </div>
+    <div class="right " style="height: 420px;">
+      
+      <div class="form">
+        <div class="col-md-12 text-center">
+          <%- include ('./partials/messages') %>
+          <div class="mb-4 text-center" >
+            <img src="../../assets/img/logos/logo.png" width="150px" height="100px" alt="logo">
+          </div>
+          <form role="form text-left" action="/stvcpms/login" method="post">
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="User Name" name="username" aria-label="Name" aria-describedby="email-addon">
             </div>
-          </div>
+      
+            <div class="mb-3">
+              <input type="password" class="form-control" placeholder="Password" name="password" aria-label="Password" aria-describedby="password-addon">
+            </div>
+           
+            <div class="text-center">
+              <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2 waves-effect waves-light">Sign In</button>
+            </div>
+            </form>
         </div>
       </div>
-    </section>
-    <!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-    <%- include ('./partials/footer') %>
-    <!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-  </main>
-  <!--   Core JS Files   -->
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    </div>
+  </div>
+</div>
+<script>
+  var current = null;
+document.querySelector('#email').addEventListener('focus', function(e) {
+  if (current) current.pause();
+  current = anime({
+    targets: 'path',
+    strokeDashoffset: {
+      value: 0,
+      duration: 700,
+      easing: 'easeOutQuart'
+    },
+    strokeDasharray: {
+      value: '240 1386',
+      duration: 700,
+      easing: 'easeOutQuart'
     }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
-</body>
-
-</html>
+  });
+});
+document.querySelector('#password').addEventListener('focus', function(e) {
+  if (current) current.pause();
+  current = anime({
+    targets: 'path',
+    strokeDashoffset: {
+      value: -336,
+      duration: 700,
+      easing: 'easeOutQuart'
+    },
+    strokeDasharray: {
+      value: '240 1386',
+      duration: 700,
+      easing: 'easeOutQuart'
+    }
+  });
+});
+document.querySelector('#submit').addEventListener('focus', function(e) {
+  if (current) current.pause();
+  current = anime({
+    targets: 'path',
+    strokeDashoffset: {
+      value: -730,
+      duration: 700,
+      easing: 'easeOutQuart'
+    },
+    strokeDasharray: {
+      value: '530 1386',
+      duration: 700,
+      easing: 'easeOutQuart'
+    }
+  });
+});
+</script>

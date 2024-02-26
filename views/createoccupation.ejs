@@ -16,10 +16,10 @@
   <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../../../../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <!-- CSS Files -->
-  <link id="pagestyle" href="../../../../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <link id="pagestyle" href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -38,7 +38,7 @@
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Create Target Group</li>
+                <li class="breadcrumb-item active" aria-current="page">Create Occupation</li>
               </ol>
             </nav>
         </div>
@@ -75,7 +75,7 @@
                         </g>
                       </g>
                     </svg>
-                    <span class="ms-1">Add Target Group With Credentials</span>
+                    <span class="ms-1">Add New Occupation</span>
                   </a>
                 </li>
                 
@@ -100,51 +100,55 @@
                 <div class="col-12">
                     <div class="card mb-4">
                       <div class="card-header pb-0">
-                        <h6>Target groups and credentials</h6>
+                        <h6>Occupation List</h6>
                       </div>
                       <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
-                          <table class="table align-items-center mb-0" id="myTable">
+                          <table class="table align-items-center mb-0">
                             <thead>
                               <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Name</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Occupation Name</th>
                          
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User Name/Roll</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Target Type</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Active</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Department Name</th>
+                               
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action To Do</th>
                                 <th class="text-secondary opacity-7"></th>
                               </tr>
                             </thead>
                             <tbody>
-                              <% if(targetgrouplist.length >0){ %>
-                               <% targetgrouplist.forEach(function (row){ %>
+                              <% if(occupationlist.length >0){ %>
+                               <% occupationlist.forEach(function (row){ %>
                                 <tr>
                                   <td>
                                     <div class="d-flex px-2 py-1">
-                                      <div>
-                                        <img src="../assets/img/tgroup.jpg" class="avatar avatar-sm me-3" alt="user1">
-                                      </div>
+                                    
                                       <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="mb-0 text-sm">Team</h6>
-                                        <p class="text-xs text-secondary mb-0"><%= row.targetgroupname %></p>
+                                      
+                                        <p class="text-xs text-secondary mb-0"><%= row.occupationname %></p>
                                       </div>
                                     </div>
                                   </td>
-                                  <td>
-                                    <p class="text-xs font-weight-bold mb-0"><%= row.username %></p>
-                                    <p class="text-xs text-secondary mb-0"><%= row.user_roll %></p>
-                                  </td>
+                                
                                   <td class="align-middle text-center">
-                                    <span class="text-secondary text-xs font-weight-bold"><%= row.grouptype %></span>
+                                    <span class="text-secondary text-xs font-weight-bold"><%= row.departmentname %></span>
                                   </td>
                                   <td class="align-middle text-center text-sm">
                                     <span class="badge badge-sm bg-gradient-success"><%= row.is_active %></span>
                                   </td>
                                 
                                   <td class="align-middle">
-                                    <a href="/stvcpms/deletetargetgroup/<%= row.targetgid %>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                   <span style="color: red;">   Delete</span>
-                                    </a>
+                                    <form action="/stvcpms/updateoccupationname" method="post">
+                                      <div class="row">
+                                       <div class="col-md-6">
+                                         <input type="hidden" class="form-control" name="occupationid" value="<%= row.occupationid %>" >
+                                         <input type="text" class="form-control" name="occupationname" placeholder="Occupation Name" >
+                                        
+                                       </div>
+                                       <div class="col-md-6">
+                                          <button type="submit" class="btn btn-sm btn-primary btn-block">  Edit</button>
+                                       </div>
+                                      </div>
+                                      </form>
                                   </td>
                                 </tr>
 
@@ -172,81 +176,26 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Create Target Group With Credentials</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Create Occupation</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form  action="/stvcpms/addnewtargetgroup" method ="post">
+      <form  action="/stvcpms/addnewoccupation" method ="post">
         <div class="modal-body">
       
-          <input type="text" class="form-control mb-2" name="targetgroupname" id="targetgroup" placeholder="Target Group Name">
-          <select  class="form-control  mb-2" name= "grouptype" id= "grouptype" >
-              <option value="0">Select Group Type</option>
-              <option value="Department">Department</option>
-              <option value="Occupation">Occupation</option>
-              <option value="Special_Team">Special Team</option>
-              <option value="Dean">Dean</option>
-              <option>Other</option>
+         
+          <select  class="form-control  mb-2" name= "departmentname" id= "departmentname">
+              <option value="0">Select Department Name</option>
+              <% if(departmentlist.length >0){ %>
+                <% departmentlist.forEach(function (row){ %>
+              <option value="<%= row.departmentid %>"><%= row.departmentname %></option>
+              <%}) }else{}%>
+                          
             </select>
-         
-            <div id="dept" style="display: none;">
-               
-          <select  class="form-control  mb-2" name= "departmentid" id= "departmentid">
-            <option value="0">Select Department Name</option>
-            <% if(departmentlist.length >0){ %>
-              <% departmentlist.forEach(function (row){ %>
-            <option value="<%= row.departmentid %>"><%= row.departmentname %></option>
-            <%}) }else{}%>
-                        
-          </select>
-         
-            </div>
-            <div id="occ" style="display: none;">
-               
-              <select  class="form-control  mb-2" name= "occupationid" id= "occupationid">
-                <option value="0">Select Occupation Name</option>
-                <% if(occupationlist.length >0){ %>
-                  <% occupationlist.forEach(function (row){ %>
-                <option value="<%= row.occupationid %>"><%= row.occupationname %></option>
-                <%}) }else{}%>
-                            
-              </select>
-             
-                </div>
-                <script>
-                 
-                  const departmentid = document.getElementById('dept');
-                  const occupationid = document.getElementById('occ');
-                 
-                  document.getElementById('grouptype').addEventListener('change', function() {
- 
-                     const grouptype = this.value;
-                    if(grouptype =="Department"){
-                    departmentid.style.display ="block";
-                    occupationid.style.display ="none";
-                  }else if(grouptype =="Occupation"){
-                    occupationid.style.display ="block";
-                    departmentid.style.display ="none";
-                  }else{
-                    departmentid.style.display ="none";
-                    occupationid.style.display ="none";
-                  }
-                });
-                </script>
-                   <select  class="form-control  mb-2" name= "userroll" id= "userroll">
-                    <option>Select Userroll</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Department_Head">Department Head</option>
-                    <option value="Occupation_Head">Occupation Head</option>
-                    <option value="Team_Leader">Team Leader</option>
-                    <option value="Other">Other</option>
-                  </select>
-            <input type="text" class="form-control  mb-2" name= "username" id= "username" placeholder="Username">
+           
+            <input type="text" class="form-control  mb-2" name= "occupationname" id= "occupationname" placeholder="Occupation Name">
        
-          <input type="password" class="form-control  mb-2" name= "password"  id= "password" placeholder="Password" >
-          <input type="password" class="form-control  mb-2" name= "retypepassword" id= "retypepassword" placeholder="RePassword" >
-        
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -265,10 +214,10 @@
 
  
   <!--   Core JS Files   -->
-  <script src="../../../../assets/js/core/popper.min.js"></script>
-  <script src="../../../../assets/js/core/bootstrap.min.js"></script>
-  <script src="../../../../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../../../../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -281,15 +230,8 @@
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../../../../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
-  <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
-    });
-  </script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-  
+  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+
 
 </body>
 

@@ -73,20 +73,25 @@
       <%- include('./partials/messages') %>
       <div class="col-12 mt-4">
         <div class="card-body mb-4">
-          <% if(plan){%>
+          <% if(plan){ %>
             <div class="d-flex flex-column h-100">
-                <p class="mb-1 pt-2 text-bold">Plan Infos</p>
-                <h5 class="font-weight-bolder">Plan Title:<%= plan.plantitle %></h5>
-                <h5 class="font-weight-bolder">Plan Code:<%= plan.plancode %></h5>
-                <p class="mb-2">Annual plan</p>
-                <p class="mb-2">Duration &nbsp;<%= plan.planduration %> Days</p>
-                <p class="text-body text-sm font-weight-bold mb-0">
-               From:  </p><p class=""><%= new Date(plan.startdate).toLocaleDateString() %></p> 
-               To:  <p class=""><%= new Date(plan.enddate).toLocaleDateString() %></p>
-       
-                <p></p>
-              </div>
-        <% }%>
+              <p class="mb-1 pt-2 text-bold" style="color: #007bff; font-size: 18px; font-weight: bold;">
+                <i class="fas fa-info-circle"></i> Plan Infos
+              </p>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 24px;"><i class="fas fa-bookmark"></i> Plan Title: <%= plan.plantitle %></h5>
+              <h5 class="font-weight-bolder" style="color: #333; font-size: 20px;"><i class="fas fa-tag"></i> Plan Code: <%= plan.plancode %></h5>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-file-alt"></i> <strong>Discription:</strong> <%= plan.plandescription %></p>
+              <p class="mb-2" style="color: #555; font-size: 16px;"><i class="fas fa-calendar-day"></i> Duration: <%= plan.planduration %> Days</p>
+              <p class="text-body text-sm font-weight-bold mb-0" style="color: #555; font-size: 14px;">
+                <i class="fas fa-calendar"></i> From:
+                <span class="ml-1">
+                  <%= new Date(plan.startdate).toLocaleDateString() %> 
+                  <i class="fas fa-long-arrow-alt-right mx-1"></i> 
+                  <%= new Date(plan.enddate).toLocaleDateString() %>
+                </span>
+              </p>
+            </div>
+          <% } %>
           </div>
           </div>
     </div>
@@ -104,7 +109,7 @@
                 <div class="card-header pb-0">
                   <div class="row">
                     <div class="col-lg-6 col-7">
-                      <h6 class="mb-1"> Detail Activity List</h6>
+                      <h6 class="mb-1"> My Activity List</h6>
                     </div>
                     <div class="col-lg-6 col-5 my-auto text-end">
                       <div class="dropdown float-lg-end pe-4">
@@ -131,8 +136,8 @@
                                 <table class="table align-items-center mb-0">  
                                     <thead>
                                         <th>Is Sent</th>
-                                        <th> Major Activity Info  </th>
-                                    <th>Detail Activity Info  </th>
+                                        <th> Output Info  </th>
+                                    <th> Activity Info  </th>
                                     <th> Target Indicator/ Input/ KPI  </th>
                                     <th> Registered Risk  </th>
                                     <th> Noticication  </th>
@@ -176,7 +181,7 @@
                                                
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    <%if(row.seen ==="Yes"){%>
+                                                    <%if(row.seen ==="Yes" || row.isfinalsent ==="Yes"){%>
                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">  <input type="checkbox" checked>Seen</button>
                                                     <%}else{%>
                                                        <form action="/stvcpms/targetgroup/updateactivitystatusseen" method="post">
@@ -191,7 +196,7 @@
                                                          
                                                         <%}%>   
                                                 <br>
-                                                    <%if(row.start ==="Yes"){%>
+                                                    <%if(row.start ==="Yes" || row.isfinalsent ==="Yes"){%>
                                                        
                                                           <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">   <input type="checkbox" checked> Started</button>
                                                    
@@ -209,7 +214,7 @@
                                                 <td>
                                                   <% if(row.isfinalsent ==="Yes"){%>
                                                     <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
-                                                   Report Sent
+                                                    Progress Report Sent
                                                     </button>
                                                   <%}else{%>
                                                     <button  class="btn mb-2 btn-outline-primary btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
@@ -221,7 +226,7 @@
                                                 <br>
                                                 <% if(row.isfinalsent ==="Yes"){%>
                                                   <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
-                                                 Report Sent
+                                                    Final Report Sent
                                                   </button>
                                                 <%}else{%>
                                                   <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal2" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
@@ -258,7 +263,7 @@
 
 <!-- Modal -->
 <div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Send Progress Report</h5>
@@ -271,40 +276,103 @@
         <form action="/stvcpms/targetgroup/sendprogressreport" method="post">
           <div class="modal-body">
         
-              <div class="d-flex flex-column ">
-                <p class="mb-1 pt-2 text-bold"><small>Detail Activity Infos</small></p>
-              <small>Detail Activity Title:<span class="title"></span></small>
-              <small>Detail Activity KPI Indicator:<span class="kpiindicator"></span></small>
-                <small>Detail Activity KPI Input:<span class="kpiinput"></span></small>
-                <small>Detail Activity KPI:<span class="kpi"></span></small>
-               
-              </div>
-          
-            <input type="hidden" class="js-toggler__input" value="" name="dactivityid" >
-            <input type="hidden" class="indicatorv" value="" name="indicatorv" >
-            <input type="hidden" class="indicatorinputv" value="" name="indicatorinputv" >
-            <input type="hidden" class="kpiinputv" value="" name="kpiinputv" >
-            <input type="hidden" class="planid" value="" name="planid" >
-            <label>Please select report type</label>
-             <select name="reporttype" class="form-control mt-2">
-                <option>Please select progress report type</option>
-                <option>Monthly</option>
-                <option>Quarter</option>
-                <option>Six Month</option>
-              
-             </select>
-              <label> <code>
-                Please Enter Your Indicator Input Heare First (Use Number for (Input type Number,Ratio,Percentage)) If Text Omit it
-              </code></label>
-                <input type="number" class="form-control" value="" name="responseninput" >
-           
-            <textarea type="text" class="form-control  mb-2 mt-2" name="progressreport" placeholder="Progrss Report" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
-           
-             <textarea type="text" class="form-control  mb-2 mt-2" name="remark" placeholder="Remark" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
-              
+            <div class="d-flex flex-column ">
+              <p class="mb-1 pt-2 text-bold"><small>Detail Activity Infos</small></p>
+            <small>Detail Activity Title:<span class="title"></span></small>
+            <small>Detail Activity KPI Indicator:<span class="kpiindicator"></span></small>
+              <small>Detail Activity KPI Input:<span class="kpiinput"></span></small>
+              <small>Detail Activity KPI:<span class="kpi"></span></small>
+             
+            </div>
+        
+          <input type="hidden" class="js-toggler__input" value="" name="dactivityid" >
+          <input type="hidden" class="indicatorv" value="" name="indicatorv" >
+          <input type="hidden" class="indicatorinputv" value="" name="indicatorinputv" >
+          <input type="hidden" class="kpiinputv" value="" name="kpiinputv" >
+          <input type="hidden" class="planid" value="" name="planid" >
+          <label>Please select report type</label>
+           <select name="reporttype" class="form-control mt-2 mb-3"  onchange="showDiv(this)">
+              <option value="0">Please select progress report type</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Quarter">Quarter</option>
+             
             
-           
+           </select>
+           <div class="form-group" id="monthDiv" style="display: none;">
+            <div class="row">
+              <div class="col-md-4">
+                <label>Please select month</label>
+              </div>
+              <div class="col-md-8">
+                <select id="month" class="form-control" name="month">
+                  <option value="0" >please select report month</option>
+                  <option value="january">January</option>
+                  <option value="february">February</option>
+                  <option value="march">March</option>
+                  <option value="april">April</option>
+                  <option value="may">May</option>
+                  <option value="june">June</option>
+                  <option value="july">July</option>
+                  <option value="augest">Augest</option>
+                  <option value="september">September</option>
+                  <option value="october">October</option>
+                  <option value="november">November</option>
+                  <option value="december">December</option>
+                  <!-- Options will be dynamically populated here -->
+                </select>
+              </div>
+            </div>
+             
+                
           </div>
+          <div class="form-group" id="quarterDiv" style="display: none;">
+            <div class="row">
+              <div class="col-md-4">
+                <label>Please select quarter</label>
+              </div>
+              <div class="col-md-8">
+                <select id="quarter" class="form-control" name="quarter">
+                  <option value="0" >please select quarter</option>
+                  <option>1st_Quarter</option>
+                  <option>2st_Quarter</option>
+                  <option>3st_Quarter</option>
+                  <option>4st_Quarter</option>
+                  <!-- Options will be dynamically populated here -->
+                </select>
+              </div>
+            </div>
+             
+          </div>
+          
+          <script>
+             const mdiv = document.getElementById('monthDiv');
+             const qdiv = document.getElementById('quarterDiv');
+           //  const rtv = document.getElementById('reporttype');
+            function showDiv(rtv){
+                     if(rtv.value ==="Monthly"){
+                     mdiv.style.display='block'
+                     qdiv.style.display='none'
+                     }else if(rtv.value ==='Quarter'){
+                      qdiv.style.display='block'
+                     mdiv.style.display='none'
+                     }else{
+                      mdiv.style.display='none'
+                     qdiv.style.display='none'
+                     }
+            }
+          </script>
+            <label> <code>
+              Please Enter Your Indicator Input Heare First (Use Number for (Input type Number,Ratio,Percentage)) If Text Omit it
+            </code></label>
+              <input type="number" class="form-control" value="" name="responseninput" >
+         
+          <textarea type="text" class="form-control  mb-2 mt-2" name="progressreport" placeholder="Progrss Report" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+         
+           <textarea type="text" class="form-control  mb-2 mt-2" name="remark" placeholder="Remark" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+            
+          
+         
+        </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary">Save changes</button>
@@ -315,7 +383,7 @@
   </div>
 
   <div class="modal" id="myModal2" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Send Final Report</h5>

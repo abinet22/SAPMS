@@ -84,7 +84,7 @@
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-  <%- include ('./partials/sideadmin') %>
+  <%- include ('./partials/sidegroup') %>
   <div class="main-content position-relative bg-gray-100 max-height-vh-100 h-100">
     <!-- Navbar -->
     <%- include ('./partials/topadmin') %>
@@ -223,42 +223,36 @@ if (Array.isArray(detailkpi)) {
   // Function to merge the data into a unified structure
   function mergeData() {
     var mergedData = [];
-    var goalCounter = 0;
- 
+
     for (var goalIndex = 0; goalIndex < goals.length; goalIndex++) {
       var goal = goals[goalIndex];
       var outcomeData = [];
-      var outcomeCounter = 0;
+
       for (var outcomeIndex = 0; outcomeIndex < sdir2.length; outcomeIndex++) {
         var outcome = sdir2[outcomeIndex];
-      
+
         if (outcome.sgoalid === goal.sgoalid) {
           var outputData = [];
-          outcomeCounter++;
-          var outputCounter = 0;
+
           for (var outputIndex = 0; outputIndex < mact2.length; outputIndex++) {
             var output = mact2[outputIndex];
-             
+
             if (output.sdirid === outcome.sdirid) {
               var activityData = [];
-              outputCounter++;
-              var activityCounter = 0;
+
               for (var activityIndex = 0; activityIndex < dact2.length; activityIndex++) {
                 var activity = dact2[activityIndex];
 
                 if (activity.mactivityid === output.mactivityid) {
                   var kpiData = [];
-                  activityCounter++;
-                
-                 var kpiCounter = 0;
+
                   for (var kpiIndex = 0; kpiIndex < detailkpi.length; kpiIndex++) {
                     var kpi = detailkpi[kpiIndex];
 
                     if (kpi.dactivityid === activity.dactivityid) {
-                      kpiCounter++;
                       // Map your kpi data here
                       kpiData.push({
-                        title: `KPI ${goalIndex + 1}.${outcomeCounter}.${outputCounter}.${activityCounter}.${kpiCounter} :${kpi.targetgroupname}`,
+                        title: `KPI ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1}.${activityIndex + 1}.${kpiIndex + 1} :${kpi.targetgroupname}`,
                         type: 'kpi2',
                         icon: 'fas fa-list',
                         kpiDetails: kpi,
@@ -269,7 +263,7 @@ if (Array.isArray(detailkpi)) {
 
                   // Map your activity data here
                   activityData.push({
-                    title: `Activity ${goalIndex + 1}.${outcomeCounter}.${outputCounter}.${activityCounter} : ${activity.dactivitytitle}`,
+                    title: `Activity ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1}.${activityIndex + 1} : ${activity.dactivitytitle}`,
                     type: 'activity2',
                     icon: 'fas fa-cog',
                     children: kpiData,
@@ -280,7 +274,7 @@ if (Array.isArray(detailkpi)) {
 
               // Map your output data here
               outputData.push({
-                title: `Output ${goalIndex + 1}.${outcomeCounter}.${outputCounter} : ${output.mactivitytitle}`,
+                title: `Output ${goalIndex + 1}.${outcomeIndex + 1}.${outputIndex + 1} : ${output.mactivitytitle}`,
                 type: 'output2',
                 icon: 'fas fa-cogs fa-1x',
                 children: activityData,
@@ -291,7 +285,7 @@ if (Array.isArray(detailkpi)) {
 
           // Map your outcome data here
           outcomeData.push({
-            title: `Outcome ${goalIndex + 1}.${outcomeCounter} : ${outcome.sdirtitle}`,
+            title: `Outcome ${goalIndex + 1}.${outcomeIndex + 1} : ${outcome.sdirtitle}`,
             type: 'outcome2',
             icon: 'fas fa-compass fa-2x',
             children: outputData,
@@ -323,14 +317,15 @@ if (Array.isArray(detailkpi)) {
       <thead>
         <tr>
           <th>KPI ID</th>
-          <th>Target Group</th>
-          <th>Indicator</th>
-          <th>Input</th>
-          <th>Total KPI</th>
+          <th> Target Indicator/ Input/ KPI  </th>
+          <th> Registered Risk  </th>
           <th>JAN | FEB | MAR</th>
           <th>APR | MAY | JUN</th>
           <th>JUL | AUG | SEP</th>
           <th>OCT | NOV | DEC</th>
+          <th> Noticication  </th>
+          <th> Progress Report  / Final Report </th>
+         
         </tr>
       </thead>
       <tbody>
@@ -357,15 +352,74 @@ function renderKPIRow(kpi, numbering,kpiIndex) {
     <tr>
       <td>${numbering}.${kpiIndex}</td>
       <td>${kpi.kpiDetails.targetgroupname}</td>
-      <td>${kpi.kpiDetails.dacttindicator}</td>
-      <td>${kpi.kpiDetails.dacttinputtype}</td>
-      <td>${kpi.kpiDetails.dactkpi}</td>
+      <td>
+        Indicator:  ${kpi.kpiDetails.dacttindicator} 
+        <br>
+            Indicator Input: ${kpi.kpiDetails.dacttinputtype}
+        <br>
+            KPI: ${kpi.kpiDetails.dactkpi}  
+        </td>
+       <td>  Risk:  ${kpi.kpiDetails.dactregisteredrisk}    </td>
       <td>${kpi.kpiDetails.january !== null ? kpi.kpiDetails.january : 0} | ${kpi.kpiDetails.february !== null ? kpi.kpiDetails.february : 0} | ${kpi.kpiDetails.march !== null ? kpi.kpiDetails.march : 0}</td>
 <td>${kpi.kpiDetails.april !== null ? kpi.kpiDetails.april : 0} | ${kpi.kpiDetails.may !== null ? kpi.kpiDetails.may : 0} | ${kpi.kpiDetails.june !== null ? kpi.kpiDetails.june : 0}</td>
 <td>${kpi.kpiDetails.july !== null ? kpi.kpiDetails.july : 0} | ${kpi.kpiDetails.august !== null ? kpi.kpiDetails.august : 0} | ${kpi.kpiDetails.september !== null ? kpi.kpiDetails.september : 0}</td>
 <td>${kpi.kpiDetails.october !== null ? kpi.kpiDetails.october : 0} | ${kpi.kpiDetails.november !== null ? kpi.kpiDetails.november : 0} | ${kpi.kpiDetails.december !== null ? kpi.kpiDetails.december : 0}</td>
-
-    </tr>
+ <td class="align-middle text-center">
+      if(${kpi.kpiDetails.seen} ==="Yes"){
+          <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">  <input type="checkbox" checked>Seen</button>
+      }else{
+          <form action="/stvcpms/targetgroup/updateactivitystatusseen" method="post">
+          <input name="dactivityid" value="${kpi.kpiDetails.dactivityid}" type="hidden">
+          <input name="planid" value="${kpi.kpiDetails.planid}" type="hidden">
+          
+          <input name="indicator" value="${kpi.kpiDetails.dacttindicator}" type="hidden">
+      
+          <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">   Send Notification</button>
+      
+          </form>
+            
+          }
+  <br>
+      if(${kpi.kpiDetails.start} ==="Yes"){
+          
+            <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">   <input type="checkbox" checked> Started</button>
+      
+      <%}else{%>
+          <form action="/stvcpms/targetgroup/updateactivitystatusstarted" method="post">
+            <input name="dactivityid" value="${kpi.kpiDetails.dactivityid}" type="hidden">
+          <input name="planid" value="${kpi.kpiDetails.planid}" type="hidden">
+          
+          <input name="indicator" value="${kpi.kpiDetails.dacttindicator}" type="hidden">
+            <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">     Start Activity</button>
+      </form>
+          <%}%>      
+  </td>
+  <td>
+     if(${kpi.kpiDetails.isfinalsent} ==="Yes"){
+      <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
+      Report Sent
+      </button>
+    }else{
+      <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="${kpi.kpiDetails.planid}" data-toggler="${kpi.kpiDetails.dactivityid}" data-toggler5="${kpi.kpiDetails.dacttindicator}"  data-toggler3="${kpi.kpiDetails.dactkpi}" data-toggler2="${kpi.kpiDetails.dacttinputtype}" data-toggler4="${kpi.kpiDetails.dactivitytitle}" >
+  
+      Add Progress Report
+      </button>
+      <%}%>
+      
+      
+  <br>
+  if(${kpi.kpiDetails.isfinalsent} ==="Yes"){
+    <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
+    Report Sent
+    </button>
+  }else{
+    <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal2" data-togglerplan ="${kpi.kpiDetails.planid}" data-toggler="${kpi.kpiDetails.dactivityid}" data-toggler5="${kpi.kpiDetails.dacttindicator}"  data-toggler3="${kpi.kpiDetails.dactkpi}" data-toggler2="${kpi.kpiDetails.dacttinputtype}" data-toggler4="${kpi.kpiDetails.dactivitytitle}" >
+      Add Final Report
+    </button>
+    }
+  
+  </td>
+</tr>
     
     
   `;
@@ -527,7 +581,200 @@ document.getElementById('dynamic-list').addEventListener('click', (event) => {
      <%- include ('./partials/footer') %>
     </div>
   </div>
-  
+  <div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Send Progress Report</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      
+
+        <form action="/stvcpms/targetgroup/sendprogressreport" method="post">
+          <div class="modal-body">
+        
+              <div class="d-flex flex-column ">
+                <p class="mb-1 pt-2 text-bold"><small>Detail Activity Infos</small></p>
+              <small>Detail Activity Title:<span class="title"></span></small>
+              <small>Detail Activity KPI Indicator:<span class="kpiindicator"></span></small>
+                <small>Detail Activity KPI Input:<span class="kpiinput"></span></small>
+                <small>Detail Activity KPI:<span class="kpi"></span></small>
+               
+              </div>
+          
+            <input type="hidden" class="js-toggler__input" value="" name="dactivityid" >
+            <input type="hidden" class="indicatorv" value="" name="indicatorv" >
+            <input type="hidden" class="indicatorinputv" value="" name="indicatorinputv" >
+            <input type="hidden" class="kpiinputv" value="" name="kpiinputv" >
+            <input type="hidden" class="planid" value="" name="planid" >
+            <label>Please select report type</label>
+             <select name="reporttype" class="form-control mt-2 mb-3"  onchange="showDiv(this)">
+                <option value="0">Please select progress report type</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarter">Quarter</option>
+               
+              
+             </select>
+             <div class="form-group" id="monthDiv" style="display: none;">
+              <div class="row">
+                <div class="col-md-4">
+                  <label>Please select month</label>
+                </div>
+                <div class="col-md-8">
+                  <select id="month" class="form-control" name="month">
+                    <option value="0" >please select report month</option>
+                    <option value="january">January</option>
+                    <option value="february">February</option>
+                    <option value="march">March</option>
+                    <option value="april">April</option>
+                    <option value="may">May</option>
+                    <option value="june">June</option>
+                    <option value="july">July</option>
+                    <option value="augest">Augest</option>
+                    <option value="september">September</option>
+                    <option value="october">October</option>
+                    <option value="november">November</option>
+                    <option value="december">December</option>
+                    <!-- Options will be dynamically populated here -->
+                  </select>
+                </div>
+              </div>
+               
+                  
+            </div>
+            <div class="form-group" id="quarterDiv" style="display: none;">
+              <div class="row">
+                <div class="col-md-4">
+                  <label>Please select quarter</label>
+                </div>
+                <div class="col-md-8">
+                  <select id="quarter" class="form-control" name="quarter">
+                    <option value="0" >please select quarter</option>
+                    <option>1st_Quarter</option>
+                    <option>2st_Quarter</option>
+                    <option>3st_Quarter</option>
+                    <option>4st_Quarter</option>
+                    <!-- Options will be dynamically populated here -->
+                  </select>
+                </div>
+              </div>
+               
+            </div>
+            
+            <script>
+               const mdiv = document.getElementById('monthDiv');
+               const qdiv = document.getElementById('quarterDiv');
+             //  const rtv = document.getElementById('reporttype');
+              function showDiv(rtv){
+                       if(rtv.value ==="Monthly"){
+                       mdiv.style.display='block'
+                       qdiv.style.display='none'
+                       }else if(rtv.value ==='Quarter'){
+                        qdiv.style.display='block'
+                       mdiv.style.display='none'
+                       }else{
+                        mdiv.style.display='none'
+                       qdiv.style.display='none'
+                       }
+              }
+            </script>
+              <label> <code>
+                Please Enter Your Indicator Input Heare First (Use Number for (Input type Number,Ratio,Percentage)) If Text Omit it
+              </code></label>
+                <input type="number" class="form-control" value="" name="responseninput" >
+           
+            <textarea type="text" class="form-control  mb-2 mt-2" name="progressreport" placeholder="Progrss Report" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+           
+             <textarea type="text" class="form-control  mb-2 mt-2" name="remark" placeholder="Remark" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+              
+            
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="myModal2" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Send Final Report</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      
+
+        <form action="/stvcpms/targetgroup/sendfinalreport" method="post">
+          <div class="modal-body">
+        
+              <div class="d-flex flex-column ">
+                <p class="mb-1 pt-2 text-bold"><small>Detail Activity Infos</small></p>
+              <small>Detail Activity Title:<span class="title"></span></small>
+              <small>Detail Activity KPI Indicator:<span class="kpiindicator"></span></small>
+                <small>Detail Activity KPI Input:<span class="kpiinput"></span></small>
+                <small>Detail Activity KPI:<span class="kpi"></span></small>
+               
+              </div>
+          
+            <input type="hidden" class="js-toggler__input" value="" name="dactivityid" >
+            <input type="hidden" class="indicatorv" value="" name="indicatorv" >
+            <input type="hidden" class="indicatorinputv" value="" name="indicatorinputv" >
+            <input type="hidden" class="kpiinputv" value="" name="kpiinputv" >
+            <input type="hidden" class="planid" value="" name="planid" >
+          
+              <label> <code>
+                Please Enter Your Indicator Input Heare First (Use Number for (Input type Number,Ratio,Percentage)) If Text Omit it
+              </code></label>
+                <input type="number" class="form-control" value="" name="responseninput" >
+           
+            <textarea type="text" class="form-control  mb-2 mt-2" name="finalreport" placeholder="Final Report" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+           
+             <textarea type="text" class="form-control  mb-2 mt-2" name="remark" placeholder="Remark" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+             <code>Add challenges or risks mitigated if any?</code>
+             <textarea type="text" class="form-control  mb-2 mt-2" name="risksmitigated" placeholder="Remark" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+              
+            
+            
+           
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    $('[data-toggle="modal"]').on('click', function () {
+      const toggler = $(this);
+      const toggler_identifier = toggler.attr('data-toggler');
+      const toggler_identifier2 = toggler.attr('data-toggler2');
+      const toggler_identifier3 = toggler.attr('data-toggler3');
+      const toggler_identifier4 = toggler.attr('data-toggler4');
+      const toggler_identifier5 = toggler.attr('data-toggler5');
+      const plantoggleer = toggler.attr('data-togglerplan');
+      console.log(toggler_identifier3);
+      let modal_id = toggler.attr('data-target');
+      $(modal_id).find('.js-toggler__input').val(toggler_identifier);
+      $(modal_id).find('.title').html(toggler_identifier4);
+      $(modal_id).find('.kpiindicator').text(toggler_identifier5);
+    $(modal_id).find('.kpiinput').text(toggler_identifier2);
+    $(modal_id).find('.kpi').text(toggler_identifier3);
+    $(modal_id).find('.indicatorv').val(toggler_identifier5);
+    $(modal_id).find('.indicatorinputv').val(toggler_identifier2);
+    $(modal_id).find('.kpiinputv').val(toggler_identifier3);
+    $(modal_id).find('.planid').val(plantoggleer);
+  });
+  </script>
   <!--   Core JS Files   -->
   <script src="../../../../assets/js/core/popper.min.js"></script>
   <script src="../../../../assets/js/core/bootstrap.min.js"></script>

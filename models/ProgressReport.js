@@ -51,8 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       reporttype: {
         type: DataTypes.STRING,
      
+      },
+      reportmnthquarter:{
+        type: DataTypes.STRING,
       }
- 
   
 })
     return ProgressReport;
