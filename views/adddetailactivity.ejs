@@ -284,12 +284,13 @@
                 <label for="targetindicator">Target Indicator</label>
                 <select class="form-control" name="targetindicator" id="targetindicator">
                   <option value="0">Please select indicator here</option>
-                  <option value="Level_1">Level 1</option>
-                  <option value="Level_2">Level 2</option>
-                  <option value="Level_3">Level 3</option>
-                  <option value="Level_4">Level 4</option>
-                  <option value="shortterm">Short Term</option>
-                  <option value="APN">APN</option>
+                  <% if(activityindicator.length>0){ %>
+                    <% activityindicator.forEach(function(row){ %>
+                       <option value="<%= row.activityindicatorname %>"><%= row.activityindicatorname %></option>
+                    <% })%>
+                  <% }else {%>
+                   <label>No activity indicators where found</label>
+                   <%} %>
                 </select>
               </div>
             

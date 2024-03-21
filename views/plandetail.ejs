@@ -319,10 +319,10 @@
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                               </form>
                             <%}else if(tag === "ma"){%>
-                              <form action="/stvcpms/viewmajoractivitykpi/<%= row.mactivityid %>" method="post">
+                              <!-- <form action="/stvcpms/viewmajoractivitykpi/<%= row.mactivityid %>" method="post">
                                 <input type="hidden" name="planid" value="<%= plan.planid %>">
                                 <button type="submit" class="btn btn-sm btn-primary">Show KPI</button>
-                              </form>
+                              </form> -->
                             <%}else if(tag ==="da"){%>
                               <form action="/stvcpms/viewdetailactivitykpi/<%= row.dactivityid %>" method="post">
                                 <input type="hidden" name="planid" value="<%= plan.planid %>">

@@ -130,6 +130,13 @@ router.get('/addnewannualplan', ensureAuthenticated, async function(req, res) {
 const existingplans = await db.Plan.findAll({});
 res.render('addnewannualplan',{allplans:existingplans});
 });
+
+  router.get('/createactivityindicator', ensureAuthenticated, async function(req, res) {
+    const existingplans = await db.Plan.findAll({});
+    const detailview = await db.StrategicGoal.findAll({});
+    const departmentlist = await db.ActivityIndicator.findAll();
+   res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview});
+    });
 router.get('/createtargetgroup', ensureAuthenticated, async function(req, res) {
   const existingplans = await db.Plan.findAll({});
   const detailview = await db.StrategicGoal.findAll({});
@@ -276,6 +283,49 @@ else{
 }
 
 });
+router.post('/addnewactivityindicator', ensureAuthenticated, async function(req, res) {
+  const {activityindicator} =req.body;
+const existingplans = await db.Plan.findAll({});
+const detailview = await db.StrategicGoal.findAll({});
+const newtargetgroup ={
+ activityindicatorid:uuidv4(),
+ activityindicatorname:activityindicator
+}
+const departmentlist = await db.ActivityIndicator.findAll();
+let errors=[];
+if(!activityindicator){
+  res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Please ensert all reqiured fields'});
+  
+}
+
+else{
+  db.ActivityIndicator.findOne({where:{activityindicatorname:activityindicator}}).then(tg =>{
+    if(tg){
+      res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Activity Indicator already created'});
+  
+    }else{
+      db.ActivityIndicator.create(newtargetgroup)
+      .then(data => {
+        db.ActivityIndicator.findAll().then(newtarg=>{
+          res.render('createactivityindicator',{departmentlist:newtarg,allplans:existingplans,sgoal:detailview,success_msg:'New Activity Indicator created successfully'});
+      
+         }).catch(err =>{
+          res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'New Activity Indicator created successfully'});
+      
+         })
+      }).catch(err => {
+        res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'New Activity Indicator created successfully'});
+
+      })
+
+    }
+  }).catch(err =>{
+    res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Cant create now try later'});
+  })
+  
+}
+
+});
 router.post('/updatedepartmentname', ensureAuthenticated, async function(req, res) {
   const {departmentname,departmentid} =req.body;
 const existingplans = await db.Plan.findAll({});
@@ -311,6 +361,43 @@ else{
     }
   }).catch(err =>{
     res.render('createdepartment',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Cant create now try later'});
+  })
+  
+}
+
+});
+router.post('/deleteactivityindicator', ensureAuthenticated, async function(req, res) {
+  const {activityindicatorid} =req.body;
+const existingplans = await db.Plan.findAll({});
+const detailview = await db.StrategicGoal.findAll({});
+
+const departmentlist = await db.ActivityIndicator.findAll();
+let errors=[];
+if(!activityindicatorid){
+  res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Please ensert all reqiured fields'});
+  
+}
+
+else{
+  db.ActivityIndicator.findOne({where:{activityindicatorid:activityindicatorid}}).then(tg =>{
+    if(tg){
+      db.ActivityIndicator.destroy({where:{activityindicatorid:activityindicatorid}})
+      .then(data => {
+        db.ActivityIndicator.findAll().then(newtarg=>{
+          res.render('createactivityindicator',{departmentlist:newtarg,allplans:existingplans,sgoal:detailview,success_msg:'Activity Indicator name deleted successfully'});
+      
+         }).catch(err =>{
+          res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Error while finding new Activity Indicator '});
+      
+         })
+      }).catch(err => {
+        res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Error while deleting Activity Indicator '});
+
+      })
+
+    }
+  }).catch(err =>{
+    res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Cant Delete now try later'});
   })
   
 }
@@ -413,6 +500,85 @@ const{planid,configcat} =req.body;
 const existingplans = await db.Plan.findAll({});
 const plan = await db.Plan.findOne({where:{planid:planid}});
 var goal,sdir,mact,dact;
+const [totdact2,tdatm2] = await db.sequelize.query(`
+select count(DetailActivities.id) as tot,Plans.planid,plantitle,plancode from DetailActivities
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivities.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+
+group by plancode,planid,plantitle
+`)
+const [startdact2,sa2] = await db.sequelize.query(`
+select count(DetailActivityKPIs.id) as tot,Plans.planid,plantitle,plancode from DetailActivityKPIs
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivityKPIs.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+where  start= 'Yes'
+group by plancode,planid,plantitle
+`)
+const [progressdact2,prs2] = await db.sequelize.query(`
+select count(DetailActivityKPIs.id) as tot,Plans.planid,plantitle,plancode from DetailActivityKPIs
+inner join ProgressReports on ProgressReports.dactivityid = DetailActivityKPIs.dactivityid
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivityKPIs.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+
+group by plancode,planid,plantitle
+`)
+const [finisheddact2,fir2] = await db.sequelize.query(`
+select count(DetailActivityKPIs.id) as tot,Plans.planid,plantitle,plancode from DetailActivityKPIs
+inner join FinalReports on FinalReports.dactivityid = DetailActivityKPIs.dactivityid
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivityKPIs.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+
+group by plancode,planid,plantitle
+`)
+const [totdact,tdatm] = await db.sequelize.query(`
+select count(DetailActivities.id) as tot,Plans.planid,plantitle,plancode from DetailActivities
+inner join DetailActivityKPIs on DetailActivities.dactivityid = DetailActivityKPIs.dactivityid
+
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivities.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+where  dacttgroup ='${req.user.targetgid}'
+group by plancode,planid,plantitle
+`)
+const [startdact,sa] = await db.sequelize.query(`
+select count(DetailActivityKPIs.id) as tot,Plans.planid,plantitle,plancode from DetailActivityKPIs
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivityKPIs.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+where  dacttgroup ='${req.user.targetgid}' and start= 'Yes'
+group by plancode,planid,plantitle
+`)
+const [progressdact,prs] = await db.sequelize.query(`
+select count(DetailActivityKPIs.id) as tot,Plans.planid,plantitle,plancode from DetailActivityKPIs
+inner join ProgressReports on ProgressReports.dactivityid = DetailActivityKPIs.dactivityid
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivityKPIs.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+where  dacttgroup ='${req.user.targetgid}'
+group by plancode,planid,plantitle
+`)
+const [finisheddact,fir] = await db.sequelize.query(`
+select count(DetailActivityKPIs.id) as tot,Plans.planid,plantitle,plancode from DetailActivityKPIs
+inner join FinalReports on FinalReports.dactivityid = DetailActivityKPIs.dactivityid
+inner join MajorActivities on MajorActivities.mactivityid = DetailActivityKPIs.mactivityid
+inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid
+inner join StrategicGoals on StrategicDirections.sgoalid = StrategicGoals.sgoalid
+inner join Plans on Plans.planid = StrategicGoals.planid
+where  dacttgroup ='${req.user.targetgid}'
+group by plancode,planid,plantitle
+`)
+
 if(plan){
   goal = await db.StrategicGoal.findOne({where:{planid:planid}}).catch(err =>{
     console.log(err)
@@ -454,12 +620,22 @@ const sdir = await db.StrategicDirection.findAll({});
 const mact = await db.MajorActivity.findAll({});
 const dact = await db.DetailActivity.findAll({});
   if(req.user.user_roll==="Admin"){
-    res.render('dashboard',{user:req.user,allplans:existingplans,plan:plan,sdir:sdir,mact:mact,goal:goal,dact:dact,
+    res.render('dashboard',{
+      totdact:totdact2,
+      startdact:startdact2,
+      progressdact:progressdact2,
+      finisheddact:finisheddact2,
+      user:req.user,allplans:existingplans,plan:plan,sdir:sdir,mact:mact,goal:goal,dact:dact,
     error_msg:'Please Finish Plan Detail'
     });
   
   }else {
-    res.render('dashboardtarget',{user:req.user,allplans:existingplans,plan:plancurrent,sdir:sdir,mact:mact,goal:goal,dact:dact});
+    res.render('dashboardtarget',{
+      totdact:totdact2,
+      startdact:startdact2,
+      progressdact:progressdact2,
+      finisheddact:finisheddact2,
+      user:req.user,allplans:existingplans,plan:plancurrent,sdir:sdir,mact:mact,goal:goal,dact:dact});
   
   }
 }else{
@@ -951,7 +1127,8 @@ router.post('/addplandetailactivity', ensureAuthenticated, async function(req, r
   const{mactivityid,sdirid,sgoalid,planid} =req.body;
   const sdir = await db.StrategicDirection.findAll({where:{sdirid:sdirid}});
   const mact = await db.MajorActivity.findAll({where:{sdirid:sdirid}});
-  const existingplans = await db.Plan.findAll({})
+  const existingplans = await db.Plan.findAll({});
+  const activityindicator = await db.ActivityIndicator.findAll({});
   const targetgrouplist  = await db.TargetGroup.findAll()
   if(mactivityid ==="0"){
     res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please select major activity first',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,mact:mact,sdir:sdir,mactivityid:mactivityid});
@@ -959,12 +1136,12 @@ router.post('/addplandetailactivity', ensureAuthenticated, async function(req, r
     const mact2 = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}})
    db.DetailActivity.findAll({where:{mactivityid:mactivityid}}).then(dact =>{
     if(dact){
-     res.render('adddetailactivity',{targetgrouplist:targetgrouplist,success_msg:'You can add edit or delete detail activities here',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
+     res.render('adddetailactivity',{activityindicator:activityindicator,targetgrouplist:targetgrouplist,success_msg:'You can add edit or delete detail activities here',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
     }else{
-      res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Cant find  detail activities with this id. please try again',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
+      res.render('adddetailactivity',{activityindicator:activityindicator,targetgrouplist:targetgrouplist,error_msg:'Cant find  detail activities with this id. please try again',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
     }
    }).catch(err =>{
-    res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding  detail activities with id try again',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
+    res.render('adddetailactivity',{activityindicator:activityindicator,targetgrouplist:targetgrouplist,error_msg:'Error while finding  detail activities with id try again',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
    })
   }
 });
@@ -976,9 +1153,10 @@ router.post('/addkpifordetailactivity', ensureAuthenticated, async function(req,
   const mact = await db.MajorActivity.findAll({where:{sdirid:curactivity.sdirid}});
   const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
   const existingplans = await db.Plan.findAll({})
-  const targetgrouplist  = await db.TargetGroup.findAll()
+  const targetgrouplist  = await db.TargetGroup.findAll();
+  const activityindicator = await db.ActivityIndicator.findAll({})
   if(!mactivityid || !criteria || !dactivityid ||!targetgroup ||!targetindicator ||!dactinputtype ||!dactkpi||!registeredrisk){
-    res.render('adddetailactivity',{sdirid:sdirid,planid:planid, dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please add all required fields',dact:dact,allplans:existingplans,mact:mact,mactivityid:mactivityid});
+    res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid, dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please add all required fields',dact:dact,allplans:existingplans,mact:mact,mactivityid:mactivityid});
   }else{
     try {
       // Parse the JSON string into an array of objects
@@ -1010,23 +1188,23 @@ router.post('/addkpifordetailactivity', ensureAuthenticated, async function(req,
         dacttindicator:targetindicator,dactkpi: dactkpi
       }});
       if(olddactkpi){
-        res.render('adddetailactivity',{sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error KPI aready registered!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+        res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error KPI aready registered!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
   
       }else{
         console.log("activityData",activityData)
         db.DetailActivityKPI.create(activityData).then(dakpi =>{
-          res.render('adddetailactivity',{sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, success_msg: 'KPIs added successfully!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+          res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, success_msg: 'KPIs added successfully!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
   
         }).catch (err => {
           console.error('Error inserting criteria data:', err);
-          res.render('adddetailactivity',{sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error occurred while adding criteria.!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+          res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error occurred while adding criteria.!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
   
         })
       }
       
     } catch (err) {
       console.error('Error inserting criteria data:', err);
-      res.render('adddetailactivity',{sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error occurred while adding criteria.!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+      res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error occurred while adding criteria.!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
 
     }
   
@@ -1288,11 +1466,12 @@ router.post('/addnewdetailactivity', ensureAuthenticated, async function(req, re
     const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
     const dept = await db.TargetGroup.findAll({});
     const targetgrouplist = await db.TargetGroup.findAll();
+    const activityindicator = await db.ActivityIndicator.findAll({})
     if(!mactivityid || !dactcode || !dactduration || !dactdescription || !startdate || !enddate || !dacttitle){
     errors.push({mssg:'Please add all required fields'})
     }
     if(errors.length >0){
-    res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter all required fields',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid,planid:planid,sdirid:sdirid});
+    res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter all required fields',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid,planid:planid,sdirid:sdirid});
     }else{
     
     const uuid = uuidv4();
@@ -1310,24 +1489,24 @@ router.post('/addnewdetailactivity', ensureAuthenticated, async function(req, re
     }
     db.DetailActivity.findOne({where:{dactivitycode:dactcode}}).then(sd=>{
       if(sd){
-        res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter new detail activity.code already exist.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter new detail activity.code already exist.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
       }else{
       db.DetailActivity.create(newdetailactivity).then(dacts =>{
       if(dacts){
         db.DetailActivity.findAll({where:{mactivityid:mactivityid}}).then(alldact =>{
-        res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,success_msg:'You are successfully create new detail activity please add all the necessary attributes',planid:planid,sdirid:sdirid,dact:alldact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,success_msg:'You are successfully create new detail activity please add all the necessary attributes',planid:planid,sdirid:sdirid,dact:alldact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
         }).catch(err =>{
-        res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while finding exsting updated detail activity.' ,planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while finding exsting updated detail activity.' ,planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
         })
       }else{
-        res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter new detail activity code. detail activity code already exist.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+        res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter new detail activity code. detail activity code already exist.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
       }
       }).catch(err =>{
-      res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while creating new detail activity.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+      res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while creating new detail activity.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
       })
       }
     }).catch(err =>{
-      res.render('adddetailactivity',{dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while finding existing detail activity.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+      res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while finding existing detail activity.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
     })
     
     }
@@ -1410,6 +1589,7 @@ router.post('/viewdetailactivitykpi/(:dactivityid)',ensureAuthenticated, async f
   const targetgrouplist = await db.TargetGroup.findAll({});
   const dept = await db.TargetGroup.findAll({})
   const plan = await db.Plan.findOne({});
+  const activityindicator = await db.ActivityIndicator.findAll({});
   const allmact = await db.MajorActivity.findAll({where:{mactivityid:mactivityid}});
   const [budgetsummery,bsm] = await db.sequelize.query(`
   SELECT sum(budget) as budget from DetailActivityKPIs
@@ -1417,10 +1597,10 @@ where dactivityid='${req.params.dactivityid}'
   `)
   db.DetailActivityKPI.findAll({where:{dactivityid:req.params.dactivityid}}).then(dkpi =>{
    
-    res.render('detailactivitykpi',{planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:dkpi,allplans:existingplans,dactone:dactone,plan:plan})
+    res.render('detailactivitykpi',{activityindicator:activityindicator,planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:dkpi,allplans:existingplans,dactone:dactone,plan:plan})
 
   }).catch(err =>{
-    res.render('detailactivitykpi',{planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:'',allplans:existingplans,dactone:dactone,plan:plan})
+    res.render('detailactivitykpi',{activityindicator:activityindicator,planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:'',allplans:existingplans,dactone:dactone,plan:plan})
   })
 })
 router.post('/downloaddetailplan',ensureAuthenticated,async function(req,res){
@@ -1807,6 +1987,7 @@ router.post('/deletedetailactivitykpi/(:id)',ensureAuthenticated, async function
   const dept = await db.TargetGroup.findAll({})
   const plan = await db.Plan.findOne({});
   const allmact = await db.MajorActivity.findAll({where:{mactivityid:mactivityid}});
+  const activityindicator =  await db.ActivityIndicator.findAll({});
   const [budgetsummery,bsm] = await db.sequelize.query(`
   SELECT sum(budget) as budget from DetailActivityKPIs
 where dactivityid='${dactivityid}'
@@ -1820,10 +2001,10 @@ where dactivityid='${dactivityid}'
     if(dkpi){
  
     }
-     res.render('detailactivitykpi',{planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:dkpi,allplans:existingplans,dactone:dactone,plan:plan})
+     res.render('detailactivitykpi',{activityindicator:activityindicator,planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:dkpi,allplans:existingplans,dactone:dactone,plan:plan})
  
    }).catch(err =>{
-     res.render('detailactivitykpi',{planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:'',allplans:existingplans,dactone:dactone,plan:plan})
+     res.render('detailactivitykpi',{activityindicator:activityindicator,planid:planid,budgetsummery:budgetsummery[0].budget,dept:dept,targetgrouplist:targetgrouplist,allmact:allmact,dkpi:'',allplans:existingplans,dactone:dactone,plan:plan})
    })
  }
 

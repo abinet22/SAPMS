@@ -252,7 +252,7 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
                 <input type="hidden" name="sdirid" value="<%= allmact.sdirid %>">
                 <input type="hidden" name="planid" value="<%= planid %>">
                 <div class="row">
-                  <div class="col-md-2">
+                  <div class="col-md-4">
                     <label>Target Group</label>
                  <select class="form-control" name="targetgroup" id="targetgroup">
                   <option value="0">Please select target group here</option>
@@ -265,21 +265,22 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
                   <%} %>
                  </select>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-4">
                     <label>Target Indicator</label>
                     <select class="form-control" name="targetindicator" id="targetindicator">
                      <option value="0">Please select indicator here</option>
-                     <option value="Level_1">Level 1</option>
-                     <option value="Level_2">Level 2</option>
-                     <option value="Level_3">Level 3</option>
-                     <option value="Level_4">Level 4</option>
-                     <option value="shortterm">Short Term</option>
-                     <option value="APN">APN</option>
+                     <% if(activityindicator.length>0){ %>
+                      <% activityindicator.forEach(function(row){ %>
+                         <option value="<%= row.activityindicatorname %>"><%= row.activityindicatorname %></option>
+                      <% })%>
+                    <% }else {%>
+                     <label>No activity indicators where found</label>
+                     <%} %>
                     
                     </select>
                   </div>
                  
-                  <div class="col-md-2">
+                  <div class="col-md-4">
                     <label>Input Type</label>
                     <select class="form-control" id="dactinputtype" name="dactinputtype">
                      <option value="0">Please select input type indicator here</option>
@@ -291,13 +292,13 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
                   
                     </select>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-6">
                     <label>Total KPI<code>Use Description If Input Is Not Number</code></label>
                     <input type="text" class="form-control mb-2" id="dactkpi" name="dactkpi"
                      placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
              
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-6">
                     <label>Total Budget</label>
                     <input type="number" class="form-control mb-2" id="budget" name="budget"
                      placeholder="Budget" aria-label="Name" aria-describedby="email-addon">
