@@ -184,7 +184,7 @@ console.log(goals)
   const cleangoal = goals.replace(/\n/g, '').replace(/\s+/g, ' ');
 
   goals = JSON.parse(cleanJSON(cleangoal))
-
+  console.log(goals)
 } 
 if (Array.isArray(sdir2)) { 
   sdir2 = JSON.parse(sdir2)
@@ -192,7 +192,7 @@ if (Array.isArray(sdir2)) {
   const cleansdr = sdir2.replace(/\n/g, '').replace(/\s+/g, ' ');
 
   sdir2 = JSON.parse(cleansdr)
-  
+  console.log(sdir2)
 } 
 if (Array.isArray(mact2)) { 
   mact2 = JSON.parse(mact2)
@@ -201,7 +201,7 @@ if (Array.isArray(mact2)) {
   const cleanmact = mact2.replace(/\n/g, '').replace(/\s+/g, ' ');
 
   mact2 = JSON.parse(cleanmact)
- 
+  console.log(mact2)
 } 
 if (Array.isArray(dact2)) { 
   dact2 = JSON.parse(dact2)
@@ -209,7 +209,7 @@ if (Array.isArray(dact2)) {
   const cleandact = dact2.replace(/\n/g, '').replace(/\s+/g, ' ');
 
   dact2 = JSON.parse(cleandact)
- 
+  console.log(dact2)
 } 
 if (Array.isArray(detailkpi)) { 
   detailkpi = JSON.parse(detailkpi)
@@ -217,6 +217,7 @@ if (Array.isArray(detailkpi)) {
   const cleankpi = detailkpi.replace(/\n/g, '').replace(/\s+/g, ' ');
 
   detailkpi = JSON.parse(cleankpi)
+  console.log(detailkpi)
 } 
 // Function to merge the data into a unified structure
 
