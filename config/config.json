@@ -2,7 +2,7 @@
   "development": {
     "username": "admin",
     "password": "R1445o123/",
-    "database": "stvcpms",
+    "database": "selampms",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "pool": {

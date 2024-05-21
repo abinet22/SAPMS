@@ -23,6 +23,26 @@
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
   <style>
+    .limit-text {
+    overflow: hidden;
+  
+    max-height: 100px; /* Adjust the max height as needed */
+}
+
+.full-text {
+    white-space: normal !important;
+    max-height: 600px !important;
+}
+
+
+.read-more {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+  </style>
+  <style>
     .ol {
       list-style-type: none;
       counter-reset: item;
@@ -71,6 +91,39 @@
     </div>
     <div class="container-fluid py-4">
       <%- include('./partials/messages') %>
+      <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <h4>To Do</h4>
+                <div class="card col-12 mb-4">
+                    <div class="card-header bg-info text-white">
+                        <%= detailkpi.filter(row => row.dactivityid &&  row.seen != "Yes" && row.start != "Yes").length %> Activitiess
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <h4>In Progress</h4>
+                <div class="card col-12 mb-4">
+                    <div class="card-header bg-warning text-white">
+                        <%= detailkpi.filter(row => row.dactivityid && row.isfinalsent != "Yes" && row.start === "Yes").length %> Activities
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <h4>Done</h4>
+                <div class="card col-12 mb-4">
+                    <div class="card-header bg-success text-white">
+                        <%= detailkpi.filter(row => row.dactivityid && row.isfinalsent === "Yes").length %> Activities
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
       <div class="col-12 mt-4">
         <div class="card-body mb-4">
           <% if(plan){ %>
@@ -127,128 +180,338 @@
                 <div class="card-body px-0 pb-2">
                     <div class="col-md-12">
                         <% if(plan){ %>
+                          
                            <% var g = 0 ;%>
                            <% var d = 0 ;%>
                            <% var ma = 0 ;%>
                            <% var da = 0 ;%>
                              <% planid = plan.planid %>
-                             <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">  
-                                    <thead>
-                                        <th>Is Sent</th>
-                                        <th> Output Info  </th>
-                                    <th> Activity Info  </th>
-                                    <th> Target Indicator/ Input/ KPI  </th>
-                                    <th> Registered Risk  </th>
-                                    <th> Noticication  </th>
-                                    <th> Progress Report  / Final Report </th>
-                                    </thead>
-                                    <tbody>
-                                        <% if(detailkpi.length >0){ %>
-                                    <% detailkpi.forEach(function (row){%>
-                                 <% if(row.dactivityid){%>
-                                     
-                                      
-                                            <tr>
-                                                <td>
-                                                    <%if(row.isfinalsent ==="Yes"){%>
-                                                       
-                                                      <input type="checkbox" checked> Report Sent
-                                                 
-                                                  <%}%>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    <small>  Title:-    <%= row.mactivitytitle %>  <br>
-                                                        Code:-   <%= row.mactivitycode %>  <br>
-                                                        Description:-   <%= row.dactivitydescription %>  </small>
-                                                    </td>
-                                                <td class="align-middle text-center">
-                                                <small> Title:-   <%= row.dactivitytitle %>  <br>
-                                                    Code:- <%= row.dactivitycode %>  <br>
-                                                   Description:- <%= row.dactivitydescription %> <br>
-                                                    From <%= new Date(row.startdate).toLocaleDateString() %> to  <%= new Date(row.enddate).toLocaleDateString() %>
-                                                </small>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    Indicator:  <%= row.dacttindicator %>  
-                                                <br>
-                                                   Indicator Input: <%= row.dacttinputtype %>
-                                               <br>
-                                                   KPI: <%= row.dactkpi %>      
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    Risk:  <%= row.dactregisteredrisk %>  
-                                               
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    <%if(row.seen ==="Yes" || row.isfinalsent ==="Yes"){%>
-                                                       <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">  <input type="checkbox" checked>Seen</button>
-                                                    <%}else{%>
-                                                       <form action="/stvcpms/targetgroup/updateactivitystatusseen" method="post">
-                                                       <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
-                                                       <input name="planid" value="<%= planid %>" type="hidden">
-                                                       
-                                                       <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
-                                                    
-                                                       <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">   Send Notification</button>
-                                                   
-                                                       </form>
-                                                         
-                                                        <%}%>   
-                                                <br>
-                                                    <%if(row.start ==="Yes" || row.isfinalsent ==="Yes"){%>
-                                                       
-                                                          <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">   <input type="checkbox" checked> Started</button>
-                                                   
-                                                    <%}else{%>
-                                                        <form action="/stvcpms/targetgroup/updateactivitystatusstarted" method="post">
-                                                            <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
-                                                            <input name="planid" value="<%= planid %>" type="hidden">
-                                                                  
-                                                       <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
-                                                    
-                                                          <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">     Start Activity</button>
-                                                   </form>
-                                                        <%}%>      
-                                                </td>
-                                                <td>
-                                                  <% if(row.isfinalsent ==="Yes"){%>
-                                                    <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
-                                                    Progress Report Sent
-                                                    </button>
-                                                  <%}else{%>
-                                                    <button  class="btn mb-2 btn-outline-primary btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
-                                                      Add Progress Report
-                                                    </button>
-                                                   <%}%>
-                                                   
-                                                    
-                                                <br>
-                                                <% if(row.isfinalsent ==="Yes"){%>
-                                                  <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
-                                                    Final Report Sent
-                                                  </button>
-                                                <%}else{%>
-                                                  <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal2" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
-                                                    Add Final Report
-                                                  </button>
-                                                 <%}%>
-                                               
-                                                </td>
-                                            </tr>
-                                         
-                                   
-                                 <%}%>
-                                 <%})}else{%>
-                                    <tr>No KPI IS FOUND</tr>
-                                    <%}%>
-                                </tbody>
-                                </table>
-                             </div>
                            
+                          <div class="container-fluid">
+                            <div class="row">
+                                <!-- Column for To Do activities -->
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <h4>To Do</h4>
+                                        <!-- Activities with status To Do -->
+                                        <% detailkpi.forEach(function (row){%>
+
+                                            <% if(row.dactivityid && row.seen != "Yes" && row.start != "Yes"){%>
+                                                
+                                                    <div class="card col-12 mb-4">
+                                                    
+                                                                 
+                                                      <div class="card-header bg-info text-white">
+                                                        <%= row.sgoaltitle %>
+                                                    </div>
+                                                        <div class="card-body">
+                                                            
+                                                          <h6 class="card-title limit-text"><%= row.sgoaltitle %></h6>
+                                                          <p class="card-text limit-text">
+                                                              <strong>Output :</strong> <%= row.mactivitytitle %><br>
+                                                              <strong>Output Code:</strong> <%= row.mactivitycode %><br>
+                                                              <strong>Description:</strong> <%= row.mactivitydescription %><br>
+                                                              <hr>
+                                                            <div id="toshow" style="display: none;">
+                                                              <small> Activity:-   <%= row.dactivitytitle %>  <br>
+                                                                Code:- <%= row.dactivitycode %>  <br>
+                                                                Description:- <%= row.dactivitydescription %> <br>
+                                                                From <%= new Date(row.startdate).toLocaleDateString() %> to  <%= new Date(row.enddate).toLocaleDateString() %>
+                                                            </small>
+                                                            <hr>
+                                                            <strong>Target Indicator/Input/KPI:</strong> <%= row.dacttindicator %>/<%= row.dacttinputtype %>/<%= row.dactkpi %><br>
+                                                            <strong>Registered Risk:</strong> <%= row.dactregisteredrisk %><br>
+                                                        </p>
+                                                          <div class="row">
+                                                           <div class="col-md-6">
+                                                            <%if(row.seen ==="Yes" || row.isfinalsent ==="Yes"){%>
+                                                              <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">  <input type="checkbox" checked>Seen</button>
+                                                           <%}else{%>
+                                                              <form action="/stvcpms/targetgroup/updateactivitystatusseen" method="post">
+                                                              <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
+                                                              <input name="planid" value="<%= planid %>" type="hidden">
+                                                              
+                                                              <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
+                                                           
+                                                              <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">   Send Notification</button>
+                                                          
+                                                              </form>
+                                                                
+                                                               <%}%> 
+                                                           </div> 
+                                                           <div class="col-md-6">
+                                                            <%if(row.start ==="Yes" || row.isfinalsent ==="Yes"){%>
+                                                              
+                                                              <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">   <input type="checkbox" checked> Started</button>
+                                                       
+                                                        <%}else{%>
+                                                            <form action="/stvcpms/targetgroup/updateactivitystatusstarted" method="post">
+                                                                <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
+                                                                <input name="planid" value="<%= planid %>" type="hidden">
+                                                                      
+                                                           <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
+                                                        
+                                                              <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">     Start Activity Now</button>
+                                                       </form>
+                                                            <%}%>
+                                                           </div>
+                                                          </div>
+                                                        
+                                                          <div class="row">
+                                                             
+                                                           <div class="col-lg-6">
+                                                            <% if(row.isfinalsent ==="Yes"){%>
+                                                              <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
+                                                              Progress Report Sent
+                                                              </button>
+                                                            <%}else{%>
+                                                              <button  class="btn mb-2 btn-outline-primary btn-sm mb-2 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
+                                                                Add Progress Report
+                                                              </button>
+                                                             <%}%>
+                                                           </div>
+                                                           <div class="col-lg-6">
+                                                            <% if(row.isfinalsent ==="Yes"){%>
+                                                              <button  class="btn mb-2 btn-outline-success btn-sm mb-2 btn-block"  ><input type="checkbox" checked>
+                                                                Final Report Sent
+                                                              </button>
+                                                            <%}else{%>
+                                                              <button  class="btn mb-2 btn-outline-success btn-sm mb-2 btn-block" data-toggle="modal" data-target="#myModal2" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
+                                                                Add Final Report
+                                                              </button>
+                                                             <%}%>    
+                                                           </div>
+                                                           
+                                                          </div>
+                                                            </div>
+                                                           
+                                                        </div>
+                                                    <div class="card-footer">
+                                                      <button type="button" class="btn btn-sm read-more">Read More</button>
+                                                    </div>
+                                                    </div>
+                                                
+                                            <%}%>
+                                        <%})%>
+                                    </div>
+                                </div>
+                               
+                                <!-- Column for In Progress activities -->
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <h4>In Progress</h4>
+                                        <!-- Activities with status In Progress -->
+                                        <% detailkpi.forEach(function (row){%>
+                                            <% if(row.dactivityid && row.seen === "Yes" && row.isfinalsent != "Yes" && row.start === "Yes"){%>
+                                              <div class="card col-12 mb-4">
+                                                    
+                                                                 
+                                                <div class="card-header bg-warning text-white">
+                                                  <%= row.sgoaltitle %>
+                                                </div>
+                                            
+                                                  <div class="card-body">
+                                                      
+                                                    <h6 class="card-title limit-text"><%= row.sgoaltitle %></h6>
+                                                    <p class="card-text limit-text">
+                                                        <strong>Output :</strong> <%= row.mactivitytitle %><br>
+                                                        <strong>Output Code:</strong> <%= row.mactivitycode %><br>
+                                                        <strong>Description:</strong> <%= row.mactivitydescription %><br>
+                                                        <hr>
+                                                      <div id="toshow" style="display: none;">
+                                                        <small> Activity:-   <%= row.dactivitytitle %>  <br>
+                                                          Code:- <%= row.dactivitycode %>  <br>
+                                                          Description:- <%= row.dactivitydescription %> <br>
+                                                          From <%= new Date(row.startdate).toLocaleDateString() %> to  <%= new Date(row.enddate).toLocaleDateString() %>
+                                                      </small>
+                                                      <hr>
+                                                      <strong>Target Indicator/Input/KPI:</strong> <%= row.dacttindicator %>/<%= row.dacttinputtype %>/<%= row.dactkpi %><br>
+                                                      <strong>Registered Risk:</strong> <%= row.dactregisteredrisk %><br>
+                                                  </p>
+                                                    <div class="row">
+                                                     <div class="col-md-6">
+                                                      <%if(row.seen ==="Yes" || row.isfinalsent ==="Yes"){%>
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">  <input type="checkbox" checked>Seen</button>
+                                                     <%}else{%>
+                                                        <form action="/stvcpms/targetgroup/updateactivitystatusseen" method="post">
+                                                        <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
+                                                        <input name="planid" value="<%= planid %>" type="hidden">
+                                                        
+                                                        <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
+                                                     
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">   Send Notification</button>
+                                                    
+                                                        </form>
+                                                          
+                                                         <%}%> 
+                                                     </div> 
+                                                     <div class="col-md-6">
+                                                      <%if(row.start ==="Yes" || row.isfinalsent ==="Yes"){%>
+                                                        
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">   <input type="checkbox" checked> Started</button>
+                                                 
+                                                  <%}else{%>
+                                                      <form action="/stvcpms/targetgroup/updateactivitystatusstarted" method="post">
+                                                          <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
+                                                          <input name="planid" value="<%= planid %>" type="hidden">
+                                                                
+                                                     <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
+                                                  
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">     Start Activity Now</button>
+                                                 </form>
+                                                      <%}%>
+                                                     </div>
+                                                    </div>
+                                                  
+                                                    <div class="row">
+                                                       
+                                                     <div class="col-lg-6">
+                                                      <% if(row.isfinalsent ==="Yes"){%>
+                                                        <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
+                                                        Progress Report Sent
+                                                        </button>
+                                                      <%}else{%>
+                                                        <button  class="btn mb-2 btn-outline-primary btn-sm mb-2 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
+                                                          Add Progress Report
+                                                        </button>
+                                                       <%}%>
+                                                     </div>
+                                                     <div class="col-lg-6">
+                                                      <% if(row.isfinalsent ==="Yes"){%>
+                                                        <button  class="btn mb-2 btn-outline-success btn-sm mb-2 btn-block"  ><input type="checkbox" checked>
+                                                          Final Report Sent
+                                                        </button>
+                                                      <%}else{%>
+                                                        <button  class="btn mb-2 btn-outline-success btn-sm mb-2 btn-block" data-toggle="modal" data-target="#myModal2" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
+                                                          Add Final Report
+                                                        </button>
+                                                       <%}%>    
+                                                     </div>
+                                                     
+                                                    </div>
+                                                      </div>
+                                                     
+                                                  </div>
+                                              <div class="card-footer">
+                                                <button type="button" class="btn btn-sm read-more">Read More</button>
+                                              </div>
+                                              </div>
+                                            <%}%>
+                                        <%})%>
+                                    </div>
+                                </div>
+                               
+                                <!-- Column for Done activities -->
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <h4>Done</h4>
+                                        <!-- Activities with status Done -->
+                                        <% detailkpi.forEach(function (row){%>
+                                            <% if(row.dactivityid && row.isfinalsent === "Yes"){%>
+                                              <div class="card col-12 mb-4">
+                                                    
+                                                                 
+                                                <div class="card-header bg-warning text-white">
+                                                  <%= row.sgoaltitle %>
+                                                </div>
+                                            
+                                                  <div class="card-body">
+                                                      
+                                                    <h6 class="card-title limit-text"><%= row.sgoaltitle %></h6>
+                                                    <p class="card-text limit-text">
+                                                        <strong>Output :</strong> <%= row.mactivitytitle %><br>
+                                                        <strong>Output Code:</strong> <%= row.mactivitycode %><br>
+                                                        <strong>Description:</strong> <%= row.mactivitydescription %><br>
+                                                        <hr>
+                                                      <div id="toshow" style="display: none;">
+                                                        <small> Activity:-   <%= row.dactivitytitle %>  <br>
+                                                          Code:- <%= row.dactivitycode %>  <br>
+                                                          Description:- <%= row.dactivitydescription %> <br>
+                                                          From <%= new Date(row.startdate).toLocaleDateString() %> to  <%= new Date(row.enddate).toLocaleDateString() %>
+                                                      </small>
+                                                      <hr>
+                                                      <strong>Target Indicator/Input/KPI:</strong> <%= row.dacttindicator %>/<%= row.dacttinputtype %>/<%= row.dactkpi %><br>
+                                                      <strong>Registered Risk:</strong> <%= row.dactregisteredrisk %><br>
+                                                  </p>
+                                                    <div class="row">
+                                                     <div class="col-md-6">
+                                                      <%if(row.seen ==="Yes" || row.isfinalsent ==="Yes"){%>
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">  <input type="checkbox" checked>Seen</button>
+                                                     <%}else{%>
+                                                        <form action="/stvcpms/targetgroup/updateactivitystatusseen" method="post">
+                                                        <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
+                                                        <input name="planid" value="<%= planid %>" type="hidden">
+                                                        
+                                                        <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
+                                                     
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">   Send Notification</button>
+                                                    
+                                                        </form>
+                                                          
+                                                         <%}%> 
+                                                     </div> 
+                                                     <div class="col-md-6">
+                                                      <%if(row.start ==="Yes" || row.isfinalsent ==="Yes"){%>
+                                                        
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-success">   <input type="checkbox" checked> Started</button>
+                                                 
+                                                  <%}else{%>
+                                                      <form action="/stvcpms/targetgroup/updateactivitystatusstarted" method="post">
+                                                          <input name="dactivityid" value="<%= row.dactivityid %>" type="hidden">
+                                                          <input name="planid" value="<%= planid %>" type="hidden">
+                                                                
+                                                     <input name="indicator" value="<%= row.dacttindicator %>" type="hidden">
+                                                  
+                                                        <button type="submit" class="btn btn-block mb-2 btn-sm btn-outline-info">     Start Activity Now</button>
+                                                 </form>
+                                                      <%}%>
+                                                     </div>
+                                                    </div>
+                                                  
+                                                    <div class="row">
+                                                       
+                                                     <div class="col-lg-6">
+                                                      <% if(row.isfinalsent ==="Yes"){%>
+                                                        <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
+                                                        Progress Report Sent
+                                                        </button>
+                                                      <%}else{%>
+                                                        <button  class="btn mb-2 btn-outline-primary btn-sm mb-2 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
+                                                          Add Progress Report
+                                                        </button>
+                                                       <%}%>
+                                                     </div>
+                                                     <div class="col-lg-6">
+                                                      <% if(row.isfinalsent ==="Yes"){%>
+                                                        <button  class="btn mb-2 btn-outline-success btn-sm mb-2 btn-block"  ><input type="checkbox" checked>
+                                                          Final Report Sent
+                                                        </button>
+                                                      <%}else{%>
+                                                        <button  class="btn mb-2 btn-outline-success btn-sm mb-2 btn-block" data-toggle="modal" data-target="#myModal2" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
+                                                          Add Final Report
+                                                        </button>
+                                                       <%}%>    
+                                                     </div>
+                                                     
+                                                    </div>
+                                                      </div>
+                                                     
+                                                  </div>
+                                              <div class="card-footer">
+                                                <button type="button" class="btn btn-sm read-more">Read More</button>
+                                              </div>
+                                              </div>
+                                            <%}%>
+                                        <%})%>
+                                    </div>
+                                </div>
+                               
+                        </div>
+                        
+                      </div> 
                                         
                             <% }else{}%>
-                      </div> 
+                      
                 </div>
               </div>
            
@@ -260,7 +523,31 @@
       <!-- Button trigger modal -->
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var readMoreButtons = document.querySelectorAll(".read-more");
+    readMoreButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            var cardText = button.parentNode.previousElementSibling;
+            cardText.classList.toggle("full-text");
 
+            // Find the related "toshow" element
+            var toShowElement = cardText.querySelector("#toshow");
+
+            if (cardText.classList.contains("full-text")) {
+                button.textContent = "Read Less";
+                toShowElement.style.display = "block"; // Show the element
+            } else {
+                button.textContent = "Read More";
+                toShowElement.style.display = "none"; // Hide the element
+            }
+        });
+    });
+});
+
+
+
+</script>
 <!-- Modal -->
 <div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

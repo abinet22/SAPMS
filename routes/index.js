@@ -155,6 +155,45 @@ router.get('/createtargetgroup', ensureAuthenticated, async function(req, res) {
     const targetgrouplist = await db.TargetGroup.findAll();
    res.render('createtargetgroup',{occupationlist:occupationlist,departmentlist:departmentlist,targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
     });
+    router.post('/changepasswordtargetgroup/(:targetid)', ensureAuthenticated, async function(req, res) {
+      const {newpassword} = req.body;
+      const existingplans = await db.Plan.findAll({});
+      const detailview = await db.StrategicGoal.findAll({});
+      
+      const departmentlist = await db.Department.findAll();
+      const occupationlist = await db.Occupation.findAll();
+      const targetgrouplist = await db.TargetGroup.findAll();
+      
+     if(newpassword){
+      db.TargetGroup.findOne({where:{targetgid:req.params.targetid}}).then(tg =>{
+        if(tg){
+          bcrypt.hash(newpassword, 10, (err, hash) => {
+           
+    
+           db.TargetGroup.update({password:hash},{where:{targetgid:req.params.targetid}}).then(newtg =>{
+            res.render('createtargetgroup',{success_msg:'Successfully update password try again',occupationlist:occupationlist,departmentlist:departmentlist,targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
+        
+           }).catch(err =>{
+            res.render('createtargetgroup',{error_msg:'Cant update password',occupationlist:occupationlist,departmentlist:departmentlist,targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
+        
+          })
+        })
+    
+        }else{
+          res.render('createtargetgroup',{error_msg:'Cant find target group with this id',occupationlist:occupationlist,departmentlist:departmentlist,targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
+    
+        }
+      }).catch(err =>{
+        console.log(err)
+        res.render('createtargetgroup',{error_msg:'Cant update password try again',occupationlist:occupationlist,departmentlist:departmentlist,targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
+    
+      })
+     }else{
+      res.render('createtargetgroup',{error_msg:'Please enter password try again',occupationlist:occupationlist,departmentlist:departmentlist,targetgrouplist:targetgrouplist,allplans:existingplans,sgoal:detailview});
+    
+     }
+     
+      });
   router.get('/createdepartment', ensureAuthenticated, async function(req, res) {
     const existingplans = await db.Plan.findAll({});
     const detailview = await db.StrategicGoal.findAll({});
@@ -318,6 +357,46 @@ else{
 
       })
 
+    }
+  }).catch(err =>{
+    res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Cant create now try later'});
+  })
+  
+}
+
+});
+router.post('/updateactivityindicator', ensureAuthenticated, async function(req, res) {
+  const {activityindicator,activityindicatorid} =req.body;
+const existingplans = await db.Plan.findAll({});
+const detailview = await db.StrategicGoal.findAll({});
+
+const departmentlist = await db.ActivityIndicator.findAll();
+let errors=[];
+if(!activityindicator || !activityindicatorid){
+  res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Please ensert all reqiured fields'});
+  
+}
+
+else{
+  db.ActivityIndicator.findOne({where:{activityindicatorid:activityindicatorid}}).then(tg =>{
+    if(tg){
+      db.ActivityIndicator.update({activityindicatorname:activityindicator},{where:{activityindicatorid:activityindicatorid}})
+      .then(data => {
+        db.ActivityIndicator.findAll().then(newtarg=>{
+          res.render('createactivityindicator',{departmentlist:newtarg,allplans:existingplans,sgoal:detailview,success_msg:'Activity Indicator Updated successfully'});
+      
+         }).catch(err =>{
+          res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'New Activity Indicator created successfully'});
+      
+         })
+      }).catch(err => {
+        res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'New Activity Indicator created successfully'});
+
+      })
+    }else{
+    
+      res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Cant find Activity Indicator'});
+    
     }
   }).catch(err =>{
     res.render('createactivityindicator',{departmentlist:departmentlist,allplans:existingplans,sgoal:detailview,error_msg:'Cant create now try later'});
@@ -640,19 +719,59 @@ const dact = await db.DetailActivity.findAll({});
   }
 }else{
   if(configcat ==="SG"){
-    detailview = await db.StrategicGoal.findAll({where:{planid:planid}});
+    const detailview = await db.sequelize.query(`
+    SELECT StrategicGoals.*
+    FROM StrategicGoals 
+    INNER JOIN Plans ON StrategicGoals.planid = Plans.planid
+    WHERE Plans.planid = :planid
+  `, {
+    replacements: { planid: planid }, // provide the planid value here
+    type: db.sequelize.QueryTypes.SELECT
+  });
     res.render('plandetail',{configcat:configcat,allplans:existingplans,plan:plan,sgoal:detailview,tag:"sg"});
    }
    else if(configcat ==="SD"){
-     detailview = await db.StrategicDirection.findAll({where:{sgoalid:goal.sgoalid}});
+    const detailview = await db.sequelize.query(`
+    SELECT StrategicDirections.*
+    FROM StrategicDirections 
+    INNER JOIN StrategicGoals ON StrategicDirections.sgoalid = StrategicGoals.sgoalid
+    INNER JOIN Plans ON StrategicGoals.planid = Plans.planid
+    WHERE Plans.planid = :planid
+  `, {
+    replacements: { planid: planid }, // provide the planid value here
+    type: db.sequelize.QueryTypes.SELECT
+  });
      res.render('plandetail',{configcat:configcat,allplans:existingplans,plan:plan,sgoal:detailview,tag:"sd"});
     }
     else if(configcat ==="MA"){
-     detailview = await db.MajorActivity.findAll({where:{sdirid:mact.sdirid}});
+      const detailview = await db.sequelize.query(`
+     SELECT MajorActivities.*
+     FROM MajorActivities 
+    
+     INNER JOIN StrategicDirections ON StrategicDirections.sdirid = MajorActivities.sdirid
+     INNER JOIN StrategicGoals ON StrategicDirections.sgoalid = StrategicGoals.sgoalid
+     INNER JOIN Plans ON StrategicGoals.planid = Plans.planid
+     WHERE Plans.planid = :planid
+   `, {
+     replacements: { planid: planid }, // provide the planid value here
+     type: db.sequelize.QueryTypes.SELECT
+   });
      res.render('plandetail',{configcat:configcat,allplans:existingplans,plan:plan,sgoal:detailview,tag:"ma"});
     }
     else if(configcat ==="DA"){
-     detailview = await db.DetailActivity.findAll({where:{mactivityid:mact.mactivityid}});
+    // detailview = await db.DetailActivity.findAll({where:{mactivityid:mact.mactivityid}});
+     const detailview = await db.sequelize.query(`
+     SELECT DetailActivities.*
+     FROM DetailActivities 
+     INNER JOIN MajorActivities ON MajorActivities.mactivityid = DetailActivities.mactivityid
+     INNER JOIN StrategicDirections ON StrategicDirections.sdirid = MajorActivities.sdirid
+     INNER JOIN StrategicGoals ON StrategicDirections.sgoalid = StrategicGoals.sgoalid
+     INNER JOIN Plans ON StrategicGoals.planid = Plans.planid
+     WHERE Plans.planid = :planid
+   `, {
+     replacements: { planid: planid }, // provide the planid value here
+     type: db.sequelize.QueryTypes.SELECT
+   });
      res.render('plandetail',{configcat:configcat,allplans:existingplans,plan:plan,planid:planid,sgoal:detailview,tag:"da"});
     }
     else if(configcat ==="DP"){
@@ -1210,6 +1329,82 @@ router.post('/addkpifordetailactivity', ensureAuthenticated, async function(req,
   
   }
 });
+router.post('/editkpifordetailactivity', ensureAuthenticated, async function(req, res) {
+  const{mactivityid,kpiid,criteriaedit,dactivityid,targetgroup,targetindicator,dactinputtype,dactkpi,registeredrisk,planid,sdirid,budget} =req.body;
+  const curactivity = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
+  const dept = await db.TargetGroup.findAll({});
+  const mact = await db.MajorActivity.findAll({where:{sdirid:curactivity.sdirid}});
+  const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
+  const existingplans = await db.Plan.findAll({})
+  const targetgrouplist  = await db.TargetGroup.findAll();
+  const activityindicator = await db.ActivityIndicator.findAll({})
+  if(!kpiid){
+    res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid, dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please add all required fields',dact:dact,allplans:existingplans,mact:mact,mactivityid:mactivityid});
+  }else{
+    try {
+      // Parse the JSON string into an array of objects
+     
+      // Loop through each object in the criteriaData array
+      const activityData = {};
+
+      // Add dynamic month values from the JSON object
+      console.log("criteriaData",criteriaedit)
+      if (criteriaedit ) {
+        const criteriaData = JSON.parse(criteriaedit);
+  
+        criteriaData.forEach(monthData => {
+          for (const [month, value] of Object.entries(monthData)) {
+            activityData[month.toLowerCase()] = value;
+            console.log(month);
+            console.log(value);
+          }
+        });
+      }
+      if(targetgroup || targetgroup!=0){
+        activityData.dacttgroup= targetgroup;
+      }
+      if(dactinputtype || dactinputtype!=0){
+        activityData.dacttinputtype= dactinputtype;
+      }
+      if(dactkpi){
+
+        activityData.dactkpi= dactkpi;
+      }
+      if(targetindicator || targetindicator!=0){
+        activityData.targetindicator= targetindicator;
+      }
+      if(budget){
+
+        activityData.budget= budget;
+      }
+      if(registeredrisk){
+
+        activityData.dactregisteredrisk=registeredrisk;
+      }
+      activityData.mactivityid=mactivityid;
+      activityData.dactivityid =dactivityid;
+         
+      
+      activityData.isfinalsent='No',
+      console.log(activityData)
+     
+db.DetailActivityKPI.update(activityData,{where:{id:kpiid}}).then(dakpi =>{
+  res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, success_msg: 'KPIs Updated successfully!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+
+}).catch (err => {
+  console.error('Error inserting criteria data:', err);
+  res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error occurred while adding criteria.!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+
+})
+      
+    } catch (err) {
+      console.error('Error inserting criteria data:', err);
+      res.render('adddetailactivity',{activityindicator:activityindicator,sdirid:sdirid,planid:planid,dept:dept,targetgrouplist:targetgrouplist, error_msg: 'An error occurred while adding criteria.!',allplans:existingplans,dact:dact,mact:curactivity,mactivityid:mactivityid});
+
+    }
+  
+  }
+});
 router.post('/addkpiformajoractivity', ensureAuthenticated, async function(req, res) {
   const{mactivityid,mcriteria,dactivityid,planid,sdirid} =req.body;
   const curactivity = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
@@ -1357,6 +1552,67 @@ if(errors.length >0){
 }
 
 });
+router.post('/editstrategicgoal', ensureAuthenticated, async function(req, res) {
+  const{sgoalcode,sgoaltitle,tobeupdated,sgoalid,sgoaldescription,sgoalduration,enddate,startdate,planid} =req.body;
+  let errors =[];
+  const plan = await db.Plan.findOne({where:{planid:planid}});
+  const existingplans = await db.Plan.findAll({});
+  const sgs = await db.StrategicGoal.findAll({where:{planid:planid}});
+  if(!tobeupdated || tobeupdated==0){
+    errors.push({mssg:'Please add all required fields'})
+  }
+  if(!sgoalid || !tobeupdated || !planid){
+  errors.push({mssg:'Please add all required fields'})
+  }
+  if(errors.length >0){
+    res.render('addstrategicgoal',{errors,sgs:sgs,allplans:existingplans});
+  }else{
+  
+    
+    let updateQuery = {};
+
+    // Set the appropriate field in the update query based on the selected option
+    switch (tobeupdated) {
+      case 'sgoalcode':
+        updateQuery.sgoalcode = sgoalcode;
+        break;
+    
+      case 'sgoaltitle':
+        updateQuery.sgoaltitle = sgoaltitle;
+        break;
+      case 'sgoaldescription':
+        updateQuery.sgoaldescription = sgoaldescription;
+        break;
+      case 'sgoalduration':
+        updateQuery.sgoalduration = sgoalduration;
+        break;
+      case 'enddate':
+        updateQuery.enddate = enddate;
+        break;
+      case 'startdate':
+        updateQuery.startdate = startdate;
+        break;
+      default:
+        // Handle unknown tobeupdated value
+        break;
+    }
+    db.StrategicGoal.update(updateQuery,{where:{sgoalid:sgoalid}}).then(sgs =>{
+      if(sgs){
+        db.StrategicGoal.findAll({where:{planid:planid}}).then(allsgs =>{
+        res.render('addstrategicgoal',{success_msg:'You are successfully update  goal',allplans:existingplans,planid:planid,plan:plan,sgs:allsgs});
+        }).catch(err =>{
+        res.render('addstrategicgoal',{error_msg:'Error while finding exsting updated strategic goal .',allplans:existingplans, plan:plan,planid:planid,sgs:sgs});
+        })
+      }else{
+        res.render('addstrategicgoal',{error_msg:'Please enter new plan code. strategic goal code already exist.',allplans:existingplans,plan:plan,planid:planid,sgs:sgs});
+      }
+      }).catch(err =>{
+      res.render('addstrategicgoal',{error_msg:'Error while creating new strategic goal.',allplans:existingplans,plan:plan,planid:planid,sgs:sgs});
+      })
+  
+  }
+  
+  });
 router.post('/addnewstrategicdirection', ensureAuthenticated, async function(req, res) {
 const{sdircode,sdirtitle,sdirdescription,sdirduration,enddate,startdate,sgoalid,planid} =req.body;
 let errors =[];
@@ -1407,6 +1663,71 @@ db.StrategicDirection.findOne({where:{sdircode:sdircode}}).then(sd=>{
 }
 
 });
+
+router.post('/editstrategicdirection', ensureAuthenticated, async function(req, res) {
+  const{sdircode,sdirtitle,tobeupdated,sdirid,sdirdescription,sdirduration,enddate,startdate,sgoalid,planid} =req.body;
+  let errors =[];
+  const existingplans = await db.Plan.findAll({});
+  const sgoal = await db.StrategicGoal.findOne({where:{sgoalid:sgoalid}});
+  const sdir = await db.StrategicDirection.findAll({where:{sgoalid:sgoalid}});
+  if(!tobeupdated || tobeupdated==0){
+    errors.push({mssg:'Please add all required fields'})
+  }
+  if(!sgoalid || !tobeupdated || !sdirid){
+  errors.push({mssg:'Please add all required fields'})
+  }
+  if(errors.length >0){
+  res.render('addstrategicdirection',{error_msg:'Please enter all required fields',allplans:existingplans,planid:planid,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
+  }else{
+
+  let updateQuery = {};
+
+  // Set the appropriate field in the update query based on the selected option
+  switch (tobeupdated) {
+    case 'sdircode':
+      updateQuery.sdircode = sdircode;
+      break;
+  
+    case 'sdirtitle':
+      updateQuery.sdirtitle = sdirtitle;
+      break;
+    case 'sdirdescription':
+      updateQuery.sdirdescription = sdirdescription;
+      break;
+    case 'sdirduration':
+      updateQuery.sdirduration = sdirduration;
+      break;
+    case 'enddate':
+      updateQuery.enddate = enddate;
+      break;
+    case 'startdate':
+      updateQuery.startdate = startdate;
+      break;
+    default:
+      // Handle unknown tobeupdated value
+      break;
+  }
+  console.log(updateQuery)
+  console.log(sdirid)
+  db.StrategicDirection.update(updateQuery,{
+    where:{sdirid:sdirid}
+  }).then(sds =>{
+    if(sds){
+      console.log(sds)
+      db.StrategicDirection.findAll({where:{sgoalid:sgoalid}}).then(allsds =>{
+      res.render('addstrategicdirection',{success_msg:'You are successfully update outcome',planid:planid,allplans:existingplans,sdir:allsds,sgoal:sgoal,sgoalid:sgoalid});
+      }).catch(err =>{
+      res.render('addstrategicdirection',{error_msg:'Error while finding exsting updated strategic direction .' ,planid:planid,allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
+      })
+    }else{
+      res.render('addstrategicdirection',{error_msg:'Please enter new plan code. strategic direction code already exist.',planid:planid,allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
+    }
+    }).catch(err =>{
+    res.render('addstrategicdirection',{error_msg:'Error while creating new strategic direction.',planid:planid,allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
+    })
+  }
+  
+  });
 router.post('/addnewmajoractivity', ensureAuthenticated, async function(req, res) {
   const{sdirid,mactcode,macttitle,mactdescription,mactduration,enddate,startdate,sgoalid,planid} =req.body;
   let errors =[];
@@ -1458,6 +1779,68 @@ router.post('/addnewmajoractivity', ensureAuthenticated, async function(req, res
   }
   
   });
+router.post('/editmajoractivity', ensureAuthenticated, async function(req, res) {
+    const{sdirid,mactcode,tobeupdated,mactivityid,macttitle,mactdescription,mactduration,enddate,startdate,sgoalid,planid} =req.body;
+    let errors =[];
+    const existingplans = await db.Plan.findAll({});
+    const sdirone = await db.StrategicDirection.findOne({where:{sdirid:sdirid}});
+    const mact = await db.MajorActivity.findAll({where:{sdirid:sdirid}});
+    const targetgrouplist  = await db.TargetGroup.findAll()
+    if(!tobeupdated || tobeupdated==0){
+      errors.push({mssg:'Please add all required fields'})
+    }
+    if(!mactivityid || !tobeupdated || !sdirid){
+    errors.push({mssg:'Please add all required fields'})
+    }
+    if(errors.length >0){
+    res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please enter all required fields',sdir:sdirone,mact:mact,allplans:existingplans,planid:planid,sdirid:sdirid,sgoalid:sgoalid});
+    }else{
+      let updateQuery = {};
+
+      // Set the appropriate field in the update query based on the selected option
+      switch (tobeupdated) {
+        case 'mactcode':
+          updateQuery.mactivitycode = mactcode;
+          break;
+      
+        case 'macttitle':
+          updateQuery.mactivitytitle = macttitle;
+          break;
+        case 'mactdescription':
+          updateQuery.mactivitydescription = mactdescription;
+          break;
+        case 'mactduration':
+          updateQuery.mactivityduration = mactduration;
+          break;
+        case 'enddate':
+          updateQuery.enddate = enddate;
+          break;
+        case 'startdate':
+          updateQuery.startdate = startdate;
+          break;
+        default:
+          // Handle unknown tobeupdated value
+          break;
+      }
+      db.MajorActivity.update(updateQuery,{   where: {
+        mactivityid: mactivityid
+      }}).then(sds =>{
+        if(sds){
+          db.MajorActivity.findAll({where:{sdirid:sdirid}}).then(allmact =>{
+          res.render('addmajoractivity',{targetgrouplist:targetgrouplist,success_msg:'You are successfully update  Output.',allplans:existingplans,sdir:sdirone,mact:allmact,sdirid:sdirid,planid:planid,sgoalid:sgoalid});
+          }).catch(err =>{
+          res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Error while finding exsting updated major activity.' ,allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid,planid:planid,sgoalid:sgoalid});
+          })
+        }else{
+          res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Please enter new major activity code. major activity code already exist.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid,planid:planid,sgoalid:sgoalid});
+        }
+        }).catch(err =>{
+        res.render('addmajoractivity',{targetgrouplist:targetgrouplist,error_msg:'Error while creating new major activity.',allplans:existingplans,sdir:sdirone,mact:mact,sdirid:sdirid,planid:planid,sgoalid:sgoalid});
+        })
+    
+    }
+    
+    });
 router.post('/addnewdetailactivity', ensureAuthenticated, async function(req, res) {
     const{mactivityid,dactcode,dactivityrisks,dacttitle,dactdescription,dactduration,enddate,startdate,planid,sdirid} =req.body;
     let errors =[];
@@ -1512,6 +1895,76 @@ router.post('/addnewdetailactivity', ensureAuthenticated, async function(req, re
     }
     
     });
+ router.post('/editdetailactivity', ensureAuthenticated, async function(req, res) {
+      const{mactivityid,dactivityid,tobeupdated,dactcode,dactivityrisks,dacttitle,dactdescription,dactduration,enddate,startdate,planid,sdirid} =req.body;
+      let errors =[];
+      const existingplans = await db.Plan.findAll({});
+      const mactone = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
+      const dact = await db.DetailActivity.findAll({where:{mactivityid:mactivityid}});
+      const dept = await db.TargetGroup.findAll({});
+      const targetgrouplist = await db.TargetGroup.findAll();
+      const activityindicator = await db.ActivityIndicator.findAll({})
+      if(!tobeupdated || tobeupdated==0){
+        errors.push({mssg:'Please add all required fields'})
+      }
+      if(!mactivityid || !tobeupdated || !dactivityid){
+      errors.push({mssg:'Please add all required fields'})
+      }
+      if(errors.length >0){
+      res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter all required fields',dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid,planid:planid,sdirid:sdirid});
+      }else{
+        let updateQuery = {};
+
+        // Set the appropriate field in the update query based on the selected option
+        switch (tobeupdated) {
+          case 'dactcode':
+            updateQuery.dactivitycode = dactcode;
+            break;
+          case 'dactivityrisks':
+            updateQuery.dactivityrisks = dactivityrisks;
+            break;
+          case 'dacttitle':
+            updateQuery.dactivitytitle = dacttitle;
+            break;
+          case 'dactdescription':
+            updateQuery.dactivitydescription = dactdescription;
+            break;
+          case 'dactduration':
+            updateQuery.dactivityduration = dactduration;
+            break;
+          case 'enddate':
+            updateQuery.enddate = enddate;
+            break;
+          case 'startdate':
+            updateQuery.startdate = startdate;
+            break;
+          default:
+            // Handle unknown tobeupdated value
+            break;
+        }
+    
+       console.log(updateQuery)
+        db.DetailActivity.update(updateQuery, {
+          where: {
+            dactivityid: dactivityid
+          }
+        }).then(dacts =>{
+          if(dacts){
+            console.log(dacts)
+            db.DetailActivity.findAll({where:{mactivityid:mactivityid}}).then(alldact =>{
+            res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,success_msg:'You are successfully update activity please add all the necessary attributes',planid:planid,sdirid:sdirid,dact:alldact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+            }).catch(err =>{
+            res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while finding exsting updated detail activity.' ,planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+            })
+          }else{
+            res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Please enter new detail activity code. detail activity code already exist.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+          }
+          }).catch(err =>{
+          res.render('adddetailactivity',{activityindicator:activityindicator,dept:dept,targetgrouplist:targetgrouplist,error_msg:'Error while creating new detail activity.',planid:planid,sdirid:sdirid,dact:dact,mact:mactone,allplans:existingplans,mactivityid:mactivityid});
+          })
+      }
+      
+      });
 router.post('/viewmajoractivitykpi/(:mactivityid)',ensureAuthenticated, async function (req,res){
   const{planid} =req.body;
   const existingplans = await db.Plan.findAll({});
@@ -1629,9 +2082,7 @@ if(reporttype && reporttypeinput){
 }else if(reportby){
   rptqry = "select * from ProgressReports "+
   " inner join TargetGroups on ProgressReports.dacttgroupid = TargetGroups.targetgid "+
-  " inner join Occupations on Occupations.occupationid = TargetGroups.occupation_id "+
-  " inner join Departments on Departments.departmentid = Occupations.departmentid "+
- 
+  
   " where  dactivityid ='"+dactivityid+"' and ProgressReports.dacttgroupid ='"+reportby+"'  "
 }
 else{
@@ -1640,7 +2091,8 @@ else{
   " where  dactivityid ='"+dactivityid+"' "
 }
  const [progressreport,progressmetta] =   await db.sequelize.query(rptqry);
-console.log(reportby)
+console.log(reportby);
+console.log(dactivityid);
 console.log(progressreport)
 var goal,sdir,mact,dact;
 if(plan){
@@ -1884,18 +2336,18 @@ res.send(buffer);
    }
      })
 router.post('/deletestrategicdirection/(:sdirid)',ensureAuthenticated,async function(req,res){
-  const {sgoalid} =req.body;
+  const {sgoalid,planid} =req.body;
   const existingplans = await db.Plan.findAll({});
 const sgoal = await db.StrategicGoal.findOne({where:{sgoalid:sgoalid}});
 const sdir = await db.StrategicDirection.findAll({where:{sgoalid:sgoalid}});
 db.StrategicDirection.destroy({where:{sdirid:req.params.sdirid}}).then(dsd =>{
   db.StrategicDirection.findAll({where:{sgoalid:sgoalid}}).then(newsd =>{
-    res.render('addstrategicdirection',{success_msg:'Successfully Deleted !',allplans:existingplans,sdir:newsd,sgoal:sgoal,sgoalid:sgoalid});
+    res.render('addstrategicdirection',{success_msg:'Successfully Deleted !',planid:planid,allplans:existingplans,sdir:newsd,sgoal:sgoal,sgoalid:sgoalid});
   }).catch(err =>{
-    res.render('addstrategicdirection',{allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
+    res.render('addstrategicdirection',{allplans:existingplans,sdir:sdir,sgoal:sgoal,planid:planid,sgoalid:sgoalid});
   })
 }).catch(err =>{
-  res.render('addstrategicdirection',{error_msg:'Cant Delete Try Again !',allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
+  res.render('addstrategicdirection',{error_msg:'Cant Delete Try Again !',planid:planid,allplans:existingplans,sdir:sdir,sgoal:sgoal,sgoalid:sgoalid});
 })
   
 })
@@ -1941,17 +2393,18 @@ router.post('/deletedetailactivity/(:dactivityid)',ensureAuthenticated,async fun
   const sdir = await db.StrategicDirection.findAll({where:{sdirid:sdirid}});
   const mact2 = await db.MajorActivity.findOne({where:{mactivityid:mactivityid}});
   const existingplans = await db.Plan.findAll({})
+  const activityindicator = await db.ActivityIndicator.findAll({});
   const targetgrouplist  = await db.TargetGroup.findAll()
 db.DetailActivity.destroy({where:{dactivityid:req.params.dactivityid}}).then(dsd =>{
   db.DetailActivity.findAll({where:{mactivityid:mactivityid}}).then(dact =>{
-    res.render('adddetailactivity',{targetgrouplist:targetgrouplist,success_msg:'Successfully Deleted!',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
+    res.render('adddetailactivity',{activityindicator:activityindicator,targetgrouplist:targetgrouplist,success_msg:'Successfully Deleted!',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
   
   }).catch(err =>{
-    res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Cant Delete Try Again ! ',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
+    res.render('adddetailactivity',{activityindicator:activityindicator,targetgrouplist:targetgrouplist,error_msg:'Cant Delete Try Again ! ',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
   
   })
 }).catch(err =>{
-  res.render('adddetailactivity',{targetgrouplist:targetgrouplist,error_msg:'Cant Delete Try Again ! ',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
+  res.render('adddetailactivity',{activityindicator:activityindicator,targetgrouplist:targetgrouplist,error_msg:'Cant Delete Try Again ! ',allplans:existingplans,sgoalid:sgoalid,planid:planid,sdirid:sdirid,dact:dact,mact:mact2,mactivityid:mactivityid});
   
 })
   

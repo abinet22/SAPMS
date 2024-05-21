@@ -129,14 +129,10 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
                         <tr>
                           <th>#</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Output</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Target Group</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Indicator</th>
-
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Input</th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">KPI</th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Registered Risk</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Indicator|Input|KPI</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Budget</th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -160,15 +156,12 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
                               
                               </h6>
                             </div>
-                            
-                          </td>
-                          <td>
                             <div class="d-flex flex-column justify-content-center">
                               <h6 class="mb-0 text-sm"><%var dpt= row.dacttgroup %>
                               <% if(dept.length >0){%>
                                <% dept.forEach(function(row){%>
                                      <% if(row.targetgid === dpt){%>
-                                      <%= row.targetgroupname %>
+                                     <code> <%= row.targetgroupname %></code>
                                      
                                <%}})%>
                               <%}%>
@@ -177,27 +170,29 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
                               </h6>
                             </div>
                             
+                        Registered Risk :-    <span class="text-xs font-weight-bold"><%= row.dactregisteredrisk %> </span>
                           </td>
+                        
                           <td class="align-middle text-center text-sm">
                            
                             <span class="text-xs font-weight-bold"><%= row.dacttindicator %> </span>
-                          </td>
-                          <td class="align-middle text-center text-sm">
-                           
+                          |
                             <span class="text-xs font-weight-bold"><%= row.dacttinputtype %> </span>
-                          </td>
-                          <td class="align-middle text-center text-sm">
-                           
+                          |
                             <span class="text-xs font-weight-bold"><%= row.dactkpi %> </span>
                           </td>
-                          <td class="align-middle text-center text-sm">
-                           
-                            <span class="text-xs font-weight-bold"><%= row.dactregisteredrisk %> </span>
-                          </td>
+                         
                           <td class="align-middle text-center text-sm">
                            
                             <span class="text-xs font-weight-bold"><%= row.budget == null || row.budget === "" ? 0 : row.budget %> ETBIRR
                             </span>
+                          </td>
+                          <td class="align-middle text-center text-sm">
+                            
+                            <button  class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" data-target="#myModaledit" onclick="setKPIId('<%= row.id %>')"  data-toggler="<%= dactone.dactivityid %>" data-toggler5="<%= dactone.mactivityid %>"  data-toggler3="<%= dactone.dactivitycode %>" data-toggler2="<%= dactone.dactivitytitle %>" data-toggler4="<%= dactone.dactivitydescription %>" >
+                              Edit KPI
+                            </button>      
+                       
                           </td>
                           <td class="align-middle text-center text-sm">
                             <form action="/stvcpms/deletedetailactivitykpi/<%= row.id %>" method="post">
@@ -224,6 +219,7 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
           </div>
         </div>
       </div>
+
       <!-- Button trigger modal -->
       <div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -350,6 +346,138 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
           </div>
         </div>
       </div>
+      <div class="modal" id="myModaledit" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit KPI(Key Perfromance Indicator For Activity)</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          
+    
+            <form action="/stvcpms/editkpifordetailactivity" method="post">
+              <div class="modal-body">
+            
+                  <div class="d-flex flex-column ">
+                    <p class="mb-1 pt-2 text-bold"><small> Activity Infos</small></p>
+                  <small> Activity Title:<span class="title"></span></small>
+                    <small> Activity Code:<span class="acode"></span></small>
+                    <p class="mb-2"><small> Activity Description:<span class="adescription"></span></small></p>
+             
+                  </div>
+              
+                <input type="hidden" class="js-toggler__input" value="" name="dactivityid" >
+                <input type="hidden" class="majorid" value="" name="mactivityid" >
+                <input type="hidden" name="sdirid" value="<%= allmact.sdirid %>">
+                <input type="hidden" name="planid" value="<%= planid %>">
+                <input type="hidden" name="kpiid" id="kpiid" >
+                <div class="row">
+                  <div class="col-md-4">
+                    <label>Target Group</label>
+                 <select class="form-control" name="targetgroup" id="targetgroup">
+                  <option value="0">Please select target group here</option>
+                  <% if(targetgrouplist.length>0){ %>
+                   <% targetgrouplist.forEach(function(row){ %>
+                      <option value="<%= row.targetgid %>"><%= row.targetgroupname %></option>
+                   <% })%>
+                 <% }else {%>
+                  <label>No major activities where found</label>
+                  <%} %>
+                 </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label>Target Indicator</label>
+                    <select class="form-control" name="targetindicator" id="targetindicator">
+                     <option value="0">Please select indicator here</option>
+                     <% if(activityindicator.length>0){ %>
+                      <% activityindicator.forEach(function(row){ %>
+                         <option value="<%= row.activityindicatorname %>"><%= row.activityindicatorname %></option>
+                      <% })%>
+                    <% }else {%>
+                     <label>No activity indicators where found</label>
+                     <%} %>
+                    
+                    </select>
+                  </div>
+                 
+                  <div class="col-md-4">
+                    <label>Input Type</label>
+                    <select class="form-control" id="dactinputtype" name="dactinputtype">
+                     <option value="0">Please select input type indicator here</option>
+                     <option value="Number">Number</option>
+                     <option value="Ratio">Ratio</option>
+                     <option value="APN">APN</option>
+                     <option value="Text">Text</option>
+                     <option value="Percent">Percent</option>
+                  
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label>Total KPI<code>Use Description If Input Is Not Number</code></label>
+                    <input type="text" class="form-control mb-2" id="dactkpi" name="dactkpi"
+                     placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
+             
+                  </div>
+                  <div class="col-md-6">
+                    <label>Total Budget</label>
+                    <input type="number" class="form-control mb-2" id="budget" name="budget"
+                     placeholder="Budget" aria-label="Name" aria-describedby="email-addon">
+             
+                  </div>
+                 </div>
+                 <div class="row">
+                  <label>Detail KPI in months</label>
+                  <div class="col-md-6">
+                    <label>Month</label>
+                    <select class="form-control" id="monthedit" name="monthedit">
+                     <option value="0">Please select month here</option>
+                     <option value="january">January</option>
+                     <option value="february">February</option>
+                     <option value="march">March</option>
+                     <option value="april">April</option>
+                     <option value="may">May</option>
+                     <option value="june">June</option>
+                     <option value="july">July</option>
+                     <option value="augest">Augest</option>
+                     <option value="september">September</option>
+                     <option value="october">October</option>
+                     <option value="november">November</option>
+                     <option value="december">December</option>
+                  
+                    </select>
+                  </div>
+      
+                  <div class="col-md-6">
+                    <label>Monthly KPI<code>Use Description If Input Is Not Number</code></label>
+                    <input type="text" class="form-control mb-2" id="dactkpidetailed" placeholder="KPI" aria-label="Name" aria-describedby="email-addon">
+             
+                  </div>
+                 </div>
+                   <input type="hidden" id="criteriaedit" name="criteriaedit">
+                 <div class="col-md-6 offset-md-3 form-check form-check-primary">
+                   <ul class="" id="listedit">
+                    </ul>
+                 </div>
+                 <button type="button" id="addedit" class="btn btn-secondary btn-block" >Add</button>
+                 <textarea type="text" class="form-control  mb-2 mt-2" id="registeredrisk" name="registeredrisk" placeholder="Associated Risk" aria-label="Name" rows="3" aria-describedby="email-addon"></textarea>
+                 
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <script>
+        function setKPIId(dactivityid) {
+          // Set the dactivityid in the hidden input field
+          document.getElementById('kpiid').value = dactivityid;
+        }
+      </script>
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const monthKPI = []; // Initialize an empty array to store JSON objects
@@ -404,6 +532,63 @@ https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.
           // Function to update the hidden input field with the array of objects
           function updateRowMaterialAmountArray() {
             document.getElementById("criteria").value = JSON.stringify(monthKPI);
+          }
+        });
+      </script>
+       <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const monthKPIedit = []; // Initialize an empty array to store JSON objects
+      
+          document.getElementById("addedit").addEventListener("click", function () {
+            var dactkpiInput = document.getElementById("dactkpidetailed");
+            var dactkpidetail = document.getElementById("dactkpidetailed").value;
+            var month = document.getElementById("monthedit").value;
+      
+            if (month !== "0" && dactkpidetail) {
+              // Check if the month already exists
+              const existingObjectIndex = monthKPIedit.findIndex(obj => obj.month === month);
+      
+              if (existingObjectIndex === -1) {
+                var monthKPIList = {};
+                monthKPIList[month] = dactkpidetail;
+                monthKPIedit.push(monthKPIList);
+      
+                // Append the JSON object to the list
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `<input type='checkbox' class='form-check-input' checked > ${month} ${dactkpidetail} <span class='removeItemedit' style='color:red' data-rowMaterialId='${month}'>Remove</span>`;
+                document.getElementById("listedit").appendChild(listItem);
+      
+                // Update the hidden input field with the array of objects
+                updateRowMaterialAmountArray();
+      
+                // Clear the input fields
+                dactkpiInput.value = "";
+                document.getElementById("monthedit").value = "0";
+              }
+            }
+          });
+      
+          document.getElementById("listedit").addEventListener("click", function (event) {
+            if (event.target.classList.contains("removeItem")) {
+              const rowMaterialIdToRemove = event.target.getAttribute("data-rowMaterialId");
+      
+              // Remove the item from the array
+              const indexToRemove = monthKPIedit.findIndex(item => item.month === rowMaterialIdToRemove);
+              if (indexToRemove !== -1) {
+                monthKPIedit.splice(indexToRemove, 1);
+      
+                // Update the hidden input field with the updated array of objects
+                updateRowMaterialAmountArray();
+      
+                // Remove the list item from the DOM
+                event.target.parentElement.remove();
+              }
+            }
+          });
+      
+          // Function to update the hidden input field with the array of objects
+          function updateRowMaterialAmountArray() {
+            document.getElementById("criteriaedit").value = JSON.stringify(monthKPIedit);
           }
         });
       </script>

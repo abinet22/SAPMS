@@ -191,7 +191,9 @@ where StrategicGoals.planid = '${planid}' and DetailActivityKPIs.dacttgroup ='${
     "select * from DetailActivityKPIs inner join TargetGroups on dacttgroup = targetgid "+
     " inner join DetailActivities on DetailActivities.dactivityid = DetailActivityKPIs.dactivityid "+
     " inner join MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid "+
-    " where DetailActivityKPIs.dacttgroup ='"+req.user.targetgid +"'"
+    " inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid "+
+    " inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid "+
+    " where DetailActivityKPIs.dacttgroup ='"+req.user.targetgid +"' "
     )
   res.render('SmallMyActivities',{detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact:dact});
 
@@ -202,10 +204,18 @@ where StrategicGoals.planid = '${planid}' and DetailActivityKPIs.dacttgroup ='${
     " inner join MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid "+
     " where DetailActivityKPIs.dacttgroup ='"+req.user.targetgid +"' and DetailActivityKPIs.isfinalsent ='No'"
     );
+    const [dactp,dactpmeta] =  await db.sequelize.query(
+      "select * from DetailActivityKPIs inner join TargetGroups on dacttgroup = targetgid "+
+      " inner join DetailActivities on DetailActivities.dactivityid = DetailActivityKPIs.dactivityid "+
+      " inner join MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid "+
+      " inner join StrategicDirections on StrategicDirections.sdirid = MajorActivities.sdirid "+
+      " inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid "+
+      " where DetailActivityKPIs.dacttgroup ='"+req.user.targetgid +"' and StrategicGoals.planid = '"+planid+"' and DetailActivityKPIs.isfinalsent ='No'"
+      );
     const [progress,progressmetta] =   await db.sequelize.query(
       "select * from ProgressReports where dacttgroupid ='"+req.user.targetgid +"'  "
       );
-  res.render('ProgressReport',{progress:progress,detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact:dact});
+  res.render('ProgressReport',{progress:progress,detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact:dactp});
 
 }else if(configcat ==="FR"){
   const [detailkpi,detailkpimeta] =  await db.sequelize.query(
@@ -388,17 +398,44 @@ router.post('/sendprogressreport',ensureAuthenticated,async function(req,res){
         const{planid,dactivityid,indicatorv,indicatorinputv,kpiinputv,reporttype,responseninput,
             progressreport,remark,month,quarter} =req.body;
         const existingplans = await db.Plan.findAll({});
-    const plan = await db.Plan.findOne({where:{planid:planid}});
-    const goal = await db.StrategicGoal.findAll({});
-    const sdir = await db.StrategicDirection.findAll({});
-    const mact = await db.MajorActivity.findAll({});
-    const dact = await db.DetailActivity.findAll({});
+        const plan = await db.Plan.findOne({where:{planid:planid}});
+        const goal2 = await db.StrategicGoal.findAll({where:{planid:planid}});
+        const [sdir2,sm] = await db.sequelize.query(`
+        select * from StrategicDirections inner join 
+        StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+        where StrategicGoals.planid = '${planid}';
+        
+        `)
+        const [mact2,mm] =  await db.sequelize.query(`
+        select * from MajorActivities inner join StrategicDirections
+        on StrategicDirections.sdirid = MajorActivities.sdirid
+        inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+        where StrategicGoals.planid = '${planid}';
+        
+        `)
+        const [dact2,dm] =  await db.sequelize.query(`
+        select * from DetailActivities inner join 
+        MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid
+        inner join StrategicDirections
+        on StrategicDirections.sdirid = MajorActivities.sdirid
+        inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+        where StrategicGoals.planid = '${planid}';
+        
+        `)
+        const [detailkpi2,detailkpimeta2] =  await db.sequelize.query(
+          `select * from DetailActivityKPIs inner join TargetGroups on dacttgroup = targetgid 
+           inner join DetailActivities on DetailActivities.dactivityid = DetailActivityKPIs.dactivityid 
+           inner join MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid 
+           inner join StrategicDirections
+        on StrategicDirections.sdirid = MajorActivities.sdirid
+        inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+        where StrategicGoals.planid = '${planid}' and DetailActivityKPIs.dacttgroup ='${req.user.targetgid}';`
+          );
+       
     const [majorkpi  ,majorkpimeta] =  await db.sequelize.query(`
     select * from MajorActivityKPIs inner join DetailActivities on MajorActivityKPIs.dactivityid = DetailActivities.dactivityid ;
     `);
-    const [detailkpi,detailkpimeta] =  await db.sequelize.query(
-    "select * from DetailActivityKPIs inner join TargetGroups on dacttgroup = targetgid where DetailActivityKPIs.dacttgroup ='"+req.user.targetgid +"'"
-    );
+   
     var reportmnthquarter;
     if(month !== 0){
       reportmnthquarter =month
@@ -426,10 +463,10 @@ router.post('/sendprogressreport',ensureAuthenticated,async function(req,res){
     }
     
     db.ProgressReport.create(progressreportdata).then(npr =>{
-        res.render('TGMyActivities',{success_msg:'Progress report created and sent',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+        res.render('TGMyActivities',{success_msg:'Progress report created and sent',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
 
     }).catch(err =>{
-        res.render('TGMyActivities',{error_msg:'Error while updating try again',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+        res.render('TGMyActivities',{error_msg:'Error while updating try again',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
    
     })
   
@@ -440,17 +477,39 @@ router.post('/sendfinalreport',ensureAuthenticated,async function(req,res){
       const{planid,dactivityid,indicatorv,indicatorinputv,kpiinputv,risksmitigated,responseninput,
           finalreport,remark} =req.body;
       const existingplans = await db.Plan.findAll({});
-  const plan = await db.Plan.findOne({where:{planid:planid}});
-  const goal = await db.StrategicGoal.findAll({});
-  const sdir = await db.StrategicDirection.findAll({});
-  const mact = await db.MajorActivity.findAll({});
-  const dact = await db.DetailActivity.findAll({});
-  const [majorkpi  ,majorkpimeta] =  await db.sequelize.query(`
-  select * from MajorActivityKPIs inner join DetailActivities on MajorActivityKPIs.dactivityid = DetailActivities.dactivityid ;
-  `);
-  const [detailkpi,detailkpimeta] =  await db.sequelize.query(
-  "select * from DetailActivityKPIs inner join TargetGroups on dacttgroup = targetgid where DetailActivityKPIs.dacttgroup ='"+req.user.targetgid +"'"
-  );
+      const plan = await db.Plan.findOne({where:{planid:planid}});
+      const goal2 = await db.StrategicGoal.findAll({where:{planid:planid}});
+      const [sdir2,sm] = await db.sequelize.query(`
+      select * from StrategicDirections inner join 
+      StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+      where StrategicGoals.planid = '${planid}';
+      
+      `)
+      const [mact2,mm] =  await db.sequelize.query(`
+      select * from MajorActivities inner join StrategicDirections
+      on StrategicDirections.sdirid = MajorActivities.sdirid
+      inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+      where StrategicGoals.planid = '${planid}';
+      
+      `)
+      const [dact2,dm] =  await db.sequelize.query(`
+      select * from DetailActivities inner join 
+      MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid
+      inner join StrategicDirections
+      on StrategicDirections.sdirid = MajorActivities.sdirid
+      inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+      where StrategicGoals.planid = '${planid}';
+      
+      `)
+      const [detailkpi2,detailkpimeta2] =  await db.sequelize.query(
+        `select * from DetailActivityKPIs inner join TargetGroups on dacttgroup = targetgid 
+         inner join DetailActivities on DetailActivities.dactivityid = DetailActivityKPIs.dactivityid 
+         inner join MajorActivities on DetailActivities.mactivityid = MajorActivities.mactivityid 
+         inner join StrategicDirections
+      on StrategicDirections.sdirid = MajorActivities.sdirid
+      inner join StrategicGoals on StrategicGoals.sgoalid = StrategicDirections.sgoalid
+      where StrategicGoals.planid = '${planid}' and DetailActivityKPIs.dacttgroup ='${req.user.targetgid}';`
+        );
   const finalreportdata ={
       dactivityid:dactivityid,
         dacttgroupid: req.user.targetgid,
@@ -475,28 +534,28 @@ router.post('/sendfinalreport',ensureAuthenticated,async function(req,res){
     db.DetailActivityKPI.findOne({where:{dactivityid:dactivityid,dacttindicator:indicatorv}}).then(olddkpi =>{
       if(olddkpi){
         db.DetailActivityKPI.update({isfinalsent:'Yes'},{where:{dactivityid:dactivityid,dacttindicator:indicatorv}}).then(udtkpi =>{
-          res.render('TGMyActivities',{success_msg:'Final report created and sent',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+          res.render('TGMyActivities',{success_msg:'Final report created and sent',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
     
          }).catch(err =>{
           console.log(err)
-          res.render('TGMyActivities',{error_msg:'Error while updating activity status ',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+          res.render('TGMyActivities',{error_msg:'Error while updating activity status ',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
     
         })
       }
       else{
      
-        res.render('TGMyActivities',{error_msg:'Cant find activity  ',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+        res.render('TGMyActivities',{error_msg:'Cant find activity  ',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
     
       }
     }).catch(err =>{
       console.log(err)
-      res.render('TGMyActivities',{error_msg:'Error while finding activity  ',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+      res.render('TGMyActivities',{error_msg:'Error while finding activity  ',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
 
     })
      
   }).catch(err =>{
     console.log(err)
-      res.render('TGMyActivities',{error_msg:'Error while creating try again',detailkpi:detailkpi,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal:goal,sdir:sdir,mact:mact,dact2:dact});
+      res.render('TGMyActivities',{error_msg:'Error while creating try again',detailkpi:detailkpi2,majorkpi:majorkpi,allplans:existingplans,plan:plan,goal2:goal2,sdir2:sdir2,mact2:mact2,dact2:dact2});
  
   })
 

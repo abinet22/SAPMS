@@ -144,7 +144,7 @@
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Duration</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Show</th>
+                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Add</th>
                         </tr>
                       </thead>
@@ -306,18 +306,35 @@
                               <%}%>
                             </div>
                           </td>
+                        
                           <td class="align-middle text-center text-sm">
+                           
                             <% if(tag ==="sg"){%>
-                              <form action="/stvcpms/deletestrategicgoal/<%= row.sgoalid %>" method="post">
+                              <div id="confirmationPopup" style="display: none; right: 5px;width: 300px; background-color: white; border: 1px solid black; padding: 4px;">
+                                <p>Are you sure you want to delete this?</p>
+                                <button onclick="deleteItem()" class="btn btn-sm btn-danger">Yes</button>
+                                <button onclick="hideConfirmation()" class="btn btn-sm btn-secondary">No</button>
+                            </div>
+                              <form id="deleteForm" action="/stvcpms/deletestrategicgoal/<%= row.sgoalid %>" method="post">
                                 <input type="hidden" name="planid" value="<%= plan.planid %>">
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                              </form>
+                                <button type="button" onclick="showConfirmation()" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                            
+                            
+                            
+                            
+                            
                             <%}else if(tag ==="sd"){%>
-                              <form action="/stvcpms/deletestrategicdirection/<%= row.sdirid %>" method="post">
+                              <form  id="deleteForm"  action="/stvcpms/deletestrategicdirection/<%= row.sdirid %>" method="post">
                                 <input type="hidden" name="planid" value="<%= plan.planid %>">
                                 <input type="hidden" name="sgoalid" value="<%= plan.sgoalid %>">
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                <button type="button" onclick="showConfirmation()" class="btn btn-sm btn-danger">Delete</button>
                               </form>
+                              <div id="confirmationPopup" style="display: none; right: 5px;width: 300px; background-color: white; border: 1px solid black; padding: 4px;">
+                                <p>Are you sure you want to delete this?</p>
+                                <button onclick="deleteItem()" class="btn btn-sm btn-danger">Yes</button>
+                                <button onclick="hideConfirmation()" class="btn btn-sm btn-secondary">No</button>
+                            </div>
                             <%}else if(tag === "ma"){%>
                               <!-- <form action="/stvcpms/viewmajoractivitykpi/<%= row.mactivityid %>" method="post">
                                 <input type="hidden" name="planid" value="<%= plan.planid %>">
@@ -354,6 +371,12 @@
                                 <input type="hidden" name="sgoalid" value="<%= row.sgoalid %>">
                                 <button type="submit" class="btn btn-sm btn-info">+Activity</button>
                               </form>
+                            <%}else if(tag === "da"){%>
+                              <form action="/stvcpms/viewdetailactivitykpi/<%= row.dactivityid %>" method="post">
+                                <input type="hidden" name="planid" value="<%= plan.planid %>">
+                                <input type="hidden" name="mactivityid" value="<%= row.mactivityid %>">
+                                <button type="submit" class="btn btn-sm btn-info">+ KPI</button>
+                              </form>
                             <%} %>
                        
                           </td>
@@ -362,6 +385,25 @@
                           <label>No Details Found</label>
                          <%} %>
                       </tbody>
+                      <script>
+                        function showConfirmation() {
+                            // Show confirmation popup
+                            var deleteButton = document.querySelector('.btn-danger');
+                            var popup = document.getElementById("confirmationPopup");
+                            popup.style.display = "block";
+                            popup.style.top = deleteButton.offsetTop + deleteButton.offsetHeight + "px";
+                            popup.style.left = deleteButton.offsetLeft + "px";
+                        }
+                    
+                        function deleteItem() {
+                            document.getElementById("deleteForm").submit();
+                            hideConfirmation();
+                        }
+                    
+                        function hideConfirmation() {
+                            document.getElementById("confirmationPopup").style.display = "none";
+                        }
+                    </script>
                     </table>
                   </div>
                 </div>

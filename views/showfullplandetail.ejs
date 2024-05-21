@@ -328,10 +328,10 @@ if (Array.isArray(detailkpi)) {
           <th>Indicator</th>
           <th>Input</th>
           <th>Total KPI</th>
-          <th>JAN | FEB | MAR</th>
-          <th>APR | MAY | JUN</th>
-          <th>JUL | AUG | SEP</th>
-          <th>OCT | NOV | DEC</th>
+          <th>JAN </th><th> FEB </th><th> MAR</th>
+          <th>APR </th><th> MAY </th><th> JUN</th>
+          <th>JUL </th><th> AUG </th><th> SEP</th>
+          <th>OCT </th><th> NOV </th><th> DEC</th>
         </tr>
       </thead>
       <tbody>
@@ -361,10 +361,10 @@ function renderKPIRow(kpi, numbering,kpiIndex) {
       <td>${kpi.kpiDetails.dacttindicator}</td>
       <td>${kpi.kpiDetails.dacttinputtype}</td>
       <td>${kpi.kpiDetails.dactkpi}</td>
-      <td>${kpi.kpiDetails.january !== null ? kpi.kpiDetails.january : 0} | ${kpi.kpiDetails.february !== null ? kpi.kpiDetails.february : 0} | ${kpi.kpiDetails.march !== null ? kpi.kpiDetails.march : 0}</td>
-<td>${kpi.kpiDetails.april !== null ? kpi.kpiDetails.april : 0} | ${kpi.kpiDetails.may !== null ? kpi.kpiDetails.may : 0} | ${kpi.kpiDetails.june !== null ? kpi.kpiDetails.june : 0}</td>
-<td>${kpi.kpiDetails.july !== null ? kpi.kpiDetails.july : 0} | ${kpi.kpiDetails.august !== null ? kpi.kpiDetails.august : 0} | ${kpi.kpiDetails.september !== null ? kpi.kpiDetails.september : 0}</td>
-<td>${kpi.kpiDetails.october !== null ? kpi.kpiDetails.october : 0} | ${kpi.kpiDetails.november !== null ? kpi.kpiDetails.november : 0} | ${kpi.kpiDetails.december !== null ? kpi.kpiDetails.december : 0}</td>
+      <td>${kpi.kpiDetails.january !== null ? kpi.kpiDetails.january : 0} </td><td> ${kpi.kpiDetails.february !== null ? kpi.kpiDetails.february : 0} </td><td> ${kpi.kpiDetails.march !== null ? kpi.kpiDetails.march : 0}</td>
+<td>${kpi.kpiDetails.april !== null ? kpi.kpiDetails.april : 0} </td><td> ${kpi.kpiDetails.may !== null ? kpi.kpiDetails.may : 0} </td><td> ${kpi.kpiDetails.june !== null ? kpi.kpiDetails.june : 0}</td>
+<td>${kpi.kpiDetails.july !== null ? kpi.kpiDetails.july : 0}</td><td> ${kpi.kpiDetails.august !== null ? kpi.kpiDetails.august : 0}</td><td> ${kpi.kpiDetails.september !== null ? kpi.kpiDetails.september : 0}</td>
+<td>${kpi.kpiDetails.october !== null ? kpi.kpiDetails.october : 0}</td><td> ${kpi.kpiDetails.november !== null ? kpi.kpiDetails.november : 0} </td><td> ${kpi.kpiDetails.december !== null ? kpi.kpiDetails.december : 0}</td>
 
     </tr>
     

@@ -23,6 +23,63 @@
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
   <style>
+    .row-panel {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.row-panel:hover {
+    background-color: #f5f5f5;
+}
+
+.row-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+}
+
+.number {
+    margin-right: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.activity-info {
+    flex-grow: 1;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.row-details {
+    display: flex;
+    padding: 10px;
+}
+
+.details-column {
+    flex-grow: 1;
+}
+
+.actions {
+    padding: 10px;
+    text-align: center;
+}
+
+.actions button {
+    margin: 5px;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+  </style>
+  <style>
     .ol {
       list-style-type: none;
       counter-reset: item;
@@ -149,7 +206,7 @@
                 <div class="card-header pb-0">
                   <div class="row">
                     <div class="col-lg-6 col-7">
-                      <h6 class="mb-1">Progress Report Detail</h6>
+                      <h6 class="mb-1">All On Progress Activities </h6>
                     </div>
                     <div class="col-lg-6 col-5 my-auto text-end">
                       <div class="dropdown float-lg-end pe-4">
@@ -173,98 +230,72 @@
                              <% planid = plan.planid %>
                              <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">  
-                                    <thead>
-                                        <th>#</th>
-                                        <th> Output Info  </th>
-                                    <th> Activity Info  </th>
-                                    <th> Target Indicator/ Input/ KPI  </th>
-                                    <th> Registered Risk  </th>
                                   
-                                    <th> Action </th>
-                                    <th>View Progress Report</th>
-                                    </thead>
                                     <tbody>
-                                        <% if(dact.length >0) {%>
-                                       <% dact.forEach(function (row){%>
-                                        <% var dactid = row.dactivityid %>
-
-
-                                        <% if(detailkpi.length >0){ %>
-                                          <% var i=0 %>
-                                    <% detailkpi.forEach(function (row){%>
-                                 <% if(row.dactivityid === dactid){%>
-                                     <% i++%>
+                                      <% if(detailkpi.length >0){ %>
+                                        <% var i=0 %>
+                                  <% detailkpi.forEach(function (row){%>
+                                   <% i++%>
+                                   <div class="row-panel">
+                                    <div class="row-header">
+                                        <span class="number"><%= i %></span>
+                                        <div class="activity-info">
+                                            <p class="title">Output Info: <%= row.mactivitytitle %></p>
+                                            <p class="code"><%= row.mactivitycode %></p>
+                                            <p class="description"><%= row.dactivitydescription %></p>
+                                            <p class="detail">Activity Info: <%= row.dactivitytitle %></p>
+                                        
+                                        </div>
+                                    </div>
+                                    <div id="toshow" style="display: none;">
+                                      <div class="row-details">
+                                        <div class="details-column">
+                                            <p class="detail">Code: <%= row.dactivitycode %></p>
+                                            <p class="detail">Description: <%= row.dactivitydescription %></p>
+                                            <p class="detail">From <%= new Date(row.startdate).toLocaleDateString() %> to <%= new Date(row.enddate).toLocaleDateString() %></p>
+                                        </div>
+                                        <div class="details-column">
+                                            <p class="detail">Indicator: <%= row.dacttindicator %></p>
+                                            <p class="detail">Indicator Input: <%= row.dacttinputtype %></p>
+                                            <p class="detail">KPI: <%= row.dactkpi %></p>
+                                        </div>
+                                        <div class="details-column">
+                                            <p class="detail">Risk: <%= row.dactregisteredrisk %></p>
+                                        </div>
+                                    </div>
+                                    <div class="actions">
+                                        <% if(row.isfinalsent === "Yes") { %>
+                                            <button class="btn btn-success btn-sm"><i class="fas fa-check"></i> Report Sent</button>
+                                        <% } else { %>
+                                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" data-togglerplan="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>" data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>">
+                                                <i class="fas fa-plus"></i> Add Progress Report
+                                            </button>
+                                        <% } %>
+                                        <form action="/stvcpms/targetgroup/showdetailprogressreport" method="post">
+                                            <input type="hidden" name="dactivityid" value="<%= row.dactivityid %>">
+                                            <input type="hidden" name="dacttindicator" value="<%= row.dacttindicator %>">
+                                            <input type="hidden" name="planid" value="<%= planid %>">
+                                            <button type="submit" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> View Progress Report</button>
+                                        </form>
+                                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal3" data-togglerplan="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>" data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>">
+                                            <i class="fas fa-plus"></i> Add Final Report
+                                        </button>
+                                        
+                                    </div>
+                                    </div>
+                                 
+                                  <button type="button" class="btn btn-sm success read-more">Read More</button>
+                                </div>
+                                
                                       
-                                            <tr>
-                                              <td><%= i %></td>
-                                               
-                                                <td class="align-middle text-center">
-                                                    <small>  Title:-    <%= row.mactivitytitle %>  <br>
-                                                        Code:-   <%= row.mactivitycode %>  <br>
-                                                        Description:-   <%= row.dactivitydescription %>  </small>
-                                                    </td>
-                                                <td class="align-middle text-center">
-                                                <small> Title:-   <%= row.dactivitytitle %>  <br>
-                                                    Code:- <%= row.dactivitycode %>  <br>
-                                                   Description:- <%= row.dactivitydescription %> <br>
-                                                    From <%= new Date(row.startdate).toLocaleDateString() %> to  <%= new Date(row.enddate).toLocaleDateString() %>
-                                                </small>
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    Indicator:  <%= row.dacttindicator %>  
-                                                <br>
-                                                   Indicator Input: <%= row.dacttinputtype %>
-                                               <br>
-                                                   KPI: <%= row.dactkpi %>      
-                                                </td>
-                                                <td class="align-middle text-center">
-                                                    Risk:  <%= row.dactregisteredrisk %>  
-                                               
-                                                </td>
-                                           
-                                                <td>
-                                                  <% if(row.isfinalsent ==="Yes"){%>
-                                                    <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block"  ><input type="checkbox" checked>
-                                                   Report Sent
-                                                    </button>
-                                                  <%}else{%>
-                                                    <button  class="btn mb-2 btn-outline-primary btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
-                                                      Add Progress Report
-                                                    </button>
-                                                   <%}%>
-                                                   
-                                                    
-                                               
-                                               
-                                                </td>
-                                                <td>
-                                                <form action="/stvcpms/targetgroup/showdetailprogressreport" method="post">
-                                                  <input type="hidden" name="dactivityid" value="<%= row.dactivityid %>">
-                                                  <input type="hidden" name="dacttindicator" value="<%= row.dacttindicator %>">
-                                                  <input type="hidden" name="planid" value="<%= planid %>">
-                                                  
-                                                    
-                                                  <button type="submit"  class="btn mb-2 btn-outline-info btn-sm mb-0 btn-block"> View Progress Report
-                                                
-                                                </form>
-                                                <button  class="btn mb-2 btn-outline-success btn-sm mb-0 btn-block" data-toggle="modal" data-target="#myModal3" data-togglerplan ="<%= planid %>" data-toggler="<%= row.dactivityid %>" data-toggler5="<%= row.dacttindicator %>"  data-toggler3="<%= row.dactkpi %>" data-toggler2="<%= row.dacttinputtype %>" data-toggler4="<%= row.dactivitytitle %>" >
-                                                  Add Final Report
-                                                </button>
-                                                </td>
-                                            </tr>
-                                         
-                                   
+                                       
+                                 
 
 
-                                      
-                                 <%}%>
-                                 <%})}else{%>
-                                    <tr>No ACTIVITY IS FOUND</tr>
-                                    <%}%>
-
-
-
-                                    <% }) }else{}%>
+                                    
+                               <%})}else{%>
+                                  <tr>No ACTIVITY IS FOUND</tr>
+                                  <%}%>
 
                                 </tbody>
                                 </table>
@@ -284,7 +315,30 @@
       <!-- Button trigger modal -->
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <script>
+ document.addEventListener("DOMContentLoaded", function() {
+    var readMoreButtons = document.querySelectorAll(".read-more");
+    readMoreButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            var toShowElement = button.parentElement.querySelector("#toshow");
+            if (toShowElement.style.display === "none" || toShowElement.style.display === "") {
+                // Hide all other toshow divs
+                document.querySelectorAll(".toshow").forEach(function(element) {
+                    element.style.display = "none";
+                });
+                // Show the toshow div associated with the clicked button
+                toShowElement.style.display = "block";
+                button.textContent = "Read Less";
+            } else {
+                // Hide the toshow div associated with the clicked button
+                toShowElement.style.display = "none";
+                button.textContent = "Read More";
+            }
+        });
+    });
+});
 
+      </script>
 <!-- Modal -->
 <div class="modal" id="myModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">

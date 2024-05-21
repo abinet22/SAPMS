@@ -108,8 +108,8 @@
                             <thead>
                               <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Activity Indicator Name</th>
-                         
-                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action To Do</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Edit </th>
+                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
                                 <th class="text-secondary opacity-7"></th>
                               </tr>
                             </thead>
@@ -127,15 +127,18 @@
                                     </div>
                                   </td>
                                 
-                                
-                                  <td class="align-middle">
+                                 <td> 
+                                  <form  action="/stvcpms/updateactivityindicator" method ="post">
+                                    <input type="hidden" name="activityindicatorid" id="activityindicatorid" value="<%= row.activityindicatorid %>">
+                                    <input type="text" class="form-control mb-2" name="activityindicator" id="activityindicator" placeholder="Update Activity Indicator">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block" >Update</button>
+                                  
+                                </form>
+                              </td>
+                                  <td>
                                    <form action="/stvcpms/deleteactivityindicator" method="post">
-                                   <div class="row">
-                                   <input type="hidden" name="activityindicatorid" id="activityindicatorid" value="<%= row.activityindicatorid %>">
-                                    <div class="col-md-6">
-                                       <button type="submit" class="btn btn-sm btn-danger btn-block">  Delete</button>
-                                    </div>
-                                   </div>
+                                    <input type="hidden" name="activityindicatorid" id="activityindicatorid" value="<%= row.activityindicatorid %>">
+                                    <button type="submit" class="btn btn-sm btn-danger btn-block">  Delete</button>
                                    </form>
                                   </td>
                                 </tr>
